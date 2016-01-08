@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+  <xacml-context:Response xmlns:xacml-context="urn:oasis:names:tc:xacml:2.0:context:schema:os" xmlns:xacml="urn:oasis:names:tc:xacml:2.0:policy:schema:os">
+    <xacml-context:Result>
+      <xacml-context:Decision>Deny</xacml-context:Decision>
+      <xacml-context:Status>
+        <xacml-context:StatusCode Value="urn:oasis:names:tc:xacml:2.0:context:schema:os"/>
+        <xacml-context:StatusMessage>statusMessage</xacml-context:StatusMessage>
+        <xacml-context:StatusDetail/>
+      </xacml-context:Status>
+      <xacml:Obligations>
+        <xacml:Obligation ObligationId="urn:oasis:names:tc:xacml:2.0:context:schema:os" FulfillOn="Deny">
+          <xacml:AttributeAssignment AttributeId="urn:oasis:names:tc:xacml:2.0:context:schema:os" DataType="urn:oasis:names:tc:xacml:2.0:context:schema:os">value</xacml:AttributeAssignment>
+        </xacml:Obligation>
+      </xacml:Obligations>
+    </xacml-context:Result>
+  </xacml-context:Response>

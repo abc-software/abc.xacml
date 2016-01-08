@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+ <xacml-context:Request xmlns:xacml-context="urn:oasis:names:tc:xacml:2.0:context:schema:os">
+    <xacml-context:Subject>
+      <xacml-context:Attribute AttributeId="http://www.w3.org/2001/XMLSchema#string" DataType="http://www.w3.org/2001/XMLSchema#string" Issuer="issuer">
+        <xacml-context:AttributeValue>value</xacml-context:AttributeValue>
+      </xacml-context:Attribute>
+    </xacml-context:Subject>
+    <xacml-context:Resource>
+      <xacml-context:ResourceContent>
+        <content/>
+      </xacml-context:ResourceContent>
+      <xacml-context:Attribute AttributeId="http://www.w3.org/2001/XMLSchema#string" DataType="http://www.w3.org/2001/XMLSchema#string" Issuer="issuer">
+        <xacml-context:AttributeValue>value</xacml-context:AttributeValue>
+      </xacml-context:Attribute>
+    </xacml-context:Resource>
+    <xacml-context:Action>
+      <xacml-context:Attribute AttributeId="http://www.w3.org/2001/XMLSchema#string" DataType="http://www.w3.org/2001/XMLSchema#string" Issuer="issuer">
+        <xacml-context:AttributeValue>value</xacml-context:AttributeValue>
+      </xacml-context:Attribute>
+    </xacml-context:Action>
+    <xacml-context:Environment>
+      <xacml-context:Attribute AttributeId="http://www.w3.org/2001/XMLSchema#string" DataType="http://www.w3.org/2001/XMLSchema#string" Issuer="issuer">
+        <xacml-context:AttributeValue>value</xacml-context:AttributeValue>
+      </xacml-context:Attribute>
+    </xacml-context:Environment>
+  </xacml-context:Request>

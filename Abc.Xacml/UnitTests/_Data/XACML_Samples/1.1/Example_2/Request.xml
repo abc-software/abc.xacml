@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Request xmlns="urn:oasis:names:tc:xacml:1.0:context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Subject SubjectCategory="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject">
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+             DataType="urn:oasis:names:tc:xacml:1.0.data-type:x500name"
+             Issuer="www.medico.com"
+             IssueInstant="2001-12-17T09:30:47-05:00">
+      <AttributeValue>CN=Julius Hibbert</AttributeValue>
+    </Attribute>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:example:attribute:role"
+             DataType="http://www.w3.org/2001/XMLSchema#string"
+             Issuer="www.medico.com"
+             IssueInstant="2001-12-17T09:30:47-05:00">
+      <AttributeValue>physician</AttributeValue>
+    </Attribute>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:example:attribute:physician-id"
+             DataType="http://www.w3.org/2001/XMLSchema#string"
+             Issuer="www.medico.com"
+             IssueInstant="2001-12-17T09:30:47-05:00">
+      <AttributeValue>jh1234</AttributeValue>
+    </Attribute>
+  </Subject>
+  <Resource>
+    <ResourceContent>
+      <md:record xmlns:md="//http:www.medico.com/schemas/record.xsd">
+        <md:patient>
+          <md:patientDoB>1992-03-21</md:patientDoB>
+        </md:patient>
+      </md:record>
+    </ResourceContent>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+         DataType="http://www.w3.org/2001/XMLSchema#string">
+      <AttributeValue>//medico.com/records/bart-simpson.xml#xmlns(md=//http:www.medico.com/schemas/record.xsd)xpointer(/md:record/md:patient/md:patientDoB)</AttributeValue>
+    </Attribute>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:xpath"
+         DataType="http://www.w3.org/2001/XMLSchema#string">
+      <AttributeValue>xmlns(md=//http:www.medico.com/schemas/record.xsd)xpointer(/md:record/md:patient/md:patientDoB)</AttributeValue>
+    </Attribute>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:resource:target-namespace"
+         DataType="http://www.w3.org/2001/XMLSchema#string">
+      <AttributeValue>http://www.medico.com/schemas/record.xsd</AttributeValue>
+    </Attribute>  </Resource>
+  <Action>
+    <Attribute AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+         DataType="http://www.w3.org/2001/XMLSchema#string">
+      <AttributeValue>read</AttributeValue>
+    </Attribute>
+  </Action>
+</Request>

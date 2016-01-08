@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Abc.Xacml</RootNamespace>
+    <AssemblyName>Abc.Xacml</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsAssertsToContractsCheckBox>True</CodeContractsAssertsToContractsCheckBox>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsMissingPublicEnsuresAsWarnings>False</CodeContractsMissingPublicEnsuresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferEnsuresAutoProperties>True</CodeContractsInferEnsuresAutoProperties>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestAssumptionsForCallees>False</CodeContractsSuggestAssumptionsForCallees>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsNecessaryEnsures>True</CodeContractsNecessaryEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Properties\abc.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Diagnostic">
+      <HintPath>..\..\packages\Abc.Diagnostics.dll.1.1.0.1\lib\net20\Diagnostic.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Context\XacmlContextAction.cs" />
+    <Compile Include="Context\XacmlContextAttribute.cs" />
+    <Compile Include="Context\XacmlContextAttributes.cs" />
+    <Compile Include="Context\XacmlContextAttributeValue.cs" />
+    <Compile Include="Context\XacmlContextBase.cs" />
+    <Compile Include="Context\XacmlContextDecision.cs" />
+    <Compile Include="Context\XacmlContextEnvironment.cs" />
+    <Compile Include="Context\XacmlContextPolicyIdReference.cs" />
+    <Compile Include="Context\XacmlContextPolicySetIdReference.cs" />
+    <Compile Include="Context\XacmlContextRequest.cs" />
+    <Compile Include="Context\XacmlContextRequestReference.cs" />
+    <Compile Include="Context\XacmlContextResource.cs" />
+    <Compile Include="Context\XacmlContextResourceContent.cs" />
+    <Compile Include="Context\XacmlContextResponse.cs" />
+    <Compile Include="Context\XacmlContextResult.cs" />
+    <Compile Include="Context\XacmlContextStatus.cs" />
+    <Compile Include="Context\XacmlContextStatusCode.cs" />
+    <Compile Include="Context\XacmlContextSubject.cs" />
+    <Compile Include="DataTypes\Base64Binary.cs" />
+    <Compile Include="DataTypes\Date.cs" />
+    <Compile Include="DataTypes\DayTimeDuration.cs" />
+    <Compile Include="DataTypes\DNSName.cs" />
+    <Compile Include="DataTypes\DoubleTypeConverter.cs" />
+    <Compile Include="DataTypes\HexBinary.cs" />
+    <Compile Include="DataTypes\IPAddress.cs" />
+    <Compile Include="DataTypes\Rfc822Name.cs" />
+    <Compile Include="DataTypes\Time.cs" />
+    <Compile Include="DataTypes\x500Name.cs" />
+    <Compile Include="DataTypes\XPathExpression.cs" />
+    <Compile Include="DataTypes\YearMonthDuration.cs" />
+    <Compile Include="Interfaces\IXPathExtender.cs" />
+    <Compile Include="Policy\XacmlAnyOf.cs" />
+    <Compile Include="Policy\XacmlCombinerParameters.cs" />
+    <Compile Include="Runtime\XPathContext.cs" />
+    <Compile Include="Xacml11ProtocolSerializer.cs" />
+    <Compile Include="Runtime\XacmlException.cs" />
+    <Compile Include="Runtime\XacmlIndeterminateException.cs" />
+    <Compile Include="Runtime\XacmlInvalidDataTypeException.cs" />
+    <Compile Include="Runtime\XacmlInvalidSyntaxException.cs" />
+    <Compile Include="Runtime\EvaluationEngineFactory.cs" />
+    <Compile Include="Runtime\XPathProcessor.cs" />
+    <Compile Include="Interfaces\IAlgorithmsExtender.cs" />
+    <Compile Include="Interfaces\IAttributesExtender.cs" />
+    <Compile Include="Interfaces\IFunctionsExtender.cs" />
+    <Compile Include="Interfaces\ITypesExtender.cs" />
+    <Compile Include="Runtime\IXacmlPolicyRepository.cs" />
+    <Compile Include="Policy\IXacmlApply.cs" />
+    <Compile Include="Policy\XacmlAction.cs" />
+    <Compile Include="Policy\XacmlActionAttributeDesignator.cs" />
+    <Compile Include="Policy\XacmlActionMatch.cs" />
+    <Compile Include="Policy\XacmlAdvice.cs" />
+    <Compile Include="Policy\XacmlAdviceExpression.cs" />
+    <Compile Include="Policy\XacmlAllOf.cs" />
+    <Compile Include="Policy\XacmlApply.cs" />
+    <Compile Include="Policy\XacmlAttribute.cs" />
+    <Compile Include="Policy\XacmlAttributeAssignment.cs" />
+    <Compile Include="Policy\XacmlAttributeAssignmentExpression.cs" />
+    <Compile Include="Policy\XacmlAttributeDesignator.cs" />
+    <Compile Include="Policy\XacmlAttributeSelector.cs" />
+    <Compile Include="Policy\XacmlAttributeValue.cs" />
+    <Compile Include="Policy\XacmlCombinerParameter.cs" />
+    <Compile Include="Policy\XacmlEffectType.cs" />
+    <Compile Include="Policy\XacmlEnvironment.cs" />
+    <Compile Include="Policy\XacmlEnvironmentAttributeDesignator.cs" />
+    <Compile Include="Policy\XacmlEnvironmentMatch.cs" />
+    <Compile Include="Policy\XacmlExpression.cs" />
+    <Compile Include="Policy\XacmlFunction.cs" />
+    <Compile Include="Policy\XacmlMatch.cs" />
+    <Compile Include="Policy\XacmlObligation.cs" />
+    <Compile Include="Policy\XacmlObligationExpression.cs" />
+    <Compile Include="Policy\XacmlOpenElement.cs" />
+    <Compile Include="Policy\XacmlPolicy.cs" />
+    <Compile Include="Policy\XacmlPolicyCombinerParameters.cs" />
+    <Compile Include="Policy\XacmlPolicyIssuer.cs" />
+    <Compile Include="Policy\XacmlPolicySet.cs" />
+    <Compile Include="Policy\XacmlPolicySetCombinerParameters.cs" />
+    <Compile Include="Policy\XacmlResource.cs" />
+    <Compile Include="Policy\XacmlResourceAttributeDesignator.cs" />
+    <Compile Include="Policy\XacmlResourceMatch.cs" />
+    <Compile Include="Policy\XacmlRule.cs" />
+    <Compile Include="Policy\XacmlRuleCombinerParameters.cs" />
+    <Compile Include="Policy\XacmlRuleResult.cs" />
+    <Compile Include="Policy\XacmlSubject.cs" />
+    <Compile Include="Policy\XacmlSubjectAttributeDesignator.cs" />
+    <Compile Include="Policy\XacmlSubjectMatch.cs" />
+    <Compile Include="Policy\XacmlTarget.cs" />
+    <Compile Include="Policy\XacmlUtils.cs" />
+    <Compile Include="Policy\XacmlVariableDefinition.cs" />
+    <Compile Include="Policy\XacmlVariableReference.cs" />
+    <Compile Include="Policy\XacmlVersionMatchType.cs" />
+    <Compile Include="Runtime\AlgorithmsProcessor.cs" />
+    <Compile Include="Runtime\AttributesProcessor.cs" />
+    <Compile Include="Runtime\DataTypeProcessor.cs" />
+    <Compile Include="Runtime\FunctionsProcessor.cs" />
+    <Compile Include="Runtime\PermutationProcessor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Runtime\EvaluationEngine.cs" />
+    <Compile Include="Runtime\EvaluationEngine30.cs" />
+    <Compile Include="Runtime\PolicyInformationPoint.cs" />
+    <Compile Include="Runtime\XacmlMatchResult.cs" />
+    <Compile Include="Runtime\AttributeAssignmentsWrapper.cs" />
+    <Compile Include="Runtime\DelegateWithXPathContextWrapper.cs" />
+    <Compile Include="Runtime\DelegateWrapper.cs" />
+    <Compile Include="Runtime\TypeConverterWrapper.cs" />
+    <Compile Include="Xacml10Constants.cs" />
+    <Compile Include="Xacml10ProtocolSerializer.cs" />
+    <Compile Include="Xacml11Constants.cs" />
+    <Compile Include="Xacml20Constants.cs" />
+    <Compile Include="Xacml20ProtocolSerializer.cs" />
+    <Compile Include="Xacml30Constants.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Xacml30ProtocolSerializer.cs" />
+    <Compile Include="XacmlConstants.cs" />
+    <Compile Include="XacmlProtocolSerializerCommon.cs" />
+    <Compile Include="XacmlProtocolSerializerContextRead.cs" />
+    <Compile Include="XacmlProtocolSerializerContextWrite.cs" />
+    <Compile Include="XacmlProtocolSerializerRead.cs" />
+    <Compile Include="XacmlProtocolSerializerWrite.cs" />
+    <Compile Include="XacmlSerializationException.cs" />
+    <Compile Include="XacmlVersion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Properties\abc.snk" />
+    <None Include="lgpl-3.licenseheader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="gpl-3_0.txt" />
+    <Content Include="History.txt" />
+    <Content Include="lgpl-3_0.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Abc.Xacml.Geo</id>
+    <version>1.0.0-beta</version>
+    <title>Abc.Xacml.Geo</title>
+    <authors>ABC software</authors>
+    <owners>ABC software</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Library for GEO XACML in .NET 4.0</description>
+    <copyright>© ABC Software Ltd. All rights reserved</copyright>
+    <tags>XACML GEO</tags>
+    <dependencies>
+      <group>
+        <dependency id="Abc.Xacml.dll" version="[1.0,1.1)" />
+        <dependency id="NetTopologySuite" version="[1.13.3, 1.14.0)" />
+        <dependency id="csunits" version="[2.0.1, 2.0.2)" />
+        <dependency id="Convertinator" version="0.4.0.0" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+  <files />
+</package>
