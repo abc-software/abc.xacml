@@ -59,13 +59,13 @@ namespace Abc.Xacml {
             //// Start Target
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Target, this.version.NamespacePolicy);
 
-            if (data.Subjects.Count() > 0) {
+            if (data.Subjects.Any()) {
                 //// Start Subjects
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Subjects, this.version.NamespacePolicy);
                 foreach (var subject in data.Subjects) {
                     writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Subject, this.version.NamespacePolicy);
 
-                    foreach (XacmlSubjectMatch subjectMatch in subject.Matches) {
+                    foreach (XacmlSubjectMatch subjectMatch in subject.Matches.OfType<XacmlSubjectMatch>()) {
                         this.WriteMatch(writer, subjectMatch);
                     }
 
@@ -76,7 +76,7 @@ namespace Abc.Xacml {
                 writer.WriteEndElement();
             }
 
-            if (data.Resources.Count() > 0) {
+            if (data.Resources.Any()) {
                 //// Start Resources
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Resources, this.version.NamespacePolicy);
 
@@ -94,7 +94,7 @@ namespace Abc.Xacml {
                 writer.WriteEndElement();
             }
 
-            if (data.Actions.Count() > 0) {
+            if (data.Actions.Any()) {
                 //// Start Actions
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Actions, this.version.NamespacePolicy);
                 foreach (var action in data.Actions) {
@@ -111,7 +111,7 @@ namespace Abc.Xacml {
                 writer.WriteEndElement();
             }
 
-            if (data.Environments.Count() > 0) {
+            if (data.Environments.Any()) {
 
                 //// Start Environment
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Environments, this.version.NamespacePolicy);

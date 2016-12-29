@@ -452,7 +452,7 @@ namespace Abc.Xacml.Runtime {
         }
 
         public static string StringNormalizeToLowerCase(string value) {
-            return value.ToLower();
+            return value.ToLowerInvariant();
         }
 
         #endregion
@@ -611,7 +611,7 @@ namespace Abc.Xacml.Runtime {
 
         public static bool AnyOf_30(XPathContext xpathContext, DelegateWrapper del, params object[] par) {
             IEnumerable<object> lists = par.Where(o => (typeof(System.Collections.IEnumerable)).IsAssignableFrom(o.GetType()))
-                .Where(o => o.GetType() != typeof(string));
+                .Where(o => !(o is string));
 
             bool globalResult = false;
 
@@ -643,7 +643,7 @@ namespace Abc.Xacml.Runtime {
 
         public static bool AllOf_30(XPathContext xpathContext, DelegateWrapper del, params object[] par) {
             IEnumerable<object> lists = par.Where(o => (typeof(System.Collections.IEnumerable)).IsAssignableFrom(o.GetType()))
-                .Where(o => o.GetType() != typeof(string));
+                .Where(o => !(o is string));
 
             bool globalResult = true;
             Type i = typeof(IEnumerable);
@@ -805,8 +805,8 @@ namespace Abc.Xacml.Runtime {
         public static IEnumerable<object> Map_30(XPathContext xpathContext, DelegateWrapper del, params object[] par) {
             List<object> result = new List<object>();
 
-            IEnumerable<object> lists = par.Where(o => (typeof(System.Collections.IEnumerable)).IsAssignableFrom(o.GetType()))
-                .Where(o => o.GetType() != typeof(string));
+            IEnumerable<object> lists = par.Where(o => (typeof(IEnumerable)).IsAssignableFrom(o.GetType()))
+                .Where(o => !(o is string));
 
             if (lists.Count() != 1) {
                 throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));

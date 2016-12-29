@@ -529,13 +529,11 @@ namespace Abc.Xacml {
                 reader.ReadEndElement();
             }
 
-            XacmlTarget target = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
-                target = ReadTarget(reader);
-            }
-            else {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
                 throw new XmlException("Target IsNullOrEmpty");
             }
+
+            XacmlTarget target = ReadTarget(reader);
 
             XacmlPolicy policy = new XacmlPolicy(new Uri(gaPolicyId, UriKind.RelativeOrAbsolute), new Uri(gaRuleCombiningAlgId, UriKind.RelativeOrAbsolute), target) {
                 Description = description,
@@ -1797,40 +1795,33 @@ namespace Abc.Xacml {
             writer.WriteEndElement();
         }
 
-        #region Obsolete
+        #region Not supported 
 
-        [Obsolete("Not supported function in 3.0.")]
         protected override XacmlSubject ReadSubject(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
         }
 
-        [Obsolete("Not supported function in 3.0.")]
         protected override XacmlAction ReadAction(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
         }
 
-        [Obsolete("Not supported function in 3.0.")]
         protected override XacmlResource ReadResource(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
         }
 
-        [Obsolete("Not supported function in 3.0.")]
         protected override XacmlEnvironment ReadEnvironment(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
         }
 
-        [Obsolete("Not supported function in 3.0. Use ReadPolicyIdReference_3_0 instead")]
         protected override Uri ReadPolicyIdReference(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0. Use ReadPolicyIdReference_3_0 instead"));
 
         }
 
-        [Obsolete("Not supported function in 3.0. Use ReadPolicySetIdReference_3_0 instead")]
         protected override Uri ReadPolicySetIdReference(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0. Use ReadPolicySetIdReference_3_0 instead"));
         }
 
-        [Obsolete("Not supported function in 3.0. Use ŖeadAttribute instead")]
         protected override XacmlContextAttribute ReadContextAttribute(XmlReader reader) {
             throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0. Use ŖeadAttribute instead"));
         }

@@ -27,10 +27,10 @@ namespace Abc.Xacml.Runtime {
     using Abc.Xacml.Policy;
 
     public class PolicyInformationPoint {
-        XacmlContextRequest request;
-        AttributesProcessor attributesProcessor;
-        XPathProcessor xpathProcessor;
-        XmlDocument requestDocument;
+        private readonly XacmlContextRequest request;
+        private readonly AttributesProcessor attributesProcessor;
+        private readonly XPathProcessor xpathProcessor;
+        private readonly XmlDocument requestDocument;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PolicyInformationPoint"/> class.
@@ -64,7 +64,7 @@ namespace Abc.Xacml.Runtime {
 
             var result = attributeIdMatch.SelectMany(o => o.AttributeValues).Where(o => Uri.Compare(o.DataType, dataType, UriComponents.AbsoluteUri, UriFormat.SafeUnescaped, StringComparison.InvariantCultureIgnoreCase) == 0).Select(o => o.Value);
 
-            if (result.Count() == 0) {
+            if (!result.Any()) {
                 string attribute = attributesProcessor[attributeId.ToString()];
                 if (attribute != null) {
                     result = new List<string>() { attribute };
@@ -148,16 +148,14 @@ namespace Abc.Xacml.Runtime {
             var xpath = this.xpathProcessor[xpathVersion.ToString()];
             if (contextSelectorId != null) {
                 //PROFILE - Multiple Decision Profile - #POL01 - #SPEC2744
-                XacmlAttribute attribute = this.request.Attributes.Where(o => string.Equals(o.Category.OriginalString, category.OriginalString))
-                    .First()
-                    .Attributes.Where(o => string.Equals(o.AttributeId.OriginalString, contextSelectorId.OriginalString))
-                    .FirstOrDefault();
+                XacmlAttribute attribute = this.request.Attributes.First(o => string.Equals(o.Category.OriginalString, category.OriginalString))
+                    .Attributes.FirstOrDefault(o => string.Equals(o.AttributeId.OriginalString, contextSelectorId.OriginalString));
 
                 if (attribute == null) {
                     throw new XacmlIndeterminateException("Cannot find attribute with name: " + contextSelectorId);
                 }
 
-                XacmlAttributeValue xPathExpressionDataTypeAttribute = attribute.AttributeValues.Where(o => string.Equals(o.DataType.OriginalString, "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression")).FirstOrDefault();
+                XacmlAttributeValue xPathExpressionDataTypeAttribute = attribute.AttributeValues.FirstOrDefault(o => string.Equals(o.DataType.OriginalString, "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression"));
 
                 if (xPathExpressionDataTypeAttribute == null) {
                     throw new XacmlIndeterminateException("Cannot find attribute with name: " + contextSelectorId);
@@ -215,7 +213,7 @@ namespace Abc.Xacml.Runtime {
 
             var result = attributeIdMatch.SelectMany(o => o.AttributeValues).Select(o => o.Value);
 
-            if (result.Count() == 0) {
+            if (!result.Any()) {
                 string attribute = attributesProcessor[attributeId.ToString()];
                 if (attribute != null) {
                     result = new List<string>() { attribute };

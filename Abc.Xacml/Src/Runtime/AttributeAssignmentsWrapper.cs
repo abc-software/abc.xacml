@@ -21,6 +21,7 @@ namespace Abc.Xacml.Runtime {
     using Abc.Xacml.Policy;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Text;
 
@@ -34,9 +35,9 @@ namespace Abc.Xacml.Runtime {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class AttributeAssignmentsWrapper<T> : IDisposable where T : class {
-        IDictionary<XacmlEffectType, List<T>> savedOriginalCollection;
-        Ref<IDictionary<XacmlEffectType, List<T>>> reference;
-        Func<XacmlDecisionResult> resultGetter;
+        private readonly IDictionary<XacmlEffectType, List<T>> savedOriginalCollection;
+        private readonly Ref<IDictionary<XacmlEffectType, List<T>>> reference;
+        private readonly Func<XacmlDecisionResult> resultGetter;
 
         public AttributeAssignmentsWrapper(Func<IDictionary<XacmlEffectType, List<T>>> getter, Action<IDictionary<XacmlEffectType, List<T>>> setter, Func<XacmlDecisionResult> resultGetter) {
             reference = new Ref<IDictionary<XacmlEffectType, List<T>>>(getter, setter);
@@ -74,14 +75,19 @@ namespace Abc.Xacml.Runtime {
             this.reference.Value = savedOriginalCollection;
         }
 
-        private class Ref<T> {
-            private Func<T> getter;
-            private Action<T> setter;
-            public Ref(Func<T> getter, Action<T> setter) {
+        private class Ref<R> {
+            private readonly Func<R> getter;
+            private readonly Action<R> setter;
+
+            public Ref(Func<R> getter, Action<R> setter) {
+                Contract.Requires(getter != null);
+                Contract.Requires(setter != null);
+
                 this.getter = getter;
                 this.setter = setter;
             }
-            public T Value {
+
+            public R Value {
                 get { return getter(); }
                 set { setter(value); }
             }

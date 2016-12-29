@@ -740,7 +740,7 @@ namespace Abc.Xacml.Runtime {
 
             List<XacmlAttributeAssignment> result = new List<XacmlAttributeAssignment>();
 
-            if ((typeof(System.Collections.IEnumerable)).IsAssignableFrom(expressionResult.GetType()) && expressionResult.GetType() != typeof(string)) {
+            if ((typeof(IEnumerable)).IsAssignableFrom(expressionResult.GetType()) && !(expressionResult is string)) {
                 foreach (object elem in (IEnumerable)expressionResult) {
                     result.Add(this.AttributeAssignmentCreate(elem, expression));
                 }
@@ -776,7 +776,7 @@ namespace Abc.Xacml.Runtime {
             Type applyElemType = expression.GetType();
             if (applyElemType == typeof(XacmlVariableReference)) {
                 XacmlVariableReference reference = expression as XacmlVariableReference;
-                XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.Where(o => o.VariableId == reference.VariableReference).SingleOrDefault();
+                XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.SingleOrDefault(o => o.VariableId == reference.VariableReference);
                 if (definition == null) {
                     throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
                 }
@@ -908,7 +908,7 @@ namespace Abc.Xacml.Runtime {
             }
             else {
                 // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (attribute2Values.Count() == 0) {
+                if (!attribute2Values.Any()) {
                     return false;
                 }
             }
@@ -936,7 +936,7 @@ namespace Abc.Xacml.Runtime {
         protected override IEnumerable<string> GetAttributeSelector(XacmlAttributeSelector selector) {
             IEnumerable<XmlNode> attributeBag = this.pip.GetAttributeByXPath(this.xpathVersion, selector.Path, selector.Category, selector.ContextSelectorId, this.namespaces);
 
-            if (attributeBag.Count() == 0) {
+            if (!attributeBag.Any()) {
                 if (selector.MustBePresent.HasValue && selector.MustBePresent.Value) {
                     // return "Indeterminate”
                     return null;
@@ -956,7 +956,7 @@ namespace Abc.Xacml.Runtime {
                     designator.Category
                     );
 
-            if (attributeBag.Count() == 0) {
+            if (!attributeBag.Any()) {
                 if (designator.MustBePresent.HasValue && designator.MustBePresent.Value) {
                     // return "Indeterminate”
                     return null;

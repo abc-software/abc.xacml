@@ -172,11 +172,8 @@ namespace Abc.Xacml {
                 return default(T);
             }
 
-            object val = null;
-            if (typeof(T) == typeof(bool?)) {
-                val = XmlConvert.ToBoolean(attributeResult);
-            }
-            else if (typeof(T) == typeof(bool)) {
+            object val;
+            if (typeof(T) == typeof(bool?) || typeof(T) == typeof(bool)) {
                 val = XmlConvert.ToBoolean(attributeResult);
             }
             else if (typeof(T) == typeof(Uri)) {
@@ -186,7 +183,7 @@ namespace Abc.Xacml {
                 val = attributeResult;
             }
             else if (typeof(T) == typeof(int?)) {
-                val = int.Parse(attributeResult);
+                val = XmlConvert.ToInt32(attributeResult);
             }
             else {
                 throw new NotSupportedException();

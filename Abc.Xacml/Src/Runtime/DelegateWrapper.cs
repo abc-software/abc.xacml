@@ -57,7 +57,7 @@ namespace Abc.Xacml.Runtime {
                             paramsType = typeof(object);
                         }
 
-                        int elemCount = paramArray.Count();
+                        int elemCount = paramArray.Count;
                         Array newParamArray = Array.CreateInstance(paramsType, elemCount);
 
                         for (int i = 0; i < elemCount; i++) {

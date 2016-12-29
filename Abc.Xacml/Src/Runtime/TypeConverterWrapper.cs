@@ -32,9 +32,8 @@ namespace Abc.Xacml.Runtime {
     /// <typeparam name="R">Converter source</typeparam>
     public class TypeConverterWrapper {
         public Func<IEnumerable<object>, object> ConvertEnumerable { get; set; }
-        private Action<object, object> objectGenerator;
-
-        private TypeConverter typeConverter;
+        private readonly Action<object, object> objectGenerator;
+        private readonly TypeConverter typeConverter;
 
         public TypeConverterWrapper(TypeConverter converter, Type resultType, Action<object, object> objectGenerator = null) {
             this.typeConverter = converter;

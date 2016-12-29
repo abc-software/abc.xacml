@@ -510,7 +510,7 @@ namespace Abc.Xacml.Runtime {
             Type applyElemType = expression.GetType();
             if (applyElemType == typeof(XacmlVariableReference)) {
                 XacmlVariableReference reference = expression as XacmlVariableReference;
-                XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.Where(o => o.VariableId == reference.VariableReference).SingleOrDefault();
+                XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.SingleOrDefault(o => o.VariableId == reference.VariableReference);
                 if (definition == null) {
                     throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
                 }
@@ -616,7 +616,7 @@ namespace Abc.Xacml.Runtime {
                 ///// one “Indeterminate”
                 ///// At least one “False”        “No match”
                 XacmlMatchResult matchResult = XacmlMatchResult.Match;
-                foreach (XacmlSubjectMatch match in subj.Matches) {
+                foreach (XacmlSubjectMatch match in subj.Matches.OfType<XacmlSubjectMatch>()) {
                     bool? mres = this.SubjectMatchEvaluation(match);
                     if (!mres.HasValue) {
                         matchResult = XacmlMatchResult.Indeterminate;
@@ -657,7 +657,7 @@ namespace Abc.Xacml.Runtime {
                 ///// one “Indeterminate”
                 ///// At least one “False”        “No match”
                 XacmlMatchResult matchResult = XacmlMatchResult.Match;
-                foreach (XacmlResourceMatch match in res.Matches) {
+                foreach (XacmlResourceMatch match in res.Matches.OfType<XacmlResourceMatch>()) {
                     bool? mres = this.ResourceMatchEvaluation(match);
                     if (!mres.HasValue) {
                         matchResult = XacmlMatchResult.Indeterminate;
@@ -698,7 +698,7 @@ namespace Abc.Xacml.Runtime {
                 ///// one “Indeterminate”
                 ///// At least one “False”        “No match”
                 XacmlMatchResult matchResult = XacmlMatchResult.Match;
-                foreach (XacmlActionMatch match in act.Matches) {
+                foreach (XacmlActionMatch match in act.Matches.OfType<XacmlActionMatch>()) {
                     bool? mres = this.ActionMatchEvaluation(match);
                     if (!mres.HasValue) {
                         matchResult = XacmlMatchResult.Indeterminate;
@@ -739,7 +739,7 @@ namespace Abc.Xacml.Runtime {
                 ///// one “Indeterminate”
                 ///// At least one “False”        “No match”
                 XacmlMatchResult matchResult = XacmlMatchResult.Match;
-                foreach (XacmlEnvironmentMatch match in env.Matches) {
+                foreach (XacmlEnvironmentMatch match in env.Matches.OfType<XacmlEnvironmentMatch>()) {
                     bool? mres = this.EnvironmentMatchEvaluation(match);
                     if (!mres.HasValue) {
                         matchResult = XacmlMatchResult.Indeterminate;
@@ -817,7 +817,7 @@ namespace Abc.Xacml.Runtime {
             }
             else {
                 // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (attribute2Values.Count() == 0) {
+                if (!attribute2Values.Any()) {
                     return false;
                 }
             }
@@ -873,7 +873,7 @@ namespace Abc.Xacml.Runtime {
             }
             else {
                 // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (attribute2Values.Count() == 0) {
+                if (!attribute2Values.Any()) {
                     return false;
                 }
             }
@@ -929,7 +929,7 @@ namespace Abc.Xacml.Runtime {
             }
             else {
                 // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (attribute2Values.Count() == 0) {
+                if (!attribute2Values.Any()) {
                     return false;
                 }
             }
@@ -985,7 +985,7 @@ namespace Abc.Xacml.Runtime {
             }
             else {
                 // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (attribute2Values.Count() == 0) {
+                if (!attribute2Values.Any()) {
                     return false;
                 }
             }

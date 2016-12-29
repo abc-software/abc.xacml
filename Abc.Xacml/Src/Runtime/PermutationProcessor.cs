@@ -21,6 +21,7 @@ namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Text;
 
@@ -30,7 +31,7 @@ namespace Abc.Xacml.Runtime {
     /// If function return true -> break
     /// </summary>
     public class PermutationProcessor {
-        private IPermutationNode root;
+        private readonly IPermutationNode root;
 
         /// <summary>
         /// Processors constructor
@@ -68,10 +69,14 @@ namespace Abc.Xacml.Runtime {
             bool Next();
         }
 
-        internal class PermutationProcessorOneElementNode : IPermutationNode {
-            private IPermutationNode next;
+        private class PermutationProcessorOneElementNode : IPermutationNode {
+            private readonly IPermutationNode next;
 
             internal PermutationProcessorOneElementNode(object value, int resultIndex, IPermutationNode next, object[] generatedParams) {
+                Contract.Requires(resultIndex >= 0);
+                Contract.Requires(next != null);
+                Contract.Requires(generatedParams != null);
+
                 this.next = next;
                 generatedParams[resultIndex] = value;
             }
@@ -86,13 +91,18 @@ namespace Abc.Xacml.Runtime {
             }
         }
 
-        internal class PermutationProcessorNode : IPermutationNode {
-            private IEnumerable values;
-            private IPermutationNode next;
-            private int resultIndex;
-            private object[] generatedParams;
+        private class PermutationProcessorNode : IPermutationNode {
+            private readonly IEnumerable values;
+            private readonly IPermutationNode next;
+            private readonly int resultIndex;
+            private readonly object[] generatedParams;
 
             internal PermutationProcessorNode(IEnumerable values, int resultIndex, IPermutationNode next, object[] generatedParams) {
+                Contract.Requires(values != null);
+                Contract.Requires(resultIndex >= 0);
+                Contract.Requires(next != null);
+                Contract.Requires(generatedParams != null);
+
                 this.values = values;
                 this.next = next;
                 this.resultIndex = resultIndex;
@@ -114,8 +124,8 @@ namespace Abc.Xacml.Runtime {
         }
 
         internal class PermutationProcessorFinalNode : IPermutationNode {
-            private Func<IEnumerable<object>, bool> functionEvaluator;
-            object[] generatedParams;
+            private readonly Func<IEnumerable<object>, bool> functionEvaluator;
+            private readonly object[] generatedParams;
 
             public PermutationProcessorFinalNode(Func<IEnumerable<object>, bool> fun, object[] generatedParams) {
                 this.functionEvaluator = fun;
