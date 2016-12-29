@@ -30,7 +30,7 @@ namespace Abc.Xacml.Context {
     public class XacmlContextStatus {
         private XacmlContextStatusCode statusCode;
         private string statusMessage;
-        private Collection<XmlElement> statusDetail = new Collection<XmlElement>();
+        private readonly Collection<XmlElement> statusDetail = new Collection<XmlElement>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlContextStatus"/> class.

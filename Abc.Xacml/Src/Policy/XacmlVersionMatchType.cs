@@ -21,7 +21,7 @@ namespace Abc.Xacml.Policy {
     using System.Text.RegularExpressions;
 
     public class XacmlVersionMatchType {
-        private string value;
+        private readonly string value;
 
         public XacmlVersionMatchType(string value) {
             if (!Regex.IsMatch(value, @"((\d+|\*)\.)*(\d+|\*|\+)")) {

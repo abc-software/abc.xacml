@@ -39,14 +39,14 @@ namespace Abc.Xacml.DataTypes {
         /// <summary>
         /// The original value found in the document.
         /// </summary>
-        private string durationValue;
+        private readonly string durationValue;
 
-        private TimeSpan duration;
+        private readonly TimeSpan duration;
 
         /// <summary>
         /// Whether is a negative duration.
         /// </summary>
-        private bool negative;
+        private readonly bool negative;
 
         public DayTimeDuration(string value) {
             durationValue = value;
@@ -79,12 +79,11 @@ namespace Abc.Xacml.DataTypes {
 
         public override bool Equals(object obj) {
             DayTimeDuration dt = obj as DayTimeDuration;
-            if (dt != null) {
-                return this.Equals(dt);
-            }
-            else {
+            if (dt == null) {
                 return false;
             }
+
+            return this.Equals(dt);
         }
 
         public override int GetHashCode() {

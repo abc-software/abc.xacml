@@ -37,15 +37,15 @@ namespace Abc.Xacml.DataTypes {
         /// </summary>
         private const string PATTERN_MATCH = @"(?<n>[\-]?)P((?<y>\d+)Y)?((?<m>\d+)M)?";
 
-        private string durationValue;
+        private readonly string durationValue;
 
         /// <summary>
         /// Whether this is a negative duration.
         /// </summary>
-        private bool negative;
+        private readonly bool negative;
 
-        private int years;
-        private int months;
+        private readonly int years;
+        private readonly int months;
 
         public YearMonthDuration(string value) {
             this.durationValue = value;

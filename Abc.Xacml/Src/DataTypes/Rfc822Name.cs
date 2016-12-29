@@ -29,9 +29,9 @@ namespace Abc.Xacml.DataTypes {
     /// </summary>
     [TypeConverter(typeof(Rfc822NameConverter))]
     public class Rfc822Name : IEquatable<Rfc822Name> {
-        private string name;
-        private string namePart;
-        private string domainPart;
+        private readonly string name;
+        private readonly string namePart;
+        private readonly string domainPart;
 
         public Rfc822Name(string name) {
             if (string.IsNullOrWhiteSpace(name)) {
@@ -75,7 +75,7 @@ namespace Abc.Xacml.DataTypes {
         }
 
         public override string ToString() {
-            return name.ToLower();
+            return name.ToLowerInvariant();
         }
 
         public bool Match(string other) {

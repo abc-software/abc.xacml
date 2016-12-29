@@ -24,8 +24,8 @@ namespace Abc.Xacml.DataTypes {
 
     [TypeConverter(typeof(Base64BinaryConverter))]
     public class Base64Binary : IEquatable<Base64Binary> {
-        private byte[] value;
-        private string originalValue;
+        private readonly byte[] value;
+        private readonly string originalValue;
 
         public Base64Binary(string value) {
             this.originalValue = value;
@@ -38,12 +38,11 @@ namespace Abc.Xacml.DataTypes {
 
         public override bool Equals(object obj) {
             Base64Binary t = obj as Base64Binary;
-            if (t != null) {
-                return this.Equals(t);
-            }
-            else {
+            if (t == null) {
                 return false;
             }
+
+            return this.Equals(t);
         }
 
         public override int GetHashCode() {

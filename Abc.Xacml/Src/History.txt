@@ -34,6 +34,9 @@ V1.0-rc
 NEW:	Реализованы MultipleRequests
 FIX:	Соответсвие Status с тестами
 
+V1.0-beta2
+FIX:	Fixed SonarCube analyser warnings
+
 V1.0-beta1
 CNG:	DataTypes/*.cs используем FormatException
 CNG:	EvaluationEngine.cs модифицирован для MultipleRequests

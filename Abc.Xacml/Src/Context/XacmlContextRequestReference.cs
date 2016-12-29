@@ -25,7 +25,7 @@ namespace Abc.Xacml.Context {
     using System.Text;
 
     public class XacmlContextRequestReference {
-        ICollection<string> attributeRefereneces = new Collection<string>();
+        private readonly ICollection<string> attributeRefereneces = new Collection<string>();
 
         public XacmlContextRequestReference(IEnumerable<string> references) {
             foreach (var item in references) {

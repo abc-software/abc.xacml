@@ -29,7 +29,7 @@ namespace Abc.Xacml.Context {
     public class XacmlContextAttribute {
         private Uri attributeId;
         private Uri dataType;
-        private ICollection<XacmlContextAttributeValue> attributeValues;
+        private readonly ICollection<XacmlContextAttributeValue> attributeValues;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlContextAttribute"/> class.

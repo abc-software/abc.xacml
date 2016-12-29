@@ -25,24 +25,23 @@ namespace Abc.Xacml.DataTypes {
 
     [TypeConverter(typeof(IPAddressConverter))]
     public class IPAddress : IEquatable<IPAddress> {
-        private string value = string.Empty;
+        private readonly string value;
 
         public IPAddress(string value) {
             this.value = value;
         }
 
         public bool Equals(IPAddress other) {
-            return String.Compare(this.value, other.value, true, CultureInfo.InvariantCulture) == 0;
+            return string.Equals(this.value, other.value, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override bool Equals(object obj) {
             IPAddress t = obj as IPAddress;
-            if (t != null) {
-                return this.Equals(t);
-            }
-            else {
+            if (t == null) {
                 return false;
             }
+
+            return this.Equals(t);
         }
 
         public override int GetHashCode() {

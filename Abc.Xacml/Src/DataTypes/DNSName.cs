@@ -25,14 +25,14 @@ namespace Abc.Xacml.DataTypes {
 
     [TypeConverter(typeof(DNSNameConverter))]
     public class DNSName : IEquatable<DNSName> {
-        private string value = string.Empty;
+        private readonly string value;
 
         public DNSName(string value) {
             this.value = value;
         }
 
         public bool Equals(DNSName other) {
-            return String.Compare(this.value, other.value, true, CultureInfo.InvariantCulture) == 0;
+            return string.Equals(this.value, other.value, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override bool Equals(object obj) {

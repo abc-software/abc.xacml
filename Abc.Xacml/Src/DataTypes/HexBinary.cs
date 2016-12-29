@@ -25,12 +25,12 @@ namespace Abc.Xacml.DataTypes {
 
     [TypeConverter(typeof(HexBinaryConverter))]
     public class HexBinary : IEquatable<HexBinary> {
-        private byte[] name;
-        private string originalValue;
+        private readonly byte[] name;
+        private readonly string originalValue;
 
         public HexBinary(string name) {
             this.originalValue = name;
-            this.name = name.ToLower().Select(o => Convert.ToByte(o)).ToArray();
+            this.name = name.ToLowerInvariant().Select(o => Convert.ToByte(o)).ToArray();
         }
 
         public bool Equals(HexBinary other) {

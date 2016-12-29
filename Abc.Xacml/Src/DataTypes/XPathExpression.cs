@@ -25,7 +25,7 @@ namespace Abc.Xacml.DataTypes {
 
     [TypeConverter(typeof(XPathExpressionTypeConverter))]
     public class XPathExpressionType : IEquatable<XPathExpressionType> {
-        private string value = string.Empty;
+        private readonly string value;
 
         public string XPathCategory { get; set; }
 
@@ -39,12 +39,11 @@ namespace Abc.Xacml.DataTypes {
 
         public override bool Equals(object obj) {
             XPathExpressionType t = obj as XPathExpressionType;
-            if (t != null) {
-                return this.Equals(t);
-            }
-            else {
+            if (t == null) {
                 return false;
             }
+
+            return this.Equals(t);
         }
 
         public override int GetHashCode() {

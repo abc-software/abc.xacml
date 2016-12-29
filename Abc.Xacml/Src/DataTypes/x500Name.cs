@@ -27,9 +27,9 @@ namespace Abc.Xacml.DataTypes {
 
     [TypeConverter(typeof(x500NameConverter))]
     public class x500Name : IEquatable<x500Name> {
-        private X500DistinguishedName name;
+        private readonly X500DistinguishedName name;
 
-        private IDictionary<string, string> x500rdns;
+        private readonly IDictionary<string, string> x500rdns;
 
         public x500Name(string name) {
             this.name = new X500DistinguishedName(name);

@@ -190,7 +190,8 @@ namespace Abc.Xacml.Policy {
         }
 
         private class LinkedCollection<T> : ICollection<T> where T : XacmlAllOf {
-            ICollection<XacmlAnyOf> anyOf;
+            private readonly ICollection<XacmlAnyOf> anyOf;
+
             public LinkedCollection(ICollection<XacmlAnyOf> anyOf) {
                 this.anyOf = anyOf;
             }

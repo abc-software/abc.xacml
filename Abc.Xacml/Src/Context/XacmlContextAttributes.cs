@@ -25,7 +25,7 @@ namespace Abc.Xacml.Context {
     using Abc.Xacml.Policy;
 
     public class XacmlContextAttributes {
-        private ICollection<XacmlAttribute> attributes = new Collection<XacmlAttribute>();
+        private readonly ICollection<XacmlAttribute> attributes = new Collection<XacmlAttribute>();
         private Uri category;
 
         /// <summary>

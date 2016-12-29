@@ -31,13 +31,13 @@ namespace Abc.Xacml.Context {
     public class XacmlContextResult {
         private XacmlContextDecision decision;
         private XacmlContextStatus status;
-        private ICollection<XacmlObligation> obligations = new Collection<XacmlObligation>();
+        private readonly ICollection<XacmlObligation> obligations = new Collection<XacmlObligation>();
 
         // 3.0
-        private ICollection<XacmlAdvice> advices = new Collection<XacmlAdvice>();
-        private ICollection<XacmlContextAttributes> attributes = new Collection<XacmlContextAttributes>();
-        private ICollection<XacmlContextPolicyIdReference> policyIdReferences = new Collection<XacmlContextPolicyIdReference>();
-        private ICollection<XacmlContextPolicySetIdReference> policySetIdReferences = new Collection<XacmlContextPolicySetIdReference>();
+        private readonly ICollection<XacmlAdvice> advices = new Collection<XacmlAdvice>();
+        private readonly ICollection<XacmlContextAttributes> attributes = new Collection<XacmlContextAttributes>();
+        private readonly ICollection<XacmlContextPolicyIdReference> policyIdReferences = new Collection<XacmlContextPolicyIdReference>();
+        private readonly ICollection<XacmlContextPolicySetIdReference> policySetIdReferences = new Collection<XacmlContextPolicySetIdReference>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlContextResult"/> class.

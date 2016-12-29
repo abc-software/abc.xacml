@@ -27,7 +27,7 @@ namespace Abc.Xacml.Context {
     /// The <c>XacmlContextBase</c> abstract class for request.
     /// </summary>
     public abstract class XacmlContextBase {
-        private ICollection<XacmlContextAttribute> attributes = new Collection<XacmlContextAttribute>();
+        private readonly ICollection<XacmlContextAttribute> attributes = new Collection<XacmlContextAttribute>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlContextBase"/> class.
