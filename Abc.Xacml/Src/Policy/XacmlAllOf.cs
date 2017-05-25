@@ -22,6 +22,11 @@ namespace Abc.Xacml.Policy {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     /// <summary>
     /// The conjunctive sequence of &lt;Match&gt; elements
@@ -38,14 +43,14 @@ namespace Abc.Xacml.Policy {
 
             foreach (var item in matches) {
                 if (item == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgument("Item is null!");
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgument("Item is null!");
                 }
 
                 this.matches.Add(item);
             }
 
             if (this.matches.Count == 0) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgument("SubjectMatch count is 0!");
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgument("SubjectMatch count is 0!");
             }
         }
 

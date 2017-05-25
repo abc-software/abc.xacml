@@ -25,6 +25,11 @@ namespace Abc.Xacml {
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     /// <summary>
     /// The XACML 2.0 Protocol serializer
@@ -176,7 +181,7 @@ namespace Abc.Xacml {
                     reader.Read();
 
                     if (!reader.IsStartElement(type, this.version.NamespacePolicy)) {
-                        throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} IsNullOrEmpty", type)));
+                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} IsNullOrEmpty", type)));
                     }
                     else {
                         dict[type].Invoke();
@@ -232,13 +237,13 @@ namespace Abc.Xacml {
             var gaMatchId = reader.GetAttribute("MatchId");
 
             if (string.IsNullOrEmpty(gaMatchId)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("MatchId IsNullOrEmpty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("MatchId IsNullOrEmpty"));
             }
 
             Func<string, string, ReadElement<XacmlAttributeDesignator>, XacmlMatch> read = (matchType, designatorType, readFuncAttributeDesignator) => {
                 XacmlMatch ret = null;
                 if (!reader.IsStartElement(matchType, this.version.NamespacePolicy)) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} NotStartElement", matchType)));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} NotStartElement", matchType)));
                 }
                 reader.ReadStartElement(matchType, this.version.NamespacePolicy);
 
@@ -291,7 +296,7 @@ namespace Abc.Xacml {
             }
 
             if (!this.CanRead(reader, XacmlConstants.ElementNames.PolicySet)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
             }
 
             Uri gaPolicySetId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.PolicySetId);
@@ -310,7 +315,7 @@ namespace Abc.Xacml {
             if (reader.IsStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy)) {
                 reader.ReadStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy);
                 if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
                 }
 
                 xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
@@ -387,7 +392,7 @@ namespace Abc.Xacml {
             Contract.Requires<ArgumentNullException>(reader != null, "reader");
 
             if (!this.CanRead(reader, XacmlConstants.ElementNames.Policy)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
             }
 
             IDictionary<string, string> nsMgr = new Dictionary<string, string>();
@@ -402,13 +407,13 @@ namespace Abc.Xacml {
             var gaPolicyId = reader.GetAttribute("PolicyId");
 
             if (string.IsNullOrEmpty(gaPolicyId)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("PolicyId IsNullOrEmpty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("PolicyId IsNullOrEmpty"));
             }
 
             var gaRuleCombiningAlgId = reader.GetAttribute("RuleCombiningAlgId");
 
             if (string.IsNullOrEmpty(gaRuleCombiningAlgId)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleCombiningAlgId IsNullOrEmpty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleCombiningAlgId IsNullOrEmpty"));
             }
 
             string version = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Version, isRequered: false);
@@ -426,7 +431,7 @@ namespace Abc.Xacml {
                 reader.ReadStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy);
 
                 if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
                 }
 
                 xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
@@ -446,7 +451,7 @@ namespace Abc.Xacml {
                 target = ReadTarget(reader);
             }
             else {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Target IsNullOrEmpty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Target IsNullOrEmpty"));
             }
 
             XacmlPolicy policy = new XacmlPolicy(new Uri(gaPolicyId, UriKind.RelativeOrAbsolute), new Uri(gaRuleCombiningAlgId), target) { 
@@ -477,15 +482,15 @@ namespace Abc.Xacml {
 
             // choice [1 .. *]
             if (policy.VariableDefinitions.Count == 0 && policy.Rules.Count == 0) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("VariableDefinition or Rule are required"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("VariableDefinition or Rule are required"));
             }
 
             if (policy.CombinerParameters.Count > 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("CombinerParameterc count > 1"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("CombinerParameterc count > 1"));
             }
 
             if (policy.RuleCombinerParameters.Count > 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("RuleCombinerParameters count > 1"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("RuleCombinerParameters count > 1"));
             }
 
             if (reader.IsStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy)) {
@@ -541,7 +546,7 @@ namespace Abc.Xacml {
             var gaRuleId = reader.GetAttribute("RuleId");
 
             if (string.IsNullOrEmpty(gaRuleId)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleId IsNullOrEmpty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleId IsNullOrEmpty"));
             }
 
             var gaEffect = reader.GetAttribute("Effect");
@@ -553,11 +558,11 @@ namespace Abc.Xacml {
                 effectType = XacmlEffectType.Permit;
             }
             else {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
             }
 
             if (string.IsNullOrEmpty(gaEffect)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Effect IsNullEmpty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Effect IsNullEmpty"));
             }
 
             if (reader.IsEmptyElement) {
@@ -712,7 +717,7 @@ namespace Abc.Xacml {
                         break;
                     }
                 default: {
-                        throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VariableDefinition element content"));
+                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VariableDefinition element content"));
                     }
             }
 
@@ -770,7 +775,7 @@ namespace Abc.Xacml {
                 condition.Property = this.ReadOptional(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy, this.ReadApply, reader);
             }
             else {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VariableDefinition element content"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VariableDefinition element content"));
             }
 
             reader.ReadEndElement();
@@ -1171,7 +1176,7 @@ namespace Abc.Xacml {
                 this.WriteAttributeValue(writer, match.AttributeValue);
 
                 if (match.AttributeSelector == null && match.AttributeDesignator == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
                 }
 
                 if (match.AttributeDesignator != null) {
@@ -1312,7 +1317,7 @@ namespace Abc.Xacml {
             Contract.Requires<ArgumentNullException>(reader != null, "reader");
 
             if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.version.NamespaceContext)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
@@ -1388,7 +1393,7 @@ namespace Abc.Xacml {
             }
 
             if (attr.IssueInstant != null) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("IssueInstant obsolleten from version 2.0"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("IssueInstant obsolleten from version 2.0"));
             }
 
             foreach (var value in attr.AttributeValues) {
@@ -1442,7 +1447,7 @@ namespace Abc.Xacml {
             }
 
             if (result.Obligations.Count > 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Obligations should be < 2 until version 2.0"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Obligations should be < 2 until version 2.0"));
             }
 
             if (result.Obligations.Count > 0) {

@@ -23,6 +23,11 @@ namespace Abc.Xacml {
     using System.Linq;
     using System.Xml;
     using Abc.Xacml.Context;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public partial class XacmlProtocolSerializer {
         #region Request
@@ -146,7 +151,7 @@ namespace Abc.Xacml {
             }
 
             if (attr.AttributeValues.Count > 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("AttributeValues shoul be 1 in version 1.0"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("AttributeValues shoul be 1 in version 1.0"));
             }
 
             this.WriteContextAttributeValue(writer, attr.AttributeValues.First());
@@ -185,7 +190,7 @@ namespace Abc.Xacml {
             // Results
 
             if (data.Results.Count == 0) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Results is empty"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Results is empty"));
             }
 
             foreach (var result in data.Results) {
@@ -208,13 +213,13 @@ namespace Abc.Xacml {
             this.WriteContextDecision(writer, result.Decision);
 
             if (result.Status == null) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("status must be set for XACML 1.0/1.1"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("status must be set for XACML 1.0/1.1"));
             }
 
             this.WriteContextStatus(writer, result.Status);
 
             if (result.Obligations.Count > 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Obligations should be < 2 until version 2.0"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Obligations should be < 2 until version 2.0"));
             }
 
             if (result.Obligations.Count > 0) {
@@ -286,7 +291,7 @@ namespace Abc.Xacml {
                     break;
 
                 default:
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong Decision value"));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong Decision value"));
             }
 
             writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Decision, this.version.NamespaceContext, value);

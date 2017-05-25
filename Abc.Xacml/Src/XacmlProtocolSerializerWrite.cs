@@ -23,6 +23,11 @@ namespace Abc.Xacml {
     using System.Xml;
     using System.Xml.Linq;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     /// <summary>
     /// class XacmlSerializer
@@ -313,7 +318,7 @@ namespace Abc.Xacml {
             writer.WriteEndElement();
 
             if (data.Environments != null && data.Environments.Count > 0) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Environments property just for version 2.0 or higher"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Environments property just for version 2.0 or higher"));
             }
 
             //// End Target
@@ -336,7 +341,7 @@ namespace Abc.Xacml {
                 this.WriteAttributeValue(writer, match.AttributeValue);
 
                 if (match.AttributeSelector == null && match.AttributeDesignator == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
                 }
 
                 if (match.AttributeDesignator != null) {

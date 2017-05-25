@@ -22,6 +22,11 @@ namespace Abc.Xacml {
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Xml;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public partial class XacmlProtocolSerializer {
         /// <summary>
@@ -60,7 +65,7 @@ namespace Abc.Xacml {
             }
 
             if (isRequired && !founded) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Unknown element " + reader.LocalName));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Unknown element " + reader.LocalName));
             }
             else {
                 return false;

@@ -25,6 +25,11 @@ namespace Abc.Xacml.Runtime {
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public class EvaluationEngine {
         public IXacmlPolicyRepository ch;
@@ -134,13 +139,13 @@ namespace Abc.Xacml.Runtime {
                     decisionResult = this.PolicyEvaluate(this.policy);
                 }
                 else {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException("Policy missing"));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException("Policy missing"));
                 }
 
                 result = this.MakeResult(decisionResult, new XacmlContextStatus(XacmlContextStatusCode.Success));
             }
             catch (XacmlException ex) {
-                Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(ex);
+                DiagnosticTools.ExceptionUtil.ThrowHelperError(ex);
                 result = this.MakeResult(XacmlDecisionResult.Indeterminate, new XacmlContextStatus(new XacmlContextStatusCode(ex.StatusCode)) { StatusMessage = ex.Message });
             }
 
@@ -282,7 +287,7 @@ namespace Abc.Xacml.Runtime {
             foreach (Uri polRef in policySet.PolicyIdReferences) {
                 XacmlPolicy pol = this.ch.RequestPolicy(polRef);
                 if (pol == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown Policy reference: " + polRef.ToString()));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown Policy reference: " + polRef.ToString()));
                 }
 
                 policyResultsFunctions.Add(new Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>(
@@ -316,7 +321,7 @@ namespace Abc.Xacml.Runtime {
             foreach (Uri polRef in policySet.PolicySetIdReferences) {
                 XacmlPolicySet pol = this.ch.RequestPolicySet(polRef);
                 if (pol == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString()));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString()));
                 }
 
                 policyResultsFunctions.Add(new Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>(
@@ -493,11 +498,11 @@ namespace Abc.Xacml.Runtime {
                 return conditionResult as bool?;
             }
             catch (XacmlIndeterminateException ex) {
-                Diagnostic.DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
+                DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
                 return null;
             }
             catch (InvalidOperationException ex) {
-                Diagnostic.DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
+                DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
                 return null;
             }
         }
@@ -512,7 +517,7 @@ namespace Abc.Xacml.Runtime {
                 XacmlVariableReference reference = expression as XacmlVariableReference;
                 XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.SingleOrDefault(o => o.VariableId == reference.VariableReference);
                 if (definition == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
                 }
 
                 // Cache value
@@ -543,7 +548,7 @@ namespace Abc.Xacml.Runtime {
                 IEnumerable<string> designatorsNames = this.GetActionAttributeDesignator(design);
 
                 if (designatorsNames == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("XacmlActionAttributeDesignator indeterminate"));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("XacmlActionAttributeDesignator indeterminate"));
                 }
 
                 TypeConverterWrapper typeConverter = this.types[design.DataType.ToString()];

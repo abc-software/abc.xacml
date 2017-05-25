@@ -21,9 +21,14 @@
     <Compile Include="Abc.Xacml.NuGet.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Src\Abc.Xacml.csproj">
-      <Name>Abc.Xacml</Name>
+    <ProjectReference Include="..\Src\Abc.Xacml.40.csproj">
+      <Name>Abc.Xacml.40</Name>
       <Project>{5938fd08-4b0c-4dd0-8e69-4014a0eee585}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Src\Abc.Xacml.45.csproj">
+      <Name>Abc.Xacml.45</Name>
+      <Project>{b0c47d9b-91bc-4f6a-ba39-955813cb126b}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

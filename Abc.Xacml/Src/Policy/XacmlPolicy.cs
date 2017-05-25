@@ -22,6 +22,11 @@ namespace Abc.Xacml.Policy {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     /// <summary>
     /// The <c>XacmlPolicy</c> class element retrieves a bag of values for a named resource attribute from the request context.
@@ -204,7 +209,7 @@ namespace Abc.Xacml.Policy {
                         this.version = value;
                     }
                     else {
-                        throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VersionType format"));
+                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VersionType format"));
                     }
                 }
             }

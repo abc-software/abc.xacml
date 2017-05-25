@@ -2,16 +2,21 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Abc.Xacml</id>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-beta3</version>
     <title>Abc.Xacml</title>
     <authors>ABC software</authors>
     <owners>ABC software</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Library for XACML in .NET 4.0</description>
+    <description>Library for XACML in .NET 4.0/4.5</description>
     <copyright>© ABC Software Ltd. All rights reserved</copyright>
     <tags>XACML</tags>
     <dependencies>
-      <dependency id="Abc.Diagnostics.dll" version="[1.1,2.0)" />
+      <group targetFramework="net40">
+        <dependency id="Abc.Diagnostics.dll" version="[1.1, 2.0)" />
+      </group>
+      <group targetFramework="net45">
+        <dependency id="Abc.Diagnostics" version="[1.2.0-beta, 1.2.1)" />
+      </group>
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.0" />

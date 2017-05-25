@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ABC software")]
 [assembly: AssemblyProduct("Abc.Xacml")]
-[assembly: AssemblyCopyright("Copyright © ABC software 2011-2016")]
+[assembly: AssemblyCopyright("Copyright © ABC software 2011-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -53,4 +53,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0")]
 [assembly: AssemblyFileVersion("1.0.4.0")]
-[assembly: AssemblyInformationalVersion("1.0.0-beta2")]
+[assembly: AssemblyInformationalVersion("1.0.0-beta3")]

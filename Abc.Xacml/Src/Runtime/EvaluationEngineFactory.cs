@@ -23,6 +23,11 @@ namespace Abc.Xacml.Runtime {
     using System.IO;
     using System.Xml;
     using System.Xml.Linq;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     /// <summary>
     /// XACML evaluation engine factory.
@@ -58,7 +63,7 @@ namespace Abc.Xacml.Runtime {
                 engine = new EvaluationEngine30(serializer.ReadPolicySet(reader));
             }
             else {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Unknown XML"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Unknown XML"));
             }
 
             engine.ch = ch;

@@ -27,6 +27,11 @@ namespace Abc.Xacml.Runtime {
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public class EvaluationEngine30 : EvaluationEngine {
         protected IDictionary<XacmlEffectType, List<XacmlAdvice>> advices;
@@ -296,7 +301,7 @@ namespace Abc.Xacml.Runtime {
                             }));
                                 }
                                 else {
-                                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperFatal("Policy reference not URI - Not implemented", new NotImplementedException("Policy reference not URI - Not implemented"));
+                                    throw DiagnosticTools.ExceptionUtil.ThrowHelperFatal("Policy reference not URI - Not implemented", new NotImplementedException("Policy reference not URI - Not implemented"));
                                 }
                             }
 
@@ -306,7 +311,7 @@ namespace Abc.Xacml.Runtime {
                                 if (Uri.TryCreate(polRef.Value, UriKind.RelativeOrAbsolute, out uri)) {
                                     XacmlPolicySet pol = this.ch.RequestPolicySet(uri);
                                     if (pol == null) {
-                                        throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString()));
+                                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString()));
                                     }
 
                                     policyResultsFunctions.Add(new Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>(
@@ -338,7 +343,7 @@ namespace Abc.Xacml.Runtime {
                             }));
                                 }
                                 else {
-                                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperFatal("PolicySet reference not URI - Not implemented", new NotImplementedException("PolicySet reference not URI - Not implemented"));
+                                    throw DiagnosticTools.ExceptionUtil.ThrowHelperFatal("PolicySet reference not URI - Not implemented", new NotImplementedException("PolicySet reference not URI - Not implemented"));
                                 }
                             }
 
@@ -778,7 +783,7 @@ namespace Abc.Xacml.Runtime {
                 XacmlVariableReference reference = expression as XacmlVariableReference;
                 XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.SingleOrDefault(o => o.VariableId == reference.VariableReference);
                 if (definition == null) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
                 }
 
                 // Cache value

@@ -24,6 +24,11 @@ namespace Abc.Xacml.Policy {
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Xml;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     /// <summary>
     /// The <c>XacmlPolicySet</c> class is an aggregation of other policy sets and policies.
@@ -139,7 +144,7 @@ namespace Abc.Xacml.Policy {
                         this.version = value;
                     }
                     else {
-                        throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VersionType format"));
+                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VersionType format"));
                     }
                 }
             }

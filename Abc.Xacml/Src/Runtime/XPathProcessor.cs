@@ -26,6 +26,11 @@ namespace Abc.Xacml.Runtime {
     using System.Xml.XPath;
     using Abc.Xacml.DataTypes;
     using Abc.Xacml.Interfaces;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public class XPathProcessor {
         public delegate IEnumerable<XmlNode> XPathRunner(XmlDocument xml, string xpathContextSelector, string xPathExpression, IDictionary<string, string> namespaces = null, XPathExpressionType changeContextExpression = null);
@@ -76,7 +81,7 @@ namespace Abc.Xacml.Runtime {
                     return action;
                 }
 
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows combining algorithm name");
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows combining algorithm name");
             }
         }
 
@@ -115,7 +120,7 @@ namespace Abc.Xacml.Runtime {
 
             }
             catch (XPathException ex) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Invalid XPath query", ex));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Invalid XPath query", ex));
             }
 
             if (iterator.Count > 0) {

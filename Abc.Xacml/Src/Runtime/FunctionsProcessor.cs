@@ -31,6 +31,11 @@ namespace Abc.Xacml.Runtime {
     using System.Xml;
     using System.Xml.Linq;
     using System.Diagnostics.Contracts;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public sealed class FunctionsProcessor {
         private static FunctionsProcessor processor = null;
@@ -469,7 +474,7 @@ namespace Abc.Xacml.Runtime {
                 return result;
             }
             else {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Cannot convert to anyUri type"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Cannot convert to anyUri type"));
             }
         }
 
@@ -616,7 +621,7 @@ namespace Abc.Xacml.Runtime {
             bool globalResult = false;
 
             if (lists.Count() != 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));
             }
             else {
                 object res = lists.First();
@@ -649,7 +654,7 @@ namespace Abc.Xacml.Runtime {
             Type i = typeof(IEnumerable);
 
             if (lists.Count() != 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));
             }
             else {
                 object res = lists.First();
@@ -809,7 +814,7 @@ namespace Abc.Xacml.Runtime {
                 .Where(o => !(o is string));
 
             if (lists.Count() != 1) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Function require one and only one Enumerable parameter"));
             }
             else {
                 object res = lists.First();
@@ -1043,7 +1048,7 @@ namespace Abc.Xacml.Runtime {
                 return value.Substring(start, end - start);
             }
             catch (ArgumentOutOfRangeException ex) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Substring function OutOfRange", ex));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Substring function OutOfRange", ex));
             }
 
         }
@@ -1053,7 +1058,7 @@ namespace Abc.Xacml.Runtime {
 
             Uri uri;
             if (!Uri.TryCreate(substring, UriKind.RelativeOrAbsolute, out uri)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Wrong Uri format of Substring function result"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Wrong Uri format of Substring function result"));
             }
 
             return substring;
@@ -1099,7 +1104,7 @@ namespace Abc.Xacml.Runtime {
                     return action;
                 }
                 else {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows function name in match expression");
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows function name in match expression");
                 }
             }
         }

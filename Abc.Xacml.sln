@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml", "Abc.Xacml\Src\Abc.Xacml.csproj", "{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.40", "Abc.Xacml\Src\Abc.Xacml.40.csproj", "{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo", "Abc.GeoXacml\Src\Abc.Xacml.Geo.csproj", "{DC486D2C-3D81-4707-9A82-B53D01A2AA05}"
 EndProject
@@ -15,31 +15,9 @@ Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Abc.Xacml.Geo.NuGet", "Abc.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo.UnitTests", "Abc.GeoXacml\UnitTests\Abc.Xacml.Geo.UnitTests.csproj", "{076F25DD-A816-4829-B46C-4D9BBB2A0095}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.45", "Abc.Xacml\Src\Abc.Xacml.45.csproj", "{B0C47D9B-91BC-4F6A-BA39-955813CB126B}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Abc.Xacml\\NuGet\\Abc.Xacml.NuGet.nuproj
-		SccProjectName1 = Abc.Xacml/NuGet
-		SccLocalPath1 = Abc.Xacml\\NuGet
-		SccProjectUniqueName2 = Abc.Xacml\\Src\\Abc.Xacml.csproj
-		SccProjectName2 = Abc.Xacml/Src
-		SccLocalPath2 = Abc.Xacml\\Src
-		SccProjectUniqueName3 = Abc.Xacml\\UnitTests\\Abc.Xacml.UnitTests.csproj
-		SccProjectName3 = Abc.Xacml/UnitTests
-		SccLocalPath3 = Abc.Xacml\\UnitTests
-		SccProjectUniqueName4 = Abc.GeoXacml\\Src\\Abc.Xacml.Geo.csproj
-		SccProjectName4 = Abc.GeoXacml/Src
-		SccLocalPath4 = Abc.GeoXacml\\Src
-		SccProjectUniqueName5 = Abc.GeoXacml\\NuGet\\Abc.Xacml.Geo.NuGet.nuproj
-		SccProjectName5 = Abc.GeoXacml/NuGet
-		SccLocalPath5 = Abc.GeoXacml\\NuGet
-		SccProjectUniqueName6 = Abc.GeoXacml\\UnitTests\\Abc.Xacml.Geo.UnitTests.csproj
-		SccProjectName6 = Abc.GeoXacml/UnitTests
-		SccLocalPath6 = Abc.GeoXacml\\UnitTests
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -69,6 +47,10 @@ Global
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

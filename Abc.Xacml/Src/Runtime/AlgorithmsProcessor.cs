@@ -23,6 +23,11 @@ namespace Abc.Xacml.Runtime {
     using System.ComponentModel.Composition.Hosting;
     using Abc.Xacml.Interfaces;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public class AlgorithmsProcessor {
         /// <summary>
@@ -510,7 +515,7 @@ namespace Abc.Xacml.Runtime {
                     return action;
                 }
 
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows combining algorithm name");
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows combining algorithm name");
             }
         }
     }

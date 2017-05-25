@@ -26,6 +26,11 @@ namespace Abc.Xacml.Runtime {
     using Abc.Xacml.DataTypes;
     using Abc.Xacml.Interfaces;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public class DataTypeProcessor {
         private static DataTypeProcessor processor = null;
@@ -102,7 +107,7 @@ namespace Abc.Xacml.Runtime {
                     return converter;
                 }
                 else {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows data type name in match expression");
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows data type name in match expression");
                 }
             }
         }
@@ -111,7 +116,7 @@ namespace Abc.Xacml.Runtime {
             get {
                 var pair = DataTypeProcessor.typeConverters.Where(o => o.Value.IsForType(value));
                 if (!pair.Any()) {
-                    throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows TypeConverter in match expression");
+                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows TypeConverter in match expression");
                 }
 
                 return pair.First().Key;

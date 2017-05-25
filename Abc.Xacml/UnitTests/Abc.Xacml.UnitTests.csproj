@@ -120,9 +120,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Src\Abc.Xacml.csproj">
+    <ProjectReference Include="..\Src\Abc.Xacml.40.csproj">
       <Project>{5938fd08-4b0c-4dd0-8e69-4014a0eee585}</Project>
-      <Name>Abc.Xacml</Name>
+      <Name>Abc.Xacml.40</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

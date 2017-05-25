@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Abc.Xacml.Geo</id>
-    <version>1.0.0-beta</version>
+    <version>1.0.0-beta3</version>
     <title>Abc.Xacml.Geo</title>
     <authors>ABC software</authors>
     <owners>ABC software</owners>
@@ -12,7 +12,7 @@
     <tags>XACML GEO</tags>
     <dependencies>
       <group>
-        <dependency id="Abc.Xacml.dll" version="[1.0,1.1)" />
+        <dependency id="Abc.Xacml.dll" version="[1.0, 1.1)" />
         <dependency id="NetTopologySuite" version="[1.13.3, 1.14.0)" />
         <dependency id="csunits" version="[2.0.1, 2.0.2)" />
         <dependency id="Convertinator" version="0.4.0.0" />

@@ -24,6 +24,11 @@ namespace Abc.Xacml {
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
+#if NET40
+    using Diagnostic;
+#else
+    using Abc.Diagnostics;
+#endif
 
     public partial class XacmlProtocolSerializer {
         /// <summary>
@@ -46,7 +51,7 @@ namespace Abc.Xacml {
             Contract.Requires<ArgumentNullException>(reader != null, "reader");
 
             if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.version.NamespaceContext)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
@@ -238,7 +243,7 @@ namespace Abc.Xacml {
             Contract.Requires<ArgumentNullException>(reader != null, "reader");
 
             if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Response, this.version.NamespaceContext)) {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Response, this.version.NamespaceContext);
@@ -384,7 +389,7 @@ namespace Abc.Xacml {
                 result = XacmlContextDecision.NotApplicable;
             }
             else {
-                throw Diagnostic.DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlContextDecision value"));
+                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlContextDecision value"));
             }
 
             reader.ReadEndElement();
