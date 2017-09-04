@@ -92,7 +92,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Abc.Diagnostics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3cf0d94c1de4c38d, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Abc.Diagnostics.1.2.0-beta2\lib\net45\Abc.Diagnostics.dll</HintPath>
+      <HintPath>..\..\packages\Abc.Diagnostics.1.2.0-rc\lib\net45\Abc.Diagnostics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

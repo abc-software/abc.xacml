@@ -73,6 +73,7 @@
     <Content Include="_Data\GeoXacml\GX005Response.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

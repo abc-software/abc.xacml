@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Abc.Xacml</id>
-    <version>1.0.0-beta3</version>
+    <version>1.0.0-beta4</version>
     <title>Abc.Xacml</title>
     <authors>ABC software</authors>
     <owners>ABC software</owners>
@@ -12,10 +12,10 @@
     <tags>XACML</tags>
     <dependencies>
       <group targetFramework="net40">
-        <dependency id="Abc.Diagnostics.dll" version="[1.1, 2.0)" />
+        <dependency id="Abc.Diagnostics" version="[1.0, 1.1)" />
       </group>
       <group targetFramework="net45">
-        <dependency id="Abc.Diagnostics" version="[1.2.0-beta, 1.2.1)" />
+        <dependency id="Abc.Diagnostics" version="[1.2.0-rc, 1.2.1)" />
       </group>
     </dependencies>
     <frameworkAssemblies>

@@ -89,8 +89,9 @@
     <AssemblyOriginatorKeyFile>Properties\abc.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Diagnostic">
-      <HintPath>..\..\packages\Abc.Diagnostics.dll.1.1.0.1\lib\net20\Diagnostic.dll</HintPath>
+    <Reference Include="Diagnostic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=3cf0d94c1de4c38d, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Abc.Diagnostics.1.0.12\lib\net35\Diagnostic.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
