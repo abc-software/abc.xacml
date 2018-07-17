@@ -20,7 +20,6 @@
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlSubject
@@ -32,7 +31,6 @@ namespace Abc.Xacml.Policy {
         /// <param name="matches">IEnumerable matches</param>
         public XacmlSubject(IEnumerable<XacmlSubjectMatch> matches)
             : base(matches) {
-            Contract.Requires<ArgumentNullException>(matches != null);
         }
     }
 }

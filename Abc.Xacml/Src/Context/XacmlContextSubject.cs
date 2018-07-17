@@ -20,7 +20,6 @@
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextSubject</c> class contains the value of an attribute.
@@ -43,7 +42,6 @@ namespace Abc.Xacml.Context {
         /// <param name="attributes">The attribute.</param>
         public XacmlContextSubject(XacmlContextAttribute attribute)
             : this(new XacmlContextAttribute[] { attribute }) {
-            Contract.Requires<ArgumentNullException>(attribute != null);
         }
 
         /// <summary>
@@ -52,7 +50,6 @@ namespace Abc.Xacml.Context {
         /// <param name="attributes">The attributes.</param>
         public XacmlContextSubject(IEnumerable<XacmlContextAttribute> attributes)
             : base(attributes) {
-            Contract.Requires<ArgumentNullException>(attributes != null);
         }
 
         /// <summary>

@@ -16,18 +16,12 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml {
     using System;
-    using System.Diagnostics.Contracts;
     using System.Xml;
     using System.Xml.Linq;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     /// <summary>
     /// class XacmlSerializer
@@ -39,8 +33,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlPolicySet data</param>
         public virtual void WritePolicySet(XmlWriter writer, XacmlPolicySet data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySet, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicySetId, data.PolicySetId.OriginalString);
@@ -99,8 +98,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlPolicy data</param>
         public virtual void WritePolicy(XmlWriter writer, XacmlPolicy data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Policy, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicyId, data.PolicyId.OriginalString);
@@ -145,8 +149,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlRule data</param>
         protected virtual void WriteRule(XmlWriter writer, XacmlRule data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.RuleId, data.RuleId);
@@ -172,12 +181,17 @@ namespace Abc.Xacml {
         /// </summary>
         /// <param name="writer">The writer.</param>
         /// <param name="apply">The apply.</param>
-        protected virtual void WriteCondition(XmlWriter writer, XacmlExpression expression) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(expression != null);
+        protected virtual void WriteCondition(XmlWriter writer, XacmlExpression data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy);
-            this.WriteApplyType(writer, expression.Property as XacmlApply); // TODO:
+            this.WriteApplyType(writer, data.Property as XacmlApply); // TODO:
             writer.WriteEndElement();
         }
 
@@ -187,8 +201,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="apply">The apply.</param>
         protected virtual void WriteApply(XmlWriter writer, XacmlApply apply) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(apply != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (apply == null) {
+                throw new ArgumentNullException(nameof(apply));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy);
             this.WriteApplyType(writer, apply);
@@ -201,8 +220,13 @@ namespace Abc.Xacml {
         /// <param name="writer"></param>
         /// <param name="apply"></param>
         private void WriteApplyType(XmlWriter writer, XacmlApply apply) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(apply != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (apply == null) {
+                throw new ArgumentNullException(nameof(apply));
+            }
 
             writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, apply.FunctionId.OriginalString);
 
@@ -252,8 +276,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlTarget data</param>
         protected virtual void WriteTarget(XmlWriter writer, XacmlTarget data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             //// Start Target
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Target, this.version.NamespacePolicy);
@@ -318,7 +347,7 @@ namespace Abc.Xacml {
             writer.WriteEndElement();
 
             if (data.Environments != null && data.Environments.Count > 0) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Environments property just for version 2.0 or higher"));
+                throw new InvalidOperationException("Environments property just for version 2.0 or higher");
             }
 
             //// End Target
@@ -331,8 +360,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteMatch(XmlWriter writer, XacmlMatch data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             Action<string, dynamic> action = (matchType, match) => {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, matchType, this.version.NamespacePolicy);
@@ -341,7 +375,7 @@ namespace Abc.Xacml {
                 this.WriteAttributeValue(writer, match.AttributeValue);
 
                 if (match.AttributeSelector == null && match.AttributeDesignator == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                    throw new InvalidOperationException("AttributeSelector and AttributeDesignator is null.");
                 }
 
                 if (match.AttributeDesignator != null) {
@@ -377,8 +411,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlAttributeValue data</param>
         protected virtual void WriteAttributeValue(XmlWriter writer, XacmlAttributeValue data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeValue, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, data.DataType.OriginalString);
@@ -399,8 +438,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteOpenElement(XmlWriter writer, XacmlOpenElement data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             foreach (XAttribute attr in data.Attributes) {
                 //writer.WriteAttributeString(attr.Prefix, attr.LocalName, attr.NamespaceURI, attr.Value);
@@ -420,8 +464,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteAttributeDesignator(XmlWriter writer, XacmlAttributeDesignator data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             Action<string, dynamic, bool> action = (designatorType, attributeDesignator, writeSubjectCategory) => {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, designatorType, this.version.NamespacePolicy);
@@ -436,7 +485,7 @@ namespace Abc.Xacml {
                     writer.WriteAttributeString(XacmlConstants.AttributeNames.MustBePresent, XmlConvert.ToString(attributeDesignator.MustBePresent));
                 }
 
-                if (writeSubjectCategory == true && attributeDesignator.Category != null) {
+                if (writeSubjectCategory && attributeDesignator.Category != null) {
                     writer.WriteAttributeString(XacmlConstants.AttributeNames.SubjectCategory, attributeDesignator.Category.OriginalString);
                 }
 
@@ -465,8 +514,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlAttributeSelector data</param>
         protected virtual void WriteAttributeSelector(XmlWriter writer, XacmlAttributeSelector data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.RequestContextPath, data.Path.ToString());
@@ -481,8 +535,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlResource data</param>
         protected virtual void WriteResource(XmlWriter writer, XacmlResource data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Resource, this.version.NamespacePolicy);
 
@@ -502,8 +561,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlAction data</param>
         protected virtual void WriteAction(XmlWriter writer, XacmlAction data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Action, this.version.NamespacePolicy);
 
@@ -518,8 +582,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteAttributeAssignment(XmlWriter writer, XacmlAttributeAssignment data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, data.DataType.OriginalString);
@@ -541,8 +610,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlObligation data</param>
         protected virtual void WriteObligation(XmlWriter writer, XacmlObligation data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ObligationId, data.ObligationId.OriginalString);

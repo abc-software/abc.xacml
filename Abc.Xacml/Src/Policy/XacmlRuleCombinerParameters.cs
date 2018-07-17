@@ -19,7 +19,6 @@
 
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlRuleCombinerParameters</c> class element conveys parameters associated with a particular rule within a policy for a rule-combining algorithm.
@@ -37,7 +36,10 @@ namespace Abc.Xacml.Policy {
         /// <param name="ruleIdRef">The rule identifier reference.</param>
         public XacmlRuleCombinerParameters(string ruleIdRef)
             : base() {
-            Contract.Requires<ArgumentNullException>(ruleIdRef != null);
+            if (ruleIdRef == null) {
+                throw new ArgumentNullException(nameof(ruleIdRef));
+            }
+
             this.idRef = ruleIdRef;
         }
 
@@ -53,7 +55,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.idRef = value;
             }
         }

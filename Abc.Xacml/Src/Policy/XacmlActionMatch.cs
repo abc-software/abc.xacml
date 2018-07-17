@@ -19,7 +19,6 @@
 
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlActionMatch
@@ -33,9 +32,6 @@ namespace Abc.Xacml.Policy {
         /// <param name="attributeDesignator">The attribute designator.</param>
         public XacmlActionMatch(Uri matchId, XacmlAttributeValue attributeValue, XacmlActionAttributeDesignator attributeDesignator)
             : base(matchId, attributeValue, attributeDesignator) {
-            Contract.Requires<ArgumentNullException>(matchId != null);
-            Contract.Requires<ArgumentNullException>(attributeValue != null);
-            Contract.Requires<ArgumentNullException>(attributeDesignator != null);
         }
 
         /// <summary>
@@ -46,9 +42,6 @@ namespace Abc.Xacml.Policy {
         /// <param name="attributeSelector">The attribute selector.</param>
         public XacmlActionMatch(Uri matchId, XacmlAttributeValue attributeValue, XacmlAttributeSelector attributeSelector)
             : base(matchId, attributeValue, attributeSelector) {
-            Contract.Requires<ArgumentNullException>(matchId != null);
-            Contract.Requires<ArgumentNullException>(attributeValue != null);
-            Contract.Requires<ArgumentNullException>(attributeSelector != null);
         }
     }
 }

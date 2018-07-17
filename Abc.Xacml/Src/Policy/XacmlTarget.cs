@@ -22,7 +22,6 @@ namespace Abc.Xacml.Policy {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Identifies the set of decision requests that the parent element is intended to evaluate.

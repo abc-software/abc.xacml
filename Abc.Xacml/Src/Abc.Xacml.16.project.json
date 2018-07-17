@@ -1,0 +1,17 @@
+﻿{
+  "supports": {},
+  "dependencies": {
+    "Abc.Diagnostics": "1.2.0-rc",
+    "Microsoft.Composition": "1.0.31",
+    "Microsoft.Extensions.PlatformAbstractions": "1.1.0",
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
+    "NETStandard.Library": "1.6.0",
+    "SonarAnalyzer.CSharp": "7.3.0.5690",
+    "System.ComponentModel.TypeConverter": "4.3.0",
+    "System.Xml.XmlDocument": "4.3.0",
+    "System.Xml.XPath": "4.3.0"
+  },
+  "frameworks": {
+    "netstandard1.6": {}
+  }
+}

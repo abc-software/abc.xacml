@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlRule
@@ -45,7 +44,9 @@ namespace Abc.Xacml.Policy {
         /// <param name="ruleId">The rule identifier.</param>
         /// <param name="effect">The rule effect.</param>
         public XacmlRule(string ruleId, XacmlEffectType effect) {
-            Contract.Requires<ArgumentNullException>(ruleId != null);
+            if (ruleId == null) {
+                throw new ArgumentNullException(nameof(ruleId));
+            }
 
             this.ruleId = ruleId;
             this.Effect = effect;
@@ -78,7 +79,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.ruleId = value;
             }
         }

@@ -20,7 +20,9 @@
 namespace Abc.Xacml.Runtime {
     using System;
 
+#if !NETSTANDART1_6
     [Serializable]
+#endif
     public class XacmlException : Exception {
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlException"/> class.

@@ -26,7 +26,9 @@ namespace Abc.Xacml {
     /// The XACML1.1 constants
     /// </summary>
     [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Constants is not commented.")]
+#if !NETSTANDARD
     [ExcludeFromCodeCoverage]
+#endif
     public sealed class Xacml11Constants {
         public sealed class Namespaces {
             /// <summary>

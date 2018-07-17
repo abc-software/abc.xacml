@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     public class XacmlAttributeAssignmentExpression : XacmlExpression {
         private Uri attributeId;
@@ -30,8 +29,13 @@ namespace Abc.Xacml.Policy {
         /// <param name="attributeId">The attribute identifier.</param>
         /// <param name="expressionElement">The expression element.</param>
         public XacmlAttributeAssignmentExpression(Uri attributeId, IXacmlApply expressionElement) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(expressionElement != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
+
+            if (expressionElement == null) {
+                throw new ArgumentNullException(nameof(expressionElement));
+            }
 
             this.attributeId = attributeId;
             this.Property = expressionElement;
@@ -65,7 +69,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeId = value;
             }
         }

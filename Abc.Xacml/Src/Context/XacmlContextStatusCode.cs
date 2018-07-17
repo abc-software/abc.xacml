@@ -16,11 +16,10 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
-    using System.Diagnostics.Contracts;
-
+    
     /// <summary>
     /// The <c>XacmlContextStatusCode</c> class contains a major status code value and an optional sequence of minor status codes.
     /// </summary>
@@ -34,7 +33,10 @@ namespace Abc.Xacml.Context {
         /// </summary>
         /// <param name="value">The status value.</param>
         public XacmlContextStatusCode(Uri value) {
-            Contract.Requires<ArgumentNullException>(value != null);
+            if (value == null) {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             this.Value = value;
         }
 
@@ -87,7 +89,10 @@ namespace Abc.Xacml.Context {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.value = value;
             }
         }

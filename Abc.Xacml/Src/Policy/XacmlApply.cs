@@ -21,7 +21,6 @@ namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlApply</c> class element denotes application of a function to its arguments, thus encoding a function call.
@@ -47,7 +46,10 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="functionId">The function identifier.</param>
         public XacmlApply(Uri functionId) {
-            Contract.Requires<ArgumentNullException>(functionId != null);
+            if (functionId == null) {
+                throw new ArgumentNullException(nameof(functionId));
+            }
+
             this.functionId = functionId;
         }
 
@@ -75,7 +77,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.functionId = value;
             }
         }

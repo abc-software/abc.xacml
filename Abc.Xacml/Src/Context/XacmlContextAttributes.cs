@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
     using Abc.Xacml.Policy;
 
     public class XacmlContextAttributes {
@@ -41,7 +40,10 @@ namespace Abc.Xacml.Context {
         /// </summary>
         /// <param name="category">The category.</param>
         public XacmlContextAttributes(Uri category, IEnumerable<XacmlAttribute> attributes) {
-            Contract.Requires<ArgumentNullException>(category != null);
+            if (category == null) {
+                throw new ArgumentNullException(nameof(category));
+            }
+
             this.Category = category;
             if (attributes != null) {
                 foreach (var item in attributes) {
@@ -90,7 +92,10 @@ namespace Abc.Xacml.Context {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.category = value;
             }
         }

@@ -21,9 +21,6 @@ namespace Abc.Xacml.Runtime {
     using Abc.Xacml.Policy;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
-    using System.Linq;
-    using System.Text;
 
     /// <summary>
     /// Klasse, kas kontrole AttributeAssignment atbilstību Rule/Policy/PolicySet rezultātiem
@@ -80,8 +77,13 @@ namespace Abc.Xacml.Runtime {
             private readonly Action<R> setter;
 
             public Ref(Func<R> getter, Action<R> setter) {
-                Contract.Requires(getter != null);
-                Contract.Requires(setter != null);
+                if (getter == null) {
+                    throw new ArgumentNullException(nameof(getter));
+                }
+
+                if (setter == null) {
+                    throw new ArgumentNullException(nameof(setter));
+                }
 
                 this.getter = getter;
                 this.setter = setter;

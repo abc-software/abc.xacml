@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlMatch
@@ -37,9 +36,17 @@ namespace Abc.Xacml.Policy {
         /// <param name="attributeValue">The attribute value.</param>
         /// <param name="attributeDesignator">The attribute designator.</param>
         public XacmlMatch(Uri matchId, XacmlAttributeValue attributeValue, XacmlAttributeDesignator attributeDesignator) {
-            Contract.Requires<ArgumentNullException>(matchId != null);
-            Contract.Requires<ArgumentNullException>(attributeValue != null);
-            Contract.Requires<ArgumentNullException>(attributeDesignator != null);
+            if (matchId == null) {
+                throw new ArgumentNullException(nameof(matchId));
+            }
+
+            if (attributeValue == null) {
+                throw new ArgumentNullException(nameof(attributeValue));
+            }
+
+            if (attributeDesignator == null) {
+                throw new ArgumentNullException(nameof(attributeDesignator));
+            }
 
             this.matchId = matchId;
             this.attributeValue = attributeValue;
@@ -53,9 +60,17 @@ namespace Abc.Xacml.Policy {
         /// <param name="attributeValue">The attribute value.</param>
         /// <param name="attributeSelector">The attribute selector.</param>
         public XacmlMatch(Uri matchId, XacmlAttributeValue attributeValue, XacmlAttributeSelector attributeSelector) {
-            Contract.Requires<ArgumentNullException>(matchId != null);
-            Contract.Requires<ArgumentNullException>(attributeValue != null);
-            Contract.Requires<ArgumentNullException>(attributeSelector != null);
+            if (matchId == null) {
+                throw new ArgumentNullException(nameof(matchId));
+            }
+
+            if (attributeValue == null) {
+                throw new ArgumentNullException(nameof(attributeValue));
+            }
+
+            if (attributeSelector == null) {
+                throw new ArgumentNullException(nameof(attributeSelector));
+            }
 
             this.matchId = matchId;
             this.attributeValue = attributeValue;
@@ -71,7 +86,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeValue = value;
             }
         }
@@ -85,7 +103,9 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
                 this.attributeDesignator = value;
             }
         }
@@ -99,7 +119,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeSelector = value;
             }
         }
@@ -113,7 +136,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.matchId = value;
             }
         }

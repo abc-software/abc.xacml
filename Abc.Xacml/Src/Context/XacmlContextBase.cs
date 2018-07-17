@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextBase</c> abstract class for request.
@@ -40,7 +39,9 @@ namespace Abc.Xacml.Context {
         /// </summary>
         /// <param name="attributes">The attributes.</param>
         protected XacmlContextBase(IEnumerable<XacmlContextAttribute> attributes) {
-            Contract.Requires<ArgumentNullException>(attributes != null);
+            if (attributes == null) {
+                throw new ArgumentNullException(nameof(attributes));
+            }
 
             foreach (var item in attributes) {
                 this.attributes.Add(item);

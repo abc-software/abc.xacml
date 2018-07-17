@@ -22,13 +22,7 @@ namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
     using System.Xml;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     /// <summary>
     /// The <c>XacmlPolicySet</c> class is an aggregation of other policy sets and policies.
@@ -67,8 +61,6 @@ namespace Abc.Xacml.Policy {
         /// <param name="target">The target.</param>
         public XacmlPolicySet(Uri policyCombiningAlgId, XacmlTarget target)
             : this(XacmlUtils.GeneratePolicySetId(), policyCombiningAlgId, target) {
-            Contract.Requires<ArgumentNullException>(policyCombiningAlgId != null);
-            Contract.Requires<ArgumentNullException>(target != null);
         }
 
         /// <summary>
@@ -78,9 +70,17 @@ namespace Abc.Xacml.Policy {
         /// <param name="policyCombiningAlgId">The policy combining alg identifier.</param>
         /// <param name="target">The target.</param>
         public XacmlPolicySet(Uri policySetId, Uri policyCombiningAlgId, XacmlTarget target) {
-            Contract.Requires<ArgumentNullException>(policySetId != null);
-            Contract.Requires<ArgumentNullException>(policyCombiningAlgId != null);
-            Contract.Requires<ArgumentNullException>(target != null);
+            if (policySetId == null) {
+                throw new ArgumentNullException(nameof(policySetId));
+            }
+
+            if (policyCombiningAlgId == null) {
+                throw new ArgumentNullException(nameof(policyCombiningAlgId));
+            }
+
+            if (target == null) {
+                throw new ArgumentNullException(nameof(target));
+            }
 
             this.policySetId = policySetId;
             this.policyCombiningAlgId = policyCombiningAlgId;
@@ -106,7 +106,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.target = value;
             }
         }
@@ -129,7 +132,9 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
                 this.policySetId = value;
             }
         }
@@ -144,7 +149,7 @@ namespace Abc.Xacml.Policy {
                         this.version = value;
                     }
                     else {
-                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VersionType format"));
+                        throw new ArgumentException("Wrong VersionType format", nameof(value));
                     }
                 }
             }
@@ -159,7 +164,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.policyCombiningAlgId = value;
             }
         }

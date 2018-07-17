@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlAttributeSelector</c> class identifies attributes by their location in the request context.
@@ -41,8 +40,13 @@ namespace Abc.Xacml.Policy {
         /// Used only from XACML 1.0/1.1/2.0
         /// </remarks>
         public XacmlAttributeSelector(string path, Uri dataType) {
-            Contract.Requires<ArgumentNullException>(path != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
+            if (path == null) {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
 
             this.path = path;
             this.dataType = dataType;
@@ -59,9 +63,21 @@ namespace Abc.Xacml.Policy {
         /// Used only from XACML 3.0
         /// </remarks>
         public XacmlAttributeSelector(Uri category, string path, Uri dataType, bool mustBePresent) {
-            Contract.Requires<ArgumentNullException>(category != null);
-            Contract.Requires<ArgumentNullException>(path != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
+            if (category == null) {
+                throw new ArgumentNullException(nameof(category));
+            }
+
+            if (path == null) {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            if (path.Length == 0) {
+                throw new ArgumentException("Value cannot be empty.", nameof(path));
+            }
+
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
 
             this.dataType = dataType;
             this.category = category;
@@ -81,7 +97,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.category = value;
             }
         }
@@ -106,7 +125,14 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(value));
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                if (value.Length == 0) {
+                    throw new ArgumentException("Value cannot be empty.", nameof(value));
+                }
+
                 this.path = value;
             }
         }
@@ -120,7 +146,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.dataType = value;
             }
         }

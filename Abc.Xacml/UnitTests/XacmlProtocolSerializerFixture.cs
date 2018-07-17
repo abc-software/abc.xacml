@@ -1,4 +1,4 @@
-﻿namespace Abc.IdentityModel.Xacml.UnitTests {
+﻿namespace Abc.Xacml.UnitTests {
     using System;
     using System.IO;
     using System.Linq;

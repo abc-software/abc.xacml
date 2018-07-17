@@ -20,8 +20,9 @@
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
+#if NET40 || NET45
     using System.ComponentModel.Composition.Hosting;
-    using System.Diagnostics.Contracts;
+#endif
     using Abc.Xacml.Interfaces;
 
     internal class AttributesProcessor {
@@ -43,7 +44,7 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new AttributesProcessor();
-
+#if NET40 || NET45
                             var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
                             var container = new CompositionContainer(catalog);
                             var exportedTypes = container.GetExportedValues<IAttributesExtender>();
@@ -53,6 +54,7 @@ namespace Abc.Xacml.Runtime {
                                     AttributesProcessor.attributes.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
+#endif
                         }
                     }
                 }
@@ -72,7 +74,9 @@ namespace Abc.Xacml.Runtime {
         /// <returns>The function result.</returns>
         public string this[string value] {
             get {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
 
                 Func<string> func;
                 if (attributes.TryGetValue(value, out func)) {

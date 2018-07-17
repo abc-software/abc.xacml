@@ -20,14 +20,11 @@
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
+#if NET40 || NET45
     using System.ComponentModel.Composition.Hosting;
+#endif
     using Abc.Xacml.Interfaces;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class AlgorithmsProcessor {
         /// <summary>
@@ -120,6 +117,7 @@ namespace Abc.Xacml.Runtime {
                     if (resultData.Item2 == "Deny") {
                         potentialDeny = true;
                     }
+
                     continue;
                 }
             }
@@ -147,20 +145,25 @@ namespace Abc.Xacml.Runtime {
                 if (result.Item1 == XacmlDecisionResult.Deny) {
                     return XacmlDecisionResult.Deny;
                 }
+
                 if (result.Item1 == XacmlDecisionResult.Permit) {
                     atLeastOnePermit = true;
                     continue;
                 }
+
                 if (result.Item1 == XacmlDecisionResult.NotApplicable) {
                     continue;
                 }
+
                 if (result.Item1 == XacmlDecisionResult.Indeterminate) {
                     return XacmlDecisionResult.Deny;
                 }
             }
+
             if (atLeastOnePermit) {
                 return XacmlDecisionResult.Permit;
             }
+
             return XacmlDecisionResult.NotApplicable;
         }
 
@@ -193,6 +196,7 @@ namespace Abc.Xacml.Runtime {
                     if (resultData.Item2 == "Permit") {
                         potentialPermit = true;
                     }
+
                     continue;
                 }
             }
@@ -222,17 +226,21 @@ namespace Abc.Xacml.Runtime {
                     atLeastOneDeny = true;
                     continue;
                 }
+
                 if (result.Item1 == XacmlDecisionResult.Permit) {
                     return XacmlDecisionResult.Permit;
                 }
+
                 if (result.Item1 == XacmlDecisionResult.NotApplicable) {
                     continue;
                 }
+
                 if (result.Item1 == XacmlDecisionResult.Indeterminate) {
                     atLeastOneError = true;
                     continue;
                 }
             }
+
             if (atLeastOneDeny) {
                 return XacmlDecisionResult.Deny;
             }
@@ -490,7 +498,7 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new AlgorithmsProcessor();
-
+#if NET40 || NET45
                             var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
                             var container = new CompositionContainer(catalog);
                             var exportedTypes = container.GetExportedValues<IAlgorithmsExtender>();
@@ -500,6 +508,7 @@ namespace Abc.Xacml.Runtime {
                                     AlgorithmsProcessor.algorithms.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
+#endif
                         }
                     }
                 }
@@ -515,7 +524,7 @@ namespace Abc.Xacml.Runtime {
                     return action;
                 }
 
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows combining algorithm name");
+                throw new ArgumentException("Unknown combining algorithm name", nameof(value));
             }
         }
     }

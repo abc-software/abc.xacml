@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlCombinerParameters</c> class element conveys parameters for a policy- or rule-combining algorithm.
@@ -44,7 +43,9 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="paramaters">The paramaters.</param>
         public XacmlCombinerParameters(IEnumerable<XacmlCombinerParameter> paramaters) {
-            Contract.Requires<ArgumentNullException>(paramaters != null);
+            if (paramaters == null) {
+                throw new ArgumentNullException(nameof(paramaters));
+            }
 
             foreach (var item in paramaters) {
                 this.combinerParameters.Add(item);

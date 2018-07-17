@@ -21,7 +21,6 @@ namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlObligation</c> class contain an identifier for the obligation and a set of attributes that form arguments of the action defined by the obligation.
@@ -53,13 +52,18 @@ namespace Abc.Xacml.Policy {
         /// Used only for XACML 1.0/1.1/2.0
         /// </remarks>
         public XacmlObligation(Uri obligationId, XacmlEffectType fulfillOn, IEnumerable<XacmlAttributeAssignment> attributeAssigments) {
-            Contract.Requires<ArgumentNullException>(obligationId != null);
-            Contract.Requires<ArgumentException>(Contract.ForAll<XacmlAttributeAssignment>(attributeAssigments, x => x != null));
+            if (obligationId == null) {
+                throw new ArgumentNullException(nameof(obligationId));
+            }
 
             this.obligationId = obligationId;
             this.FulfillOn = fulfillOn;
 
             foreach (var item in attributeAssigments) {
+                if (item == null) {
+                    throw new ArgumentException("Enumeration cannot contains null values.", nameof(attributeAssigments));
+                }
+
                 this.attributeAssignment.Add(item);
             }
         }
@@ -100,7 +104,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.obligationId = value;
             }
         }

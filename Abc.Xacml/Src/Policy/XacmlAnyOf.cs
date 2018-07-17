@@ -21,7 +21,6 @@ namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// A disjunctive sequence of &lt;AllOf&gt; elements
@@ -38,14 +37,16 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="allOf">All of.</param>
         public XacmlAnyOf(IEnumerable<XacmlAllOf> allOf) {
-            Contract.Requires<ArgumentNullException>(allOf != null);
+            if (allOf == null) {
+                throw new ArgumentNullException(nameof(allOf));
+            }
 
             foreach (var item in allOf) {
                 this.allOf.Add(item);
             }
         }
 
-         /// <summary>
+        /// <summary>
         /// Gets a value AllOf.
         /// </summary>
         public ICollection<XacmlAllOf> AllOf {
@@ -56,7 +57,10 @@ namespace Abc.Xacml.Policy {
 
         private class NoNullCollection<T> : Collection<T> {
             protected override void InsertItem(int index, T item) {
-                Contract.Requires<ArgumentNullException>(item != null);
+                if (item == null) {
+                    throw new ArgumentNullException(nameof(item));
+                }
+
                 base.InsertItem(index, item);
             }
         }

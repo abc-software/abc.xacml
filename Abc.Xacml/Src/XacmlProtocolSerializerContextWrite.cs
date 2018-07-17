@@ -16,18 +16,12 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml {
     using System;
-    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Xml;
     using Abc.Xacml.Context;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public partial class XacmlProtocolSerializer {
         #region Request
@@ -38,8 +32,13 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlContextRequest data</param>
         public virtual void WriteContextRequest(XmlWriter writer, XacmlContextRequest data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
 
@@ -60,8 +59,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextEnvironment(XmlWriter writer, XacmlContextEnvironment xacmlContextEnvironment) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(xacmlContextEnvironment != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (xacmlContextEnvironment == null) {
+                throw new ArgumentNullException(nameof(xacmlContextEnvironment));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Environment, this.version.NamespaceContext);
 
@@ -73,8 +77,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextAction(XmlWriter writer, XacmlContextAction xacmlContextAction) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(xacmlContextAction != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (xacmlContextAction == null) {
+                throw new ArgumentNullException(nameof(xacmlContextAction));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Action, this.version.NamespaceContext);
 
@@ -86,8 +95,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextResource(XmlWriter writer, XacmlContextResource resource) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(resource != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (resource == null) {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Resource, this.version.NamespaceContext);
 
@@ -104,8 +118,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextResourceContent(XmlWriter writer, XacmlContextResourceContent xacmlContextResourceContent) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(xacmlContextResourceContent != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (xacmlContextResourceContent == null) {
+                throw new ArgumentNullException(nameof(xacmlContextResourceContent));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.ResourceContent, this.version.NamespaceContext);
 
@@ -117,8 +136,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextSubject(XmlWriter writer, XacmlContextSubject subject) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(subject != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (subject == null) {
+                throw new ArgumentNullException(nameof(subject));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Subject, this.version.NamespaceContext);
 
@@ -134,8 +158,13 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextAttribute(XmlWriter writer, XacmlContextAttribute attr) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(attr != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (attr == null) {
+                throw new ArgumentNullException(nameof(attr));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext);
 
@@ -151,7 +180,7 @@ namespace Abc.Xacml {
             }
 
             if (attr.AttributeValues.Count > 1) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("AttributeValues shoul be 1 in version 1.0"));
+                throw new InvalidOperationException("AttributeValues shoul be 1 in version 1.0");
             }
 
             this.WriteContextAttributeValue(writer, attr.AttributeValues.First());
@@ -160,8 +189,12 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextAttributeValue(XmlWriter writer, XacmlContextAttributeValue xacmlContextAttributeValue) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(xacmlContextAttributeValue != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            if (xacmlContextAttributeValue == null) {
+                throw new ArgumentNullException(nameof(xacmlContextAttributeValue));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.AttributeValue, this.version.NamespaceContext);
 
@@ -182,15 +215,18 @@ namespace Abc.Xacml {
         /// <param name="writer">XmlWriter writer</param>
         /// <param name="data">XacmlContextResponse data</param>
         public virtual void WriteContextResponse(XmlWriter writer, XacmlContextResponse data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Response, this.version.NamespaceContext);
 
             // Results
-
             if (data.Results.Count == 0) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Results is empty"));
+                throw new InvalidOperationException("Results is empty");
             }
 
             foreach (var result in data.Results) {
@@ -200,38 +236,46 @@ namespace Abc.Xacml {
             writer.WriteEndElement();
         }
 
-        protected virtual void WriteContextResult(XmlWriter writer, XacmlContextResult result) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(result != null);
+        protected virtual void WriteContextResult(XmlWriter writer, XacmlContextResult data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
 
-            if (!string.IsNullOrEmpty(result.ResourceId)) {
-                writer.WriteAttributeString(XacmlConstants.AttributeNames.ResourceId, result.ResourceId);
+            if (!string.IsNullOrEmpty(data.ResourceId)) {
+                writer.WriteAttributeString(XacmlConstants.AttributeNames.ResourceId, data.ResourceId);
             }
 
-            this.WriteContextDecision(writer, result.Decision);
+            this.WriteContextDecision(writer, data.Decision);
 
-            if (result.Status == null) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("status must be set for XACML 1.0/1.1"));
+            if (data.Status == null) {
+                throw new InvalidOperationException("status must be set for XACML 1.0/1.1");
             }
 
-            this.WriteContextStatus(writer, result.Status);
+            this.WriteContextStatus(writer, data.Status);
 
-            if (result.Obligations.Count > 1) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Obligations should be < 2 until version 2.0"));
+            if (data.Obligations.Count > 1) {
+                throw new InvalidOperationException("Obligations should be < 2 until version 2.0");
             }
 
-            if (result.Obligations.Count > 0) {
-                this.WriteObligation(writer, result.Obligations.First());
+            if (data.Obligations.Count > 0) {
+                this.WriteObligation(writer, data.Obligations.First());
             }
 
             writer.WriteEndElement();
         }
 
         protected virtual void WriteContextStatus(XmlWriter writer, XacmlContextStatus xacmlContextStatus) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(xacmlContextStatus != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            if (xacmlContextStatus == null) {
+                throw new ArgumentNullException(nameof(xacmlContextStatus));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Status, this.version.NamespaceContext);
 
@@ -255,8 +299,12 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextStatusCode(XmlWriter writer, XacmlContextStatusCode xacmlContextStatusCode) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(xacmlContextStatusCode != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+            if (xacmlContextStatusCode == null) {
+                throw new ArgumentNullException(nameof(xacmlContextStatusCode));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusCode, this.version.NamespaceContext);
 
@@ -270,7 +318,9 @@ namespace Abc.Xacml {
         }
 
         protected virtual void WriteContextDecision(XmlWriter writer, XacmlContextDecision xacmlContextDecision) {
-            Contract.Requires<ArgumentNullException>(writer != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
 
             string value;
             switch (xacmlContextDecision) {
@@ -291,7 +341,7 @@ namespace Abc.Xacml {
                     break;
 
                 default:
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong Decision value"));
+                    throw new InvalidOperationException("Wrong Decision value");
             }
 
             writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Decision, this.version.NamespaceContext, value);

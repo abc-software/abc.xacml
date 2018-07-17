@@ -16,16 +16,17 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Xml;
 
     public class XPathContext {
         public XPathContext(Uri version, XmlDocument document, IDictionary<string, string> ns) {
-            Contract.Requires<ArgumentNullException>(document != null);
+            if (document == null) {
+                throw new ArgumentNullException(nameof(document));
+            }
 
             this.Version = version;
             this.Document = document;

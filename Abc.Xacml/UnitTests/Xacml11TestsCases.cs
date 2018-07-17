@@ -8,11 +8,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace Abc.IdentityModel.Xacml.UnitTests {
+namespace Abc.Xacml.UnitTests {
     public class Xacml11TestsCases {
-        internal static string TestCasePath = @"..\..\_Data\XACML_Samples\1.1\OfficialTestCases";//@"OfficialTestCases\1.1";
+        internal static readonly string TestCasePath = GetTestCasePath();
         static string[] TestCaseToIgnore = { "IIE003", "IID029", "IID030" };
-        static string[] NotRealisedPrifilesTest = { 
+        static string[] NotRealisedProfilesTest = { 
                                                       "IIA002", // Attribute Repository
                                                       "IIIC001", // Hierarhy
                                                       "IIIC002", // Hierarhy
@@ -23,6 +23,11 @@ namespace Abc.IdentityModel.Xacml.UnitTests {
                 { "IIA004", typeof(XmlException) },
                 { "IIA005", typeof(XmlException) },
             };
+
+        private static string GetTestCasePath() {
+            var dir = Path.GetDirectoryName(new Uri(typeof(Xacml11TestsCases).Assembly.CodeBase).LocalPath);
+            return Path.Combine(dir, @"..\..\_Data\XACML_Samples\1.1\OfficialTestCases");
+        }
 
         public static IEnumerable TestCases {
             get {
@@ -55,17 +60,20 @@ namespace Abc.IdentityModel.Xacml.UnitTests {
                         yield return new TestCaseData(null, null, null).SetCategory("Errors_11").SetName(error);
                     }
                     else {
-                        if (NotRealisedPrifilesTest.Contains(key)) {
-                            yield return new TestCaseData(policy, request, response).SetCategory("Official_11_NotImplemented").SetName(key + "_11");
+                        Type expectedException = null;
+                        if (TestCaseWithError.ContainsKey(key)) {
+                            expectedException = TestCaseWithError[key];
                         }
-                        else {
-                            var testCaseData = new TestCaseData(policy, request, response).SetCategory("Official_11").SetName(key + "_11");
-                            if (TestCaseWithError.ContainsKey(key)) {
-                                yield return testCaseData.Throws(TestCaseWithError[key]);
-                            }
 
-                            yield return testCaseData;
+                        var testCaseData = new TestCaseData(policy, request, response, expectedException)
+                           .SetCategory("Official_10")
+                           .SetName(key + "_10");
+
+                        if (NotRealisedProfilesTest.Contains(key)) {
+                            testCaseData.Ignore("Not implemeneted");
                         }
+
+                        yield return testCaseData;
                     }
                 }
             }

@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlActionAttributeDesignator
@@ -40,8 +39,12 @@ namespace Abc.Xacml.Policy {
         /// Used only from XACML 1.0/1.1/2.0
         /// </remarks>
         public XacmlAttributeDesignator(Uri attributeId, Uri dataType) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
 
             this.attributeId = attributeId;
             this.dataType = dataType;
@@ -58,9 +61,17 @@ namespace Abc.Xacml.Policy {
         /// Used only from XACML 3.0
         /// </remarks>
         public XacmlAttributeDesignator(Uri category, Uri attributeId, Uri dataType, bool mustBePresent) {
-            Contract.Requires<ArgumentNullException>(category != null);
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
+            if (category == null) {
+                throw new ArgumentNullException(nameof(category));
+            }
+
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
+
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
 
             this.attributeId = attributeId;
             this.dataType = dataType;
@@ -77,7 +88,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeId = value;
             }
         }
@@ -91,7 +105,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.dataType = value;
             }
         }

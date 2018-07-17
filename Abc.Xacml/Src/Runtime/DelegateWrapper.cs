@@ -16,14 +16,12 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
-    using System.Xml;
 
     /// <summary>
     /// Wrapper class for delegate.
@@ -35,12 +33,68 @@ namespace Abc.Xacml.Runtime {
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateWrapper"/> class.
         /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="method">The method.</param>
+        public DelegateWrapper(Type type, MethodInfo method) {
+            if (type == null) {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (method == null) {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+#if NETSTANDARD1_6
+            this.del = method.CreateDelegate(type, method.DeclaringType);
+#else
+            this.del = Delegate.CreateDelegate(type, method);
+#endif
+            this.Initialize();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateWrapper"/> class.
+        /// </summary>
         /// <param name="del">The delegate.</param>
         public DelegateWrapper(Delegate del) {
-            Contract.Requires<ArgumentNullException>(del != null);
+            if (del == null) {
+                throw new ArgumentNullException(nameof(del));
+            }
 
             this.del = del;
+            this.Initialize();
+        }
 
+        /// <summary>
+        /// Dynamics the invoke.
+        /// </summary>
+        /// <param name="xpathContext">The xpath context.</param>
+        /// <param name="param">An array of objects that are the arguments to pass to the method represented by the current delegate.</param>
+        /// <returns>The object returned by the method represented by the delegate.</returns>
+        /// <exception cref="XacmlIndeterminateException">Error in function evaluation: </exception>
+        /// <exception cref="XacmlInvalidDataTypeException">
+        /// Wrong argument
+        /// or
+        /// Wrong data type
+        /// </exception>
+        public virtual object DynamicInvoke(XPathContext xpathContext, params object[] param) {
+            try {
+                // fix params keyword
+                // Delegate.DynamicInvoke ignores ParamArrayAttribute, should to convert to IEnumerable<T>
+                return this.del.Method.Invoke(null, this.prepareParams(param));
+            }
+            catch (TargetInvocationException ex) {
+                throw new XacmlIndeterminateException("Error in function evaluation: ", ex);
+            }
+            catch (ArgumentException ex) {
+                throw new XacmlInvalidDataTypeException("Wrong argument", ex);
+            }
+            catch (InvalidCastException ex) {
+                throw new XacmlInvalidDataTypeException("Wrong data type", ex);
+            }
+        }
+
+        private void Initialize() {
             // Parveido params vertības, par sarakstu, jo dinamicinvoke neatbalsta params
             ParameterInfo[] allParams = del.Method.GetParameters();
             ParameterInfo lastParam = allParams.LastOrDefault();
@@ -70,35 +124,6 @@ namespace Abc.Xacml.Runtime {
                         return generatedParams.ToArray();
                     };
                 }
-            }
-        }
-
-        /// <summary>
-        /// Dynamics the invoke.
-        /// </summary>
-        /// <param name="xpathContext">The xpath context.</param>
-        /// <param name="param">An array of objects that are the arguments to pass to the method represented by the current delegate.</param>
-        /// <returns>The object returned by the method represented by the delegate.</returns>
-        /// <exception cref="XacmlIndeterminateException">Error in function evaluation: </exception>
-        /// <exception cref="XacmlInvalidDataTypeException">
-        /// Wrong argument
-        /// or
-        /// Wrong data type
-        /// </exception>
-        public virtual object DynamicInvoke(XPathContext xpathContext, params object[] param) {
-            try {
-                // fix params keyword
-                // Delegate.DynamicInvoke ignores ParamArrayAttribute, should to convert to IEnumerable<T>
-                return this.del.Method.Invoke(null, this.prepareParams(param));
-            }
-            catch (TargetInvocationException ex) {
-                throw new XacmlIndeterminateException("Error in function evaluation: ", ex);
-            }
-            catch (ArgumentException ex) {
-                throw new XacmlInvalidDataTypeException("Wrong argument", ex);
-            }
-            catch (InvalidCastException ex) {
-                throw new XacmlInvalidDataTypeException("Wrong data type", ex);
             }
         }
     }

@@ -25,7 +25,9 @@ namespace Abc.Xacml {
     /// The XACML2.0 constants
     /// </summary>
     [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Constants is not commented.")]
+#if !NETSTANDARD
     [ExcludeFromCodeCoverage]
+#endif
     public sealed class Xacml20Constants {
         public sealed class Namespaces {
             /// <summary>

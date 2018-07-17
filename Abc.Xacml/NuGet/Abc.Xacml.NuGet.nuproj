@@ -4,10 +4,10 @@
     <ProjectGuid>3569f9f0-5e39-40ae-b37c-24855db501fa</ProjectGuid>
     <OutputPath>Bin\</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <NuBuildVersionSource>Manual</NuBuildVersionSource>
+    <NuBuildVersionSource>Library</NuBuildVersionSource>
     <NuBuildVersionFileName>True</NuBuildVersionFileName>
     <NuBuildAddBinariesToSubfolder>True</NuBuildAddBinariesToSubfolder>
-    <NuBuildIncludePdbs>False</NuBuildIncludePdbs>
+    <NuBuildIncludePdbs>True</NuBuildIncludePdbs>
     <SccProjectName>SAK</SccProjectName>
     <SccProvider>SAK</SccProvider>
     <SccAuxPath>SAK</SccAuxPath>

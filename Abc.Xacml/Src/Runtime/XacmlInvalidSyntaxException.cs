@@ -20,7 +20,9 @@
 namespace Abc.Xacml.Runtime {
     using System;
 
+#if !NETSTANDARD1_6
     [Serializable]
+#endif
     public class XacmlInvalidSyntaxException : XacmlException {
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlInvalidSyntaxException"/> class.

@@ -30,6 +30,10 @@ XacmlContextAttributeValue & XacmlContextResourceContent -> the same types
 
 CNG:	исправить EvaluationEngine
 
+V1.1
+- Removed CodeContracts
+- Removed dependency from Abc.Diagnostics library
+
 V1.0-rc
 NEW:	Реализованы MultipleRequests
 FIX:	Соответсвие Status с тестами

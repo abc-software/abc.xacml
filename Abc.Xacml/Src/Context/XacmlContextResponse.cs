@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextResponse</c> class encapsulates the authorization decision produced by the PDP.
@@ -36,7 +35,6 @@ namespace Abc.Xacml.Context {
         /// <param name="results">The result.</param>
         public XacmlContextResponse(XacmlContextResult result)
             : this(new XacmlContextResult[] { result }) {
-            Contract.Requires<ArgumentNullException>(result != null);
         }
 
         /// <summary>
@@ -44,7 +42,9 @@ namespace Abc.Xacml.Context {
         /// </summary>
         /// <param name="results">The results.</param>
         public XacmlContextResponse(IEnumerable<XacmlContextResult> results) {
-            Contract.Requires<ArgumentNullException>(results != null);
+            if (results == null) {
+                throw new ArgumentNullException(nameof(results));
+            }
 
             foreach (var item in results) {
                 this.results.Add(item);

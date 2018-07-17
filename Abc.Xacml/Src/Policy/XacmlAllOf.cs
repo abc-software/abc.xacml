@@ -16,17 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     /// <summary>
     /// The conjunctive sequence of &lt;Match&gt; elements
@@ -39,18 +33,20 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="matches">The matches.</param>
         public XacmlAllOf(IEnumerable<XacmlMatch> matches) {
-            Contract.Requires<ArgumentNullException>(matches != null);
+            if (matches == null) {
+                throw new ArgumentNullException(nameof(matches));
+            }
 
             foreach (var item in matches) {
                 if (item == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgument("Item is null!");
+                    throw new ArgumentException("Enumeration cannot contains null values.", nameof(matches));
                 }
 
                 this.matches.Add(item);
             }
 
             if (this.matches.Count == 0) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgument("SubjectMatch count is 0!");
+                throw new ArgumentException("Enumeration cannot be empty.", nameof(matches));
             }
         }
 

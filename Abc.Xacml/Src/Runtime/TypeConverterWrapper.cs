@@ -21,7 +21,6 @@ namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
 
@@ -46,12 +45,21 @@ namespace Abc.Xacml.Runtime {
         }
 
         public object ConvertFromString(string value, object source) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(value));
-            Contract.Requires<ArgumentNullException>(source != null);
+            if (value == null) {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if (source == null) {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (value.Length == 0) {
+                throw new ArgumentException("Value cannot be empty.", nameof(value));
+            }
 
             try {
                 object obj = this.typeConverter.ConvertFromInvariantString(value);
-                if (this.objectGenerator != null && source != null) {
+                if (this.objectGenerator != null) {
                     this.objectGenerator.Invoke(source, obj);
                 }
 
@@ -63,7 +71,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public bool IsForType(TypeConverter converter) {
-            Contract.Requires<ArgumentNullException>(converter != null);
+            if (converter == null) {
+                throw new ArgumentNullException(nameof(converter));
+            }
 
             Type currentConverterType = this.typeConverter.GetType();
             Type paramConverterType = converter.GetType();

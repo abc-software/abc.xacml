@@ -16,17 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Xml;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public partial class XacmlProtocolSerializer {
         /// <summary>
@@ -51,9 +45,23 @@ namespace Abc.Xacml {
             }
         }
 
+        protected static Exception ThrowHelperXml(XmlReader reader, string message) {
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            IXmlLineInfo info = reader as IXmlLineInfo;
+            return new XmlException(message, null, info != null ? info.LineNumber : 0, info != null ? info.LinePosition : 0);
+        }
+
         protected bool ReadChoice(XmlReader reader, IDictionary<Tuple<string, string>, Action> actions, bool isRequired = false) {
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(actions != null);
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (actions == null) {
+                throw new ArgumentNullException(nameof(actions));
+            }
 
             bool founded = false;
             foreach (KeyValuePair<Tuple<string, string>, Action> elementType in actions) {
@@ -65,7 +73,7 @@ namespace Abc.Xacml {
             }
 
             if (isRequired && !founded) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Unknown element " + reader.LocalName));
+                throw ThrowHelperXml(reader, "Unknown element " + reader.LocalName);
             }
             else {
                 return false;
@@ -73,8 +81,13 @@ namespace Abc.Xacml {
         }
 
         protected void ReadChoiceMultiply(XmlReader reader, IDictionary<Tuple<string, string>, Action> actions, bool isRequired = false) {
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(actions != null);
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (actions == null) {
+                throw new ArgumentNullException(nameof(actions));
+            }
 
             if (isRequired && (reader.NodeType == XmlNodeType.EndElement)) {
                 throw new XmlException(reader.Name + " is empty");
@@ -89,9 +102,17 @@ namespace Abc.Xacml {
         }
 
         protected T ReadRequired<T>(string elementName, string elementNamespace, ReadElement<T> readFunction, XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(elementName));
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(readFunction != null);
+            if (elementName == null) {
+                throw new ArgumentNullException(nameof(elementName));
+            }
+
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (readFunction == null) {
+                throw new ArgumentNullException(nameof(readFunction));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.ActionAttributeDesignator, this.version.NamespacePolicy)) {
                 T result = readFunction.Invoke(reader);
@@ -103,9 +124,17 @@ namespace Abc.Xacml {
         }
 
         protected T ReadOptional<T>(string elementName, string elementNamespace, ReadElement<T> readFunction, XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(elementName));
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(readFunction != null);
+            if (elementName == null) {
+                throw new ArgumentNullException(nameof(elementName));
+            }
+
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (readFunction == null) {
+                throw new ArgumentNullException(nameof(readFunction));
+            }
 
             if (!reader.IsStartElement(elementName, elementNamespace)) {
                 return default(T);
@@ -118,9 +147,17 @@ namespace Abc.Xacml {
 
         protected T1 ReadOptionalAbstract<T1, T2>(string elementName, string elementNamespace, ReadElement<T2> readFunction, XmlReader reader)
             where T1 : T2 {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(elementName));
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(readFunction != null);
+            if (elementName == null) {
+                throw new ArgumentNullException(nameof(elementName));
+            }
+
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (readFunction == null) {
+                throw new ArgumentNullException(nameof(readFunction));
+            }
 
             if (!reader.IsStartElement(elementName, elementNamespace)) {
                 return (T1)default(T2);
@@ -132,10 +169,21 @@ namespace Abc.Xacml {
         }
 
         protected void ReadList<T>(ICollection<T> list, string elementName, string elementNamespace, ReadElement<T> readFunction, XmlReader reader, bool isRequired = false) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(elementName));
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(readFunction != null);
-            Contract.Requires<ArgumentNullException>(list != null);
+            if (elementName == null) {
+                throw new ArgumentNullException(nameof(elementName));
+            }
+
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (readFunction == null) {
+                throw new ArgumentNullException(nameof(readFunction));
+            }
+
+            if (list == null) {
+                throw new ArgumentNullException(nameof(list));
+            }
 
             if (isRequired && !reader.IsStartElement(elementName, elementNamespace)) {
                 throw new XmlException("A least 1 " + elementName + " is required");
@@ -149,10 +197,21 @@ namespace Abc.Xacml {
 
         protected void ReadListAbstract<T1, T2>(ICollection<T1> list, string elementName, string elementNamespace, ReadElement<T2> readFunction, XmlReader reader, bool isRequired = false)
             where T1 : T2 {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(elementName));
-            Contract.Requires<ArgumentNullException>(reader != null);
-            Contract.Requires<ArgumentNullException>(readFunction != null);
-            Contract.Requires<ArgumentNullException>(list != null);
+            if (elementName == null) {
+                throw new ArgumentNullException(nameof(elementName));
+            }
+
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (readFunction == null) {
+                throw new ArgumentNullException(nameof(readFunction));
+            }
+
+            if (list == null) {
+                throw new ArgumentNullException(nameof(list));
+            }
 
             if (isRequired && !reader.IsStartElement(elementName, elementNamespace)) {
                 throw new XmlException("A least 1 " + elementName + " is required");
@@ -165,8 +224,13 @@ namespace Abc.Xacml {
         }
 
         protected T ReadAttribute<T>(XmlReader reader, string attribute, string namespaceURI = null, bool isRequered = true) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(attribute));
-            Contract.Requires<ArgumentNullException>(reader != null);
+            if (attribute == null) {
+                throw new ArgumentNullException(nameof(attribute));
+            }
+
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             string attributeResult = namespaceURI != null ? reader.GetAttribute(attribute, namespaceURI) : reader.GetAttribute(attribute);
             if (isRequered && string.IsNullOrEmpty(attributeResult)) {
@@ -197,6 +261,6 @@ namespace Abc.Xacml {
             return (T)val;
         }
 
-        protected delegate T ReadElement<T>(XmlReader reader);
+        protected delegate T ReadElement<out T>(XmlReader reader);
     }
 }

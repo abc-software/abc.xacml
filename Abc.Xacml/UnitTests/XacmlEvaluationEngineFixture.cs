@@ -1,4 +1,4 @@
-﻿namespace Abc.IdentityModel.Xacml.UnitTests {
+﻿namespace Abc.Xacml.UnitTests {
     using System;
     using System.Xml;
     using System.IO;
@@ -41,24 +41,31 @@
 
         [Test]
         [TestCaseSource(typeof(Xacml11TestsCases), "TestCases")]
-        public void ConformanceTests_11(XmlDocument policy, XmlDocument request, XmlDocument response) {
+        public void ConformanceTests_11(XmlDocument policy, XmlDocument request, XmlDocument response, Type expectedException) {
             var serialize = new Xacml11ProtocolSerializer();
             XacmlContextRequest requestData;
             XacmlContextResponse responseData;
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(request.OuterXml))) {
-                requestData = serialize.ReadContextRequest(reader);
+            Action action = () => {
+                using (XmlReader reader = XmlReader.Create(new StringReader(request.OuterXml))) {
+                    requestData = serialize.ReadContextRequest(reader);
+                }
+
+                using (XmlReader reader = XmlReader.Create(new StringReader(response.OuterXml))) {
+                    responseData = serialize.ReadContextResponse(reader);
+                }
+
+                EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
+                XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
+                XacmlResponseAssert(responseData, evaluatedResponse);
+            };
+
+            if (expectedException != null) {
+                Assert.That(() => action(), Throws.TypeOf(expectedException));
             }
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(response.OuterXml))) {
-                responseData = serialize.ReadContextResponse(reader);
+            else {
+                action();
             }
-
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
-
-            XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
-
-            XacmlResponseAssert(responseData, evaluatedResponse);
         }
 
         [Test]
@@ -281,23 +288,31 @@
 
         [Test]
         [TestCaseSource(typeof(Xacml20TestsCases), "TestCases")]
-        public void ConfirmanceTests_20(XmlDocument policy, XmlDocument request, XmlDocument response) {
+        public void ConfirmanceTests_20(XmlDocument policy, XmlDocument request, XmlDocument response, Type expectedException) {
             var serialize = new Xacml20ProtocolSerializer();
             XacmlContextRequest requestData;
             XacmlContextResponse responseData;
 
-            using (XmlReader reader = XmlReader.Create(new StringReader(request.OuterXml))) {
-                requestData = serialize.ReadContextRequest(reader);
+            Action action = () => {
+                using (XmlReader reader = XmlReader.Create(new StringReader(request.OuterXml))) {
+                    requestData = serialize.ReadContextRequest(reader);
+                }
+
+                using (XmlReader reader = XmlReader.Create(new StringReader(response.OuterXml))) {
+                    responseData = serialize.ReadContextResponse(reader);
+                }
+
+                EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
+                XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
+                XacmlResponseAssert(responseData, evaluatedResponse);
+            };
+
+            if (expectedException != null) {
+                Assert.That(() => action(), Throws.TypeOf(expectedException));
             }
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(response.OuterXml))) {
-                responseData = serialize.ReadContextResponse(reader);
+            else {
+                action();
             }
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
-
-            XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
-
-            XacmlResponseAssert(responseData, evaluatedResponse);
         }
 
         [Test]
@@ -490,24 +505,31 @@
 
         [Test]
         [TestCaseSource(typeof(Xacml30TestsCases), "TestCases")]
-        public void ConformanceTest_30(XmlDocument policy, XmlDocument request, XmlDocument response) {
+        public void ConformanceTest_30(XmlDocument policy, XmlDocument request, XmlDocument response, Type expectedException) {
             var serialize = new Xacml30ProtocolSerializer();
             XacmlContextRequest requestData;
             XacmlContextResponse responseData;
 
-            using (XmlReader reader = new XmlNodeReader(request.DocumentElement)) {
-                requestData = serialize.ReadContextRequest(reader);
+            Action action = () => {
+                using (XmlReader reader = new XmlNodeReader(request.DocumentElement)) {
+                    requestData = serialize.ReadContextRequest(reader);
+                }
+
+                using (XmlReader reader = new XmlNodeReader(response.DocumentElement)) {
+                    responseData = serialize.ReadContextResponse(reader);
+                }
+
+                EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
+                XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
+                XacmlResponseAssert(responseData, evaluatedResponse);
+            };
+
+            if (expectedException != null) {
+                Assert.That(() => action(), Throws.TypeOf(expectedException));
             }
-
-            using (XmlReader reader = new XmlNodeReader(response.DocumentElement)) {
-                responseData = serialize.ReadContextResponse(reader);
+            else {
+                action();
             }
-
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
-
-            XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
-
-            XacmlResponseAssert(responseData, evaluatedResponse);
         }
 
         [Test]
@@ -633,11 +655,11 @@
                 policy2Data = serialize.ReadPolicy(reader);
             }
 
-            var policySet = new XacmlPolicySet(Xacml10Constants.PolicyCombiningAlgorithms.OnlyOneApplicable, new XacmlTarget()); // TODO: PolicyCombiningAlgorithms
+            var policySet = new XacmlPolicySet(Xacml30Constants.PolicyCombiningAlgorithms.PermitOverrides, new XacmlTarget()); // TODO: PolicyCombiningAlgorithms
             policySet.Policies.Add(policy1Data);
             policySet.Policies.Add(policy2Data);
 
-            EvaluationEngine engine = new EvaluationEngine(policySet);
+            EvaluationEngine engine = new EvaluationEngine30(policySet);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 
@@ -685,7 +707,7 @@
             policySet.Policies.Add(policy1Data);
             policySet.Policies.Add(policy2Data);
 
-            EvaluationEngine engine = new EvaluationEngine(policySet);
+            EvaluationEngine engine = new EvaluationEngine30(policySet);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 

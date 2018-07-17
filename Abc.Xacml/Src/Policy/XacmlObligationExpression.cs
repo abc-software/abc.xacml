@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     public class XacmlObligationExpression {
         private Uri obligationId;
@@ -29,7 +28,9 @@ namespace Abc.Xacml.Policy {
         private readonly ICollection<XacmlAttributeAssignmentExpression> attributeAssignmentExpressions = new Collection<XacmlAttributeAssignmentExpression>();
 
         public XacmlObligationExpression(Uri obligationId, XacmlEffectType effectType) {
-            Contract.Requires<ArgumentNullException>(obligationId != null);
+            if (obligationId == null) {
+                throw new ArgumentNullException(nameof(obligationId));
+            }
 
             this.obligationId = obligationId;
             this.fulfillOn = effectType;
@@ -41,7 +42,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.obligationId = value;
             }
         }

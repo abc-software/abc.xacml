@@ -34,7 +34,7 @@ namespace Abc.Xacml.DataTypes {
         }
 
         public bool Equals(XPathExpressionType other) {
-            return String.Compare(this.value, other.value, true, CultureInfo.InvariantCulture) == 0;
+            return string.Equals(this.value, other.value, StringComparison.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object obj) {

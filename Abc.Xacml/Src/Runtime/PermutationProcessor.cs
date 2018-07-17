@@ -21,9 +21,10 @@ namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Linq;
-    using System.Text;
+#if NETSTANDARD
+    using System.Reflection;
+#endif
 
     /// <summary>
     /// Class for all permutation generation
@@ -48,7 +49,12 @@ namespace Abc.Xacml.Runtime {
             int resultIndex = reverseList.Count() - 1;
 
             foreach (object val in values.Cast<object>().Reverse()) {
-                if (val.GetType().IsArray || (val.GetType().IsGenericType && val.GetType().ReflectedType == typeof(Enumerable))) {
+#if NETSTANDARD
+                var type = val.GetType().GetTypeInfo();
+#else
+                var type = val.GetType();
+#endif
+                if (type.IsArray || (type.IsGenericType && type.ReflectedType == typeof(Enumerable))) {
                     firstNode = new PermutationProcessorNode((IEnumerable)val, resultIndex, firstNode, generatedParams);
                 }
                 else {
@@ -73,9 +79,17 @@ namespace Abc.Xacml.Runtime {
             private readonly IPermutationNode next;
 
             internal PermutationProcessorOneElementNode(object value, int resultIndex, IPermutationNode next, object[] generatedParams) {
-                Contract.Requires(resultIndex >= 0);
-                Contract.Requires(next != null);
-                Contract.Requires(generatedParams != null);
+                if (next == null) {
+                    throw new ArgumentNullException(nameof(next));
+                }
+
+                if (generatedParams == null) {
+                    throw new ArgumentNullException(nameof(generatedParams));
+                }
+
+                if (resultIndex < 0) {
+                    throw new ArgumentOutOfRangeException(nameof(resultIndex));
+                }
 
                 this.next = next;
                 generatedParams[resultIndex] = value;
@@ -98,10 +112,21 @@ namespace Abc.Xacml.Runtime {
             private readonly object[] generatedParams;
 
             internal PermutationProcessorNode(IEnumerable values, int resultIndex, IPermutationNode next, object[] generatedParams) {
-                Contract.Requires(values != null);
-                Contract.Requires(resultIndex >= 0);
-                Contract.Requires(next != null);
-                Contract.Requires(generatedParams != null);
+                if (values == null) {
+                    throw new ArgumentNullException(nameof(values));
+                }
+
+                if (next == null) {
+                    throw new ArgumentNullException(nameof(next));
+                }
+
+                if (generatedParams == null) {
+                    throw new ArgumentNullException(nameof(generatedParams));
+                }
+
+                if (resultIndex < 0) {
+                    throw new ArgumentOutOfRangeException(nameof(resultIndex));
+                }
 
                 this.values = values;
                 this.next = next;

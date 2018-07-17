@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlAdvice
@@ -36,12 +35,17 @@ namespace Abc.Xacml.Policy {
         /// <param name="adviceId">The advice identifier.</param>
         /// <param name="attributeAssigments">The attribute assigments.</param>
         public XacmlAdvice(Uri adviceId, IEnumerable<XacmlAttributeAssignment> attributeAssigments) {
-            Contract.Requires<ArgumentNullException>(adviceId != null);
-            Contract.Requires<ArgumentException>(Contract.ForAll<XacmlAttributeAssignment>(attributeAssigments, x => x != null));
+            if (adviceId == null) {
+                throw new ArgumentNullException(nameof(adviceId));
+            }
 
             this.adviceId = adviceId;
 
             foreach (var item in attributeAssigments) {
+                if (item == null) {
+                    throw new ArgumentException("Enumeration cannot contains null values.", nameof(attributeAssigments));
+                }
+
                 this.attributeAssignment.Add(item);
             }
         }
@@ -70,7 +74,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.adviceId = value;
             }
         }

@@ -19,7 +19,6 @@
 
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlAttributeValue</c> class contain a literal attribute value.
@@ -34,7 +33,10 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="dataType">Type of the data.</param>
         public XacmlAttributeValue(Uri dataType) {
-            Contract.Requires<ArgumentNullException>(dataType != null);
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
+
             this.dataType = dataType;
         }
 
@@ -44,8 +46,13 @@ namespace Abc.Xacml.Policy {
         /// <param name="dataType">Type of the data.</param>
         /// <param name="value">The value.</param>
         public XacmlAttributeValue(Uri dataType, string value) {
-            Contract.Requires<ArgumentNullException>(dataType != null);
-            Contract.Requires<ArgumentNullException>(value != null);
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
+
+            if (value == null) {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             this.dataType = dataType;
             this.value = value;
@@ -76,7 +83,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.dataType = value;
             }
         }

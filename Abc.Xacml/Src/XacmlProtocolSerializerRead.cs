@@ -16,18 +16,12 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Xml;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public partial class XacmlProtocolSerializer {
         /// <summary>
@@ -37,10 +31,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.InvalidOperationException"></exception>
         public virtual XacmlPolicySet ReadPolicySet(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!this.CanRead(reader, XacmlConstants.ElementNames.PolicySet)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             // Collect namespaces
@@ -67,9 +63,9 @@ namespace Abc.Xacml {
             string xpathVersion = null;
             if (reader.IsStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy)) {
                 reader.ReadStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy);
-                
+
                 if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
+                    throw ThrowHelperXml(reader, "XPathVerison NotStartElement");
                 }
 
                 xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
@@ -82,7 +78,7 @@ namespace Abc.Xacml {
                 target = ReadTarget(reader);
             }
 
-            XacmlPolicySet policySet = new XacmlPolicySet(gaPolicySetId, gaPolicyCombiningAlgId, target) { 
+            XacmlPolicySet policySet = new XacmlPolicySet(gaPolicySetId, gaPolicyCombiningAlgId, target) {
                 Description = description,
                 XPathVersion = xpathVersion != null ? new Uri(xpathVersion) : null
             };
@@ -120,7 +116,9 @@ namespace Abc.Xacml {
         ///   <c>true</c> if this instance can read the specified reader; otherwise, <c>false</c>.
         /// </returns>
         protected virtual bool CanRead(XmlReader reader, string localName) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (localName == "*") {
                 return CanReadFirst(reader, reader.LocalName);
@@ -139,7 +137,9 @@ namespace Abc.Xacml {
         ///   <c>true</c> if this instance [can read first] the specified reader; otherwise, <c>false</c>.
         /// </returns>
         protected virtual bool CanReadFirst(XmlReader reader, string localName) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (reader.IsStartElement(localName, this.version.NamespacePolicy)) {
                 // reader.ReadStartElement();
@@ -161,7 +161,9 @@ namespace Abc.Xacml {
         /// RuleCombiningAlgId IsNullOrEmpty
         /// </exception>
         public virtual XacmlPolicy ReadPolicy(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             IDictionary<string, string> nsMgr = new Dictionary<string, string>();
 
@@ -173,19 +175,19 @@ namespace Abc.Xacml {
             }
 
             if (!this.CanRead(reader, XacmlConstants.ElementNames.Policy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             var gaPolicyId = reader.GetAttribute("PolicyId");
 
             if (string.IsNullOrEmpty(gaPolicyId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("PolicyId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "PolicyId IsNullOrEmpty");
             }
 
             var gaRuleCombiningAlgId = reader.GetAttribute("RuleCombiningAlgId");
 
             if (string.IsNullOrEmpty(gaRuleCombiningAlgId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleCombiningAlgId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "RuleCombiningAlgId IsNullOrEmpty");
             }
             reader.ReadStartElement(XacmlConstants.ElementNames.Policy, this.version.NamespacePolicy);
 
@@ -200,7 +202,7 @@ namespace Abc.Xacml {
                 reader.ReadStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy);
 
                 if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
+                    throw ThrowHelperXml(reader, "XPathVerison NotStartElement");
                 }
 
                 xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
@@ -213,9 +215,9 @@ namespace Abc.Xacml {
                 target = ReadTarget(reader);
             }
 
-            XacmlPolicy policy = new XacmlPolicy(new Uri(gaPolicyId, UriKind.RelativeOrAbsolute), new Uri(gaRuleCombiningAlgId, UriKind.RelativeOrAbsolute), target) { 
-                Description = description, 
-                XPathVersion = xpathVersion != null ? new Uri(xpathVersion) : null 
+            XacmlPolicy policy = new XacmlPolicy(new Uri(gaPolicyId, UriKind.RelativeOrAbsolute), new Uri(gaRuleCombiningAlgId, UriKind.RelativeOrAbsolute), target) {
+                Description = description,
+                XPathVersion = xpathVersion != null ? new Uri(xpathVersion) : null
             };
 
             policy.Namespaces = nsMgr;
@@ -255,22 +257,24 @@ namespace Abc.Xacml {
         /// </exception>
         /// <exception cref="XacmlSerializationException">Wrong XacmlEffectType value</exception>
         protected virtual XacmlRule ReadRule(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Rule NotStartElement"));
+                throw ThrowHelperXml(reader, "Rule NotStartElement");
             }
 
             var gaRuleId = reader.GetAttribute("RuleId");
 
             if (string.IsNullOrEmpty(gaRuleId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "RuleId IsNullOrEmpty");
             }
 
             var gaEffect = reader.GetAttribute("Effect");
 
             if (string.IsNullOrEmpty(gaEffect)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Effect IsNullEmpty"));
+                throw ThrowHelperXml(reader, "Effect IsNullEmpty");
             }
 
             XacmlEffectType effectType = XacmlEffectType.Deny;
@@ -281,7 +285,7 @@ namespace Abc.Xacml {
                 effectType = XacmlEffectType.Permit;
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
+                throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy);
@@ -320,10 +324,12 @@ namespace Abc.Xacml {
         /// Actions NotStartElement
         /// </exception>
         protected virtual XacmlTarget ReadTarget(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Target NotStartElement"));
+                throw ThrowHelperXml(reader, "Target NotStartElement");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy);
@@ -336,7 +342,7 @@ namespace Abc.Xacml {
             {
                 { XacmlConstants.ElementNames.Subject, () => { this.ReadList(subjects, XacmlConstants.ElementNames.Subject, this.version.NamespacePolicy, this.ReadSubject, reader, true); } },
                 { XacmlConstants.ElementNames.Resource, () => { this.ReadList(resources, XacmlConstants.ElementNames.Resource, this.version.NamespacePolicy, this.ReadResource, reader, true); } },
-                { XacmlConstants.ElementNames.Action, () => { this.ReadList(actions, XacmlConstants.ElementNames.Action, this.version.NamespacePolicy, this.ReadAction, reader, true); } }              
+                { XacmlConstants.ElementNames.Action, () => { this.ReadList(actions, XacmlConstants.ElementNames.Action, this.version.NamespacePolicy, this.ReadAction, reader, true); } }
             };
 
             Action<string, string, string> read = (type, baseType, anyType) => {
@@ -353,7 +359,7 @@ namespace Abc.Xacml {
                     reader.ReadEndElement();
                 }
                 else {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} NotStartElement", baseType)));
+                    throw ThrowHelperXml(reader, string.Format("{0} NotStartElement", baseType));
                 }
             };
 
@@ -378,10 +384,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Condition NotStartElement</exception>
         protected virtual XacmlExpression ReadCondition(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Condition NotStartElement"));
+                throw ThrowHelperXml(reader, "Condition NotStartElement");
             }
 
             Uri functionId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.FunctionId);
@@ -395,7 +403,7 @@ namespace Abc.Xacml {
                 { new Tuple<string, string>(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadApply(reader)) },
                 { new Tuple<string, string>(XacmlConstants.ElementNames.Function, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadFunction(reader)) },
                 { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeValue, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeValue(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.SubjectAttributeDesignator, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },                
+                { new Tuple<string, string>(XacmlConstants.ElementNames.SubjectAttributeDesignator, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },
                 { new Tuple<string, string>(XacmlConstants.ElementNames.ResourceAttributeDesignator, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },
                 { new Tuple<string, string>(XacmlConstants.ElementNames.ActionAttributeDesignator, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },
                 { new Tuple<string, string>(XacmlConstants.ElementNames.EnvironmentAttributeDesignator, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },
@@ -416,10 +424,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Apply NotStartElement</exception>
         protected virtual XacmlApply ReadApply(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Apply NotStartElement"));
+                throw ThrowHelperXml(reader, "Apply NotStartElement");
             }
 
             Uri functionId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.FunctionId);
@@ -454,10 +464,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Function NotStartElement</exception>
         protected virtual XacmlFunction ReadFunction(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Function, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Function NotStartElement"));
+                throw ThrowHelperXml(reader, "Function NotStartElement");
             }
 
             Uri functionId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.FunctionId);
@@ -474,10 +486,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Subject NotStartElement</exception>
         protected virtual XacmlSubject ReadSubject(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Subject, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Subject NotStartElement"));
+                throw ThrowHelperXml(reader, "Subject NotStartElement");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Subject, this.version.NamespacePolicy);
@@ -496,10 +510,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Resource NotStartElement</exception>
         protected virtual XacmlResource ReadResource(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Resource, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Resource NotStartElement"));
+                throw ThrowHelperXml(reader, "Resource NotStartElement");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Resource, this.version.NamespacePolicy);
@@ -518,10 +534,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Action NotStartElement</exception>
         protected virtual XacmlAction ReadAction(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Action, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Action NotStartElement"));
+                throw ThrowHelperXml(reader, "Action NotStartElement");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Action, this.version.NamespacePolicy);
@@ -542,18 +560,20 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlMatch ReadMatch(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             var gaMatchId = reader.GetAttribute("MatchId");
 
             if (string.IsNullOrEmpty(gaMatchId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("MatchId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "MatchId IsNullOrEmpty");
             }
 
             Func<string, string, ReadElement<XacmlAttributeDesignator>, XacmlMatch> read = (matchType, designatorType, readFuncAttributeDesignator) => {
                 XacmlMatch ret = null;
                 if (!reader.IsStartElement(matchType, this.version.NamespacePolicy)) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} NotStartElement", matchType)));
+                    throw ThrowHelperXml(reader, string.Format("{0} NotStartElement", matchType));
                 }
                 reader.ReadStartElement(matchType, this.version.NamespacePolicy);
 
@@ -605,7 +625,7 @@ namespace Abc.Xacml {
                 return read(reader.LocalName, XacmlConstants.ElementNames.ResourceAttributeDesignator, ReadAttributeDesignator);
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("Incorrect start element. redaer.LocalName={0} ReadMatch", reader.LocalName)));
+                throw ThrowHelperXml(reader, string.Format("Incorrect start element. redaer.LocalName={0} ReadMatch", reader.LocalName));
             }
         }
 
@@ -620,17 +640,19 @@ namespace Abc.Xacml {
         /// DataType IsNullOrEmpty
         /// </exception>
         protected virtual XacmlAttributeValue ReadAttributeValue(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeValue, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("AttributeValue NotStartElement"));
+                throw ThrowHelperXml(reader, "AttributeValue NotStartElement");
             }
 
             IDictionary<string, string> attributes = new Dictionary<string, string>();
             var dataType = reader.GetAttribute(XacmlConstants.AttributeNames.DataType);
 
             if (string.IsNullOrEmpty(dataType)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("DataType IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "DataType IsNullOrEmpty");
             }
 
             while (reader.MoveToNextAttribute()) {
@@ -665,11 +687,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlAttributeDesignator ReadAttributeDesignator(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             Func<string, XacmlAttributeDesignator> readDesignator = (elementName) => {
                 if (!reader.IsStartElement(elementName, this.version.NamespacePolicy)) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("{0} NotStartElement", elementName)));
+                    throw ThrowHelperXml(reader, string.Format("{0} NotStartElement", elementName));
                 }
 
                 // @AttributeId
@@ -726,7 +750,7 @@ namespace Abc.Xacml {
                 return readDesignator(reader.LocalName);
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException(string.Format("Incorrect start element. redaer.LocalName={0} ReadMatch", reader.LocalName)));
+                throw ThrowHelperXml(reader, string.Format("Incorrect start element. redaer.LocalName={0} ReadMatch", reader.LocalName));
             }
         }
 
@@ -741,15 +765,17 @@ namespace Abc.Xacml {
         /// RequestContextPath IsNullOrEmpty
         /// </exception>
         protected virtual XacmlAttributeSelector ReadAttributeSelector(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("AttributeSelector NotStartElement"));
+                throw ThrowHelperXml(reader, "AttributeSelector NotStartElement");
             }
 
             // @RequestContextPath
             var path = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.RequestContextPath);
-            
+
             // @DataType
             var dataType = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.DataType);
 
@@ -771,10 +797,12 @@ namespace Abc.Xacml {
         /// <exception cref="System.Xml.XmlException">Obligation NotStartElement</exception>
         /// <exception cref="XacmlSerializationException">Wrong XacmlEffectType value</exception>
         protected virtual XacmlObligation ReadObligation(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Obligation NotStartElement"));
+                throw ThrowHelperXml(reader, "Obligation NotStartElement");
             }
 
             Uri gaObligationId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ObligationId);
@@ -788,7 +816,7 @@ namespace Abc.Xacml {
                 effectType = XacmlEffectType.Permit;
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
+                throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy);
@@ -808,10 +836,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">AttributeAssignment NotStartElement</exception>
         protected virtual XacmlAttributeAssignment ReadAttributeAssigment(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("AttributeAssignment NotStartElement"));
+                throw ThrowHelperXml(reader, "AttributeAssignment NotStartElement");
             }
 
             Uri gaDataType = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.DataType);
@@ -832,10 +862,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">PolicySetIdReference NotStartElement</exception>
         protected virtual Uri ReadPolicySetIdReference(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("PolicySetIdReference NotStartElement"));
+                throw ThrowHelperXml(reader, "PolicySetIdReference NotStartElement");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespacePolicy);
@@ -852,10 +884,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">PolicyIdReference NotStartElement</exception>
         protected virtual Uri ReadPolicyIdReference(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("PolicyIdReference NotStartElement"));
+                throw ThrowHelperXml(reader, "PolicyIdReference NotStartElement");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespacePolicy);

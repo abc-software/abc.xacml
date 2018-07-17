@@ -72,7 +72,7 @@ namespace Abc.Xacml.DataTypes {
             foreach (var rdn in this.x500rdns) {
                 string value;
                 if (other.x500rdns.TryGetValue(rdn.Key, out value)) {
-                    if (!string.Equals(rdn.Value, value, StringComparison.InvariantCultureIgnoreCase)) {
+                    if (!string.Equals(rdn.Value, value, StringComparison.OrdinalIgnoreCase)) {
                         return false;
                     }
                 }

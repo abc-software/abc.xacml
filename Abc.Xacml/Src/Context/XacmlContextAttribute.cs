@@ -16,11 +16,10 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextAttribute</c> class contains an attribute value and attribute meta-data.
@@ -39,9 +38,17 @@ namespace Abc.Xacml.Context {
         /// <param name="attributeValue">The attribute value.</param>
         /// <remarks>Used only for XACML1.0/1.1</remarks>
         public XacmlContextAttribute(Uri attributeId, Uri dataType, XacmlContextAttributeValue attributeValue) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
-            Contract.Requires<ArgumentNullException>(attributeValue != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
+
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
+
+            if (attributeValue == null) {
+                throw new ArgumentNullException(nameof(attributeValue));
+            }
 
             this.attributeId = attributeId;
             this.dataType = dataType;
@@ -56,9 +63,17 @@ namespace Abc.Xacml.Context {
         /// <param name="attributeValues">The attribute values.</param>
         /// <remarks>Used only for XACML2.0/3.0</remarks>
         public XacmlContextAttribute(Uri attributeId, Uri dataType, ICollection<XacmlContextAttributeValue> attributeValues) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
-            Contract.Requires<ArgumentNullException>(attributeValues != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
+
+            if (dataType == null) {
+                throw new ArgumentNullException(nameof(dataType));
+            }
+
+            if (attributeValues == null) {
+                throw new ArgumentNullException(nameof(attributeValues));
+            }
 
             this.attributeId = attributeId;
             this.dataType = dataType;
@@ -85,7 +100,10 @@ namespace Abc.Xacml.Context {
             }
 
             private set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeId = value;
             }
         }
@@ -99,7 +117,10 @@ namespace Abc.Xacml.Context {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.dataType = value;
             }
         }

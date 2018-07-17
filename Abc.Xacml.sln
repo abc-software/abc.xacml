@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo.UnitTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.45", "Abc.Xacml\Src\Abc.Xacml.45.csproj", "{B0C47D9B-91BC-4F6A-BA39-955813CB126B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.16", "Abc.Xacml\Src\Abc.Xacml.16.csproj", "{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

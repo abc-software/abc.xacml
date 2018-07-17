@@ -16,12 +16,10 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
-namespace Abc.Xacml.Policy
-{
+
+namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Class XacmlEnvironment
@@ -33,7 +31,6 @@ namespace Abc.Xacml.Policy
         /// <param name="matches">The matches.</param>
         public XacmlEnvironment(IEnumerable<XacmlEnvironmentMatch> matches)
             : base(matches) {
-            Contract.Requires<ArgumentNullException>(matches != null);
         }
     }
 }

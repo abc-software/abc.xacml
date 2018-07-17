@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// class XacmlAttributeAssignment
@@ -29,17 +28,22 @@ namespace Abc.Xacml.Policy {
 
         public XacmlAttributeAssignment(Uri attributeId, Uri dataType)
             : base(dataType) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
 
             this.attributeId = attributeId;
         }
 
         public XacmlAttributeAssignment(Uri attributeId, Uri dataType, string value)
             : base(dataType) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
-            Contract.Requires<ArgumentNullException>(value != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
+
+            if (value == null) {
+                throw new ArgumentNullException(nameof(value));
+            }
 
             this.attributeId = attributeId;
             base.Value = value;
@@ -58,7 +62,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeId = value;
             }
         }
@@ -72,7 +79,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 base.Value = value;
             }
         }

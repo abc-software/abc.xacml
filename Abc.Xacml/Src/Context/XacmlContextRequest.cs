@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextRequest</c> enumeration contains the request of policy evaluation.
@@ -42,9 +41,6 @@ namespace Abc.Xacml.Context {
         /// <param name="subjects">The subjects.</param>
         public XacmlContextRequest(XacmlContextResource resource, XacmlContextAction action, XacmlContextSubject subject)
             : this(resource, action, new List<XacmlContextSubject> { subject }) {
-            Contract.Requires<ArgumentNullException>(resource != null);
-            Contract.Requires<ArgumentNullException>(action != null);
-            Contract.Requires<ArgumentNullException>(subject != null);
         }
 
         /// <summary>
@@ -54,13 +50,21 @@ namespace Abc.Xacml.Context {
         /// <param name="action">The action.</param>
         /// <param name="subjects">The subjects.</param>
         public XacmlContextRequest(XacmlContextResource resource, XacmlContextAction action, IEnumerable<XacmlContextSubject> subjects) {
-            Contract.Requires<ArgumentNullException>(resource != null);
-            Contract.Requires<ArgumentNullException>(action != null);
-            Contract.Requires<ArgumentNullException>(subjects != null);
+            if (resource == null) {
+                throw new ArgumentNullException(nameof(resource));
+            }
+
+            if (action == null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (subjects == null) {
+                throw new ArgumentNullException(nameof(subjects));
+            }
 
             this.resources.Add(resource);
             this.action = action;
-           
+
             foreach (var item in subjects) {
                 this.subjects.Add(item);
             }
@@ -75,10 +79,6 @@ namespace Abc.Xacml.Context {
         /// <param name="environment">The environment.</param>
         public XacmlContextRequest(XacmlContextResource resource, XacmlContextAction action, XacmlContextSubject subject, XacmlContextEnvironment environment) :
             this(new List<XacmlContextResource> { resource }, action, new List<XacmlContextSubject> { subject }, environment) {
-            Contract.Requires<ArgumentNullException>(resource != null);
-            Contract.Requires<ArgumentNullException>(action != null);
-            Contract.Requires<ArgumentNullException>(subject != null);
-            Contract.Requires<ArgumentNullException>(environment != null);
         }
 
         /// <summary>
@@ -89,10 +89,21 @@ namespace Abc.Xacml.Context {
         /// <param name="subjects">The subjects.</param>
         /// <param name="environment">The environment.</param>
         public XacmlContextRequest(IEnumerable<XacmlContextResource> resources, XacmlContextAction action, IEnumerable<XacmlContextSubject> subjects, XacmlContextEnvironment environment) {
-            Contract.Requires<ArgumentNullException>(resources != null);
-            Contract.Requires<ArgumentNullException>(action != null);
-            Contract.Requires<ArgumentNullException>(subjects != null);
-            Contract.Requires<ArgumentNullException>(environment != null);
+            if (resources == null) {
+                throw new ArgumentNullException(nameof(resources));
+            }
+
+            if (action == null) {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (subjects == null) {
+                throw new ArgumentNullException(nameof(subjects));
+            }
+
+            if (environment == null) {
+                throw new ArgumentNullException(nameof(environment));
+            }
 
             foreach (var item in resources) {
                 this.resources.Add(item);
@@ -114,7 +125,9 @@ namespace Abc.Xacml.Context {
         /// <param name="combinedDecision">if set to <c>true</c> [combined decision].</param>
         /// <param name="attributes">The attributes.</param>
         public XacmlContextRequest(bool returnPolicyIdList, bool combinedDecision, IEnumerable<XacmlContextAttributes> attributes) {
-            Contract.Requires<ArgumentNullException>(attributes != null);
+            if (attributes == null) {
+                throw new ArgumentNullException(nameof(attributes));
+            }
 
             this.ReturnPolicyIdList = returnPolicyIdList;
             this.CombinedDecision = combinedDecision;
@@ -143,7 +156,7 @@ namespace Abc.Xacml.Context {
         /// <value>
         /// The resource or resources for which access is being requested.
         /// </value>
-        public ICollection<XacmlContextResource> Resources { 
+        public ICollection<XacmlContextResource> Resources {
             get {
                 return this.resources;
             }
@@ -161,7 +174,10 @@ namespace Abc.Xacml.Context {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.action = value;
             }
         }

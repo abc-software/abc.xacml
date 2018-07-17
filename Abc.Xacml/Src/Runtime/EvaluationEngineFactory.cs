@@ -16,25 +16,20 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Runtime {
     using System;
-    using System.Diagnostics.Contracts;
-    using System.IO;
     using System.Xml;
     using System.Xml.Linq;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     /// <summary>
     /// XACML evaluation engine factory.
     /// </summary>
     public static class EvaluationEngineFactory {
         public static EvaluationEngine Create(XmlReader reader, IXacmlPolicyRepository ch) {
-            Contract.Requires<ArgumentNullException>(reader != null);
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             EvaluationEngine engine;
 
@@ -63,7 +58,7 @@ namespace Abc.Xacml.Runtime {
                 engine = new EvaluationEngine30(serializer.ReadPolicySet(reader));
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Unknown XML"));
+                throw new XmlException("Unknown XML");
             }
 
             engine.ch = ch;
@@ -71,7 +66,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public static EvaluationEngine Create(XmlDocument policyDoc, IXacmlPolicyRepository ch) {
-            Contract.Requires<ArgumentNullException>(policyDoc != null);
+            if (policyDoc == null) {
+                throw new ArgumentNullException(nameof(policyDoc));
+            }
 
             using (XmlReader reader = new XmlNodeReader(policyDoc.DocumentElement)) {
                 return EvaluationEngineFactory.Create(reader, ch);
@@ -79,12 +76,13 @@ namespace Abc.Xacml.Runtime {
         }
 
         public static EvaluationEngine Create(XDocument policyDoc, IXacmlPolicyRepository ch) {
-            Contract.Requires<ArgumentNullException>(policyDoc != null);
+            if (policyDoc == null) {
+                throw new ArgumentNullException(nameof(policyDoc));
+            }
 
             using (XmlReader reader = policyDoc.CreateReader()) {
                 return EvaluationEngineFactory.Create(reader, ch);
             }
         }
-
     }
 }

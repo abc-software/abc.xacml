@@ -16,17 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     /// <summary>
     /// The <c>XacmlPolicy</c> class element retrieves a bag of values for a named resource attribute from the request context.
@@ -55,8 +49,6 @@ namespace Abc.Xacml.Policy {
         /// <param name="target">The target.</param>
         public XacmlPolicy(Uri ruleCombiningAlgId, XacmlTarget target)
             : this(XacmlUtils.GeneratePolicyId(), ruleCombiningAlgId, target) {
-            Contract.Requires<ArgumentNullException>(ruleCombiningAlgId != null);
-            Contract.Requires<ArgumentNullException>(target != null);
         }
 
         /// <summary>
@@ -66,9 +58,17 @@ namespace Abc.Xacml.Policy {
         /// <param name="ruleCombiningAlgId">The rule combining algorithm identifier.</param>
         /// <param name="target">The target.</param>
         public XacmlPolicy(Uri policyId, Uri ruleCombiningAlgId, XacmlTarget target) {
-            Contract.Requires<ArgumentNullException>(policyId != null);
-            Contract.Requires<ArgumentNullException>(ruleCombiningAlgId != null);
-            Contract.Requires<ArgumentNullException>(target != null);
+            if (policyId == null) {
+                throw new ArgumentNullException(nameof(policyId));
+            }
+
+            if (ruleCombiningAlgId == null) {
+                throw new ArgumentNullException(nameof(ruleCombiningAlgId));
+            }
+
+            if (target == null) {
+                throw new ArgumentNullException(nameof(target));
+            }
 
             this.policyId = policyId;
             this.ruleCombiningAlgId = ruleCombiningAlgId;
@@ -108,7 +108,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.target = value;
             }
         }
@@ -191,7 +194,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.policyId = value;
             }
         }
@@ -209,7 +215,7 @@ namespace Abc.Xacml.Policy {
                         this.version = value;
                     }
                     else {
-                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VersionType format"));
+                        throw new ArgumentException("Wrong VersionType format", nameof(value));
                     }
                 }
             }
@@ -227,7 +233,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.ruleCombiningAlgId = value;
             }
         }
@@ -252,8 +261,7 @@ namespace Abc.Xacml.Policy {
         /// <remarks>
         /// Used only for XACML 3.0
         /// </remarks>
-        public ICollection<XacmlObligationExpression> ObligationExpressions
-        {
+        public ICollection<XacmlObligationExpression> ObligationExpressions {
             get {
                 return this.obligationExpressions;
             }
@@ -268,8 +276,7 @@ namespace Abc.Xacml.Policy {
         /// <remarks>
         /// Used only for XACML 3.0
         /// </remarks>
-        public ICollection<XacmlAdviceExpression> AdviceExpressions
-        {
+        public ICollection<XacmlAdviceExpression> AdviceExpressions {
             get {
                 return this.adviceExpressions;
             }

@@ -16,20 +16,13 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
-    using System.Linq;
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class Xacml30ProtocolSerializer : Xacml20ProtocolSerializer {
         /// <summary>
@@ -47,12 +40,17 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">MatchId IsNullOrEmpty</exception>
         protected override XacmlMatch ReadMatch(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Match, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Match, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             var gaMatchId = reader.GetAttribute("MatchId");
             if (string.IsNullOrEmpty(gaMatchId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("MatchId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "MatchId IsNullOrEmpty");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Match, this.version.NamespacePolicy);
@@ -61,7 +59,7 @@ namespace Abc.Xacml {
 
             XacmlMatch result;
             if (reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy)) {
-                var attributeDesignator = this.ReadAttributeDesignator(reader) as XacmlAttributeDesignator;
+                var attributeDesignator = this.ReadAttributeDesignator(reader);
                 result = new XacmlMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, attributeDesignator);
             }
             else {
@@ -79,8 +77,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>        
         protected override XacmlAttributeDesignator ReadAttributeDesignator(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri gaAttributeId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.AttributeId);
 
@@ -110,8 +113,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected override XacmlAttributeSelector ReadAttributeSelector(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             XacmlAttributeSelector result = new XacmlAttributeSelector(
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category),
@@ -119,8 +127,8 @@ namespace Abc.Xacml {
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.DataType),
                 this.ReadAttribute<bool>(reader, XacmlConstants.AttributeNames.MustBePresent)
                 ) {
-                    ContextSelectorId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ContextSelectorId, isRequered: false)
-                };
+                ContextSelectorId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ContextSelectorId, isRequered: false)
+            };
 
             reader.ReadInnerXml();
 
@@ -134,8 +142,13 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.Xml.XmlException">Target should contain AnyOf or be empty</exception>
         protected override XacmlTarget ReadTarget(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             if (reader.IsEmptyElement) {
                 reader.Read();
@@ -148,7 +161,7 @@ namespace Abc.Xacml {
 
             // AnyOf
             if (!reader.IsStartElement(XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Target should contain AnyOf or be empty"));
+                throw ThrowHelperXml(reader, "Target should contain AnyOf or be empty");
             }
 
             //this.ReadList<ICollection<ICollection<XacmlMatch>>>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy,
@@ -195,7 +208,9 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="XacmlSerializationException">Wrong VariableDefinition element content</exception>
         protected virtual IXacmlApply ReadExpressionType(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             // move to first element
             reader.IsStartElement("*");
@@ -235,7 +250,7 @@ namespace Abc.Xacml {
                         break;
                     }
                 default: {
-                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong VariableDefinition element content"));
+                        throw ThrowHelperXml(reader, "Wrong VariableDefinition element content");
                     }
             }
 
@@ -248,8 +263,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected override XacmlExpression ReadCondition(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy);
 
@@ -267,8 +287,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected override XacmlApply ReadApply(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri functionId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.FunctionId);
 
@@ -289,7 +314,7 @@ namespace Abc.Xacml {
                 { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeSelector(reader)) },
                 { new Tuple<string, string>(XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadOptional(XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy,
                             new ReadElement<XacmlVariableReference>(
-                                o => 
+                                o =>
                                     {
                                         string res = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.VariableId);
                                         reader.Read();
@@ -311,8 +336,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlAttribute ReadAttribute(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             XacmlAttribute result = new XacmlAttribute(
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.AttributeId),
@@ -337,11 +367,16 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="XacmlInvalidDataTypeException">XACMLAdmin Profile not implemented</exception>
         protected virtual XacmlPolicyIssuer ReadPolicyIssuer(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             //PROFILE - XACMLAdmin - #POL02 - #SPEC1833
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new Abc.Xacml.Runtime.XacmlInvalidDataTypeException("XACMLAdmin Profile not implemented"));
+            throw new Abc.Xacml.Runtime.XacmlInvalidDataTypeException("XACMLAdmin Profile not implemented");
 
             if (reader.IsEmptyElement) {
                 reader.Read();
@@ -369,8 +404,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlAttributeAssignmentExpression ReadAttributeAssignmentExpression(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri attributeId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.AttributeId);
             Uri category = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category, isRequered: false);
@@ -395,8 +435,13 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="XacmlSerializationException">Wrong XacmlEffectType value</exception>
         protected virtual XacmlObligationExpression ReadObligationExpression(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             string gaFulFillOn = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.FulfillOn);
             XacmlEffectType effectType = XacmlEffectType.Deny;
@@ -407,7 +452,7 @@ namespace Abc.Xacml {
                 effectType = XacmlEffectType.Permit;
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
+                throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
             XacmlObligationExpression result = new XacmlObligationExpression(
@@ -431,8 +476,13 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="XacmlSerializationException">Wrong XacmlEffectType value</exception>
         protected virtual XacmlAdviceExpression ReadAdviceExpression(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             string appliesTo = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.AppliesTo);
             XacmlEffectType effectType = XacmlEffectType.Deny;
@@ -443,7 +493,7 @@ namespace Abc.Xacml {
                 effectType = XacmlEffectType.Permit;
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
+                throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
             XacmlAdviceExpression result = new XacmlAdviceExpression(
@@ -481,7 +531,10 @@ namespace Abc.Xacml {
         /// RuleCombinerParameters count > 1
         /// </exception>
         public override XacmlPolicy ReadPolicy(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
             IDictionary<string, string> nsMgr = new Dictionary<string, string>();
 
             for (int i = 0; i < reader.AttributeCount; i++) {
@@ -492,19 +545,19 @@ namespace Abc.Xacml {
             }
 
             if (!this.CanRead(reader, XacmlConstants.ElementNames.Policy)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             var gaPolicyId = reader.GetAttribute("PolicyId");
 
             if (string.IsNullOrEmpty(gaPolicyId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("PolicyId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "PolicyId IsNullOrEmpty");
             }
 
             var gaRuleCombiningAlgId = reader.GetAttribute("RuleCombiningAlgId");
 
             if (string.IsNullOrEmpty(gaRuleCombiningAlgId)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("RuleCombiningAlgId IsNullOrEmpty"));
+                throw ThrowHelperXml(reader, "RuleCombiningAlgId IsNullOrEmpty");
             }
 
             string version = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Version, isRequered: false);
@@ -524,9 +577,9 @@ namespace Abc.Xacml {
             string xpathVersion = null;
             if (reader.IsStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy)) {
                 reader.ReadStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy);
-                
+
                 if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
+                    throw ThrowHelperXml(reader, "XPathVerison NotStartElement");
                 }
 
                 xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
@@ -565,15 +618,15 @@ namespace Abc.Xacml {
 
             // choice [1 .. *]
             if (policy.VariableDefinitions.Count == 0 && policy.Rules.Count == 0) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("VariableDefinition or Rule are required"));
+                throw ThrowHelperXml(reader, "VariableDefinition or Rule are required");
             }
 
             if (policy.CombinerParameters.Count > 1) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("CombinerParameterc count > 1"));
+                throw ThrowHelperXml(reader, "CombinerParameterc count > 1");
             }
 
             if (policy.RuleCombinerParameters.Count > 1) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("RuleCombinerParameters count > 1"));
+                throw ThrowHelperXml(reader, "RuleCombinerParameters count > 1");
             }
 
             if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy)) {
@@ -601,7 +654,10 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.InvalidOperationException"></exception>
         public override XacmlPolicySet ReadPolicySet(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
             IDictionary<string, string> nsMgr = new Dictionary<string, string>();
 
             for (int i = 0; i < reader.AttributeCount; i++) {
@@ -612,7 +668,7 @@ namespace Abc.Xacml {
             }
 
             if (!this.CanRead(reader, XacmlConstants.ElementNames.PolicySet)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             Uri gaPolicySetId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.PolicySetId);
@@ -634,9 +690,9 @@ namespace Abc.Xacml {
             string xpathVersion = null;
             if (reader.IsStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy)) {
                 reader.ReadStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy);
-                
+
                 if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("XPathVerison NotStartElement"));
+                    throw ThrowHelperXml(reader, "XPathVerison NotStartElement");
                 }
 
                 xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
@@ -703,8 +759,13 @@ namespace Abc.Xacml {
         /// </exception>
         /// <exception cref="XacmlSerializationException">Wrong XacmlEffectType value</exception>
         protected override XacmlRule ReadRule(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             var gaRuleId = reader.GetAttribute("RuleId");
 
@@ -721,12 +782,12 @@ namespace Abc.Xacml {
                 effectType = XacmlEffectType.Permit;
             }
             else {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Wrong XacmlEffectType value"));
+                throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
 
             if (string.IsNullOrEmpty(gaEffect)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XmlException("Effect IsNullEmpty"));
+                throw ThrowHelperXml(reader, "Effect IsNullEmpty");
             }
             reader.ReadStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy);
 
@@ -768,8 +829,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         public virtual void WritePolicyIssuer(XmlWriter writer, XacmlPolicyIssuer data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy);
 
@@ -803,6 +869,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         public override void WritePolicy(XmlWriter writer, XacmlPolicy data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Policy, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicyId, data.PolicyId.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.RuleCombiningAlgId, data.RuleCombiningAlgId.OriginalString);
@@ -893,6 +967,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         public override void WritePolicySet(XmlWriter writer, XacmlPolicySet data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySet, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicySetId, data.PolicySetId.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicyCombiningAlgId, data.PolicyCombiningAlgId.OriginalString);
@@ -1004,8 +1086,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteObligationExpression(XmlWriter writer, XacmlObligationExpression data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ObligationId, data.ObligationId.OriginalString);
@@ -1024,8 +1111,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteAdviceExpression(XmlWriter writer, XacmlAdviceExpression data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AdviceId, data.AdviceId.OriginalString);
@@ -1044,8 +1136,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteAttributeAssignmentExpression(XmlWriter writer, XacmlAttributeAssignmentExpression data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy);
 
@@ -1070,8 +1167,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected override void WriteAttributeDesignator(XmlWriter writer, XacmlAttributeDesignator data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy);
 
@@ -1091,42 +1193,44 @@ namespace Abc.Xacml {
         /// Write expression type(not element)
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="expression"></param>
-        protected override void WriteExpressionType(XmlWriter writer, XacmlExpression expression) {
-            Type applyElemType = expression.Property.GetType();
+        /// <param name="data"></param>
+        protected override void WriteExpressionType(XmlWriter writer, XacmlExpression data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            Type applyElemType = data.Property.GetType();
             if (applyElemType == typeof(XacmlVariableReference)) {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy);
-                writer.WriteAttributeString(XacmlConstants.AttributeNames.VariableId, (expression.Property as XacmlVariableReference).VariableReference);
+                writer.WriteAttributeString(XacmlConstants.AttributeNames.VariableId, (data.Property as XacmlVariableReference).VariableReference);
                 writer.WriteEndElement();
-                return;
             }
             else if (applyElemType == typeof(XacmlAttributeSelector)) {
-                XacmlAttributeSelector prop = expression.Property as XacmlAttributeSelector;
+                XacmlAttributeSelector prop = data.Property as XacmlAttributeSelector;
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.RequestContextPath, prop.Path);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, prop.DataType.OriginalString);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, XmlConvert.ToString(prop.MustBePresent.HasValue && prop.MustBePresent.Value));
 
                 writer.WriteEndElement();
-                return;
             }
             else if (applyElemType == typeof(XacmlAttributeDesignator)) {
-                this.WriteAttributeDesignator(writer, expression.Property as XacmlAttributeDesignator);
-                return;
+                this.WriteAttributeDesignator(writer, data.Property as XacmlAttributeDesignator);
             }
             else if (applyElemType == typeof(XacmlAttributeValue)) {
-                this.WriteAttributeValue(writer, expression.Property as XacmlAttributeValue);
-                return;
+                this.WriteAttributeValue(writer, data.Property as XacmlAttributeValue);
             }
             else if (applyElemType == typeof(XacmlFunction)) {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Function, this.version.NamespacePolicy);
-                writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, (expression.Property as XacmlFunction).FunctionId.OriginalString);
+                writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, (data.Property as XacmlFunction).FunctionId.OriginalString);
                 writer.WriteEndElement();
-                return;
             }
             else if (applyElemType == typeof(XacmlApply)) {
-                this.WriteApply(writer, expression.Property as XacmlApply);
-                return;
+                this.WriteApply(writer, data.Property as XacmlApply);
             }
         }
 
@@ -1136,6 +1240,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected override void WriteAttributeSelector(XmlWriter writer, XacmlAttributeSelector data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Category, data.Category.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Path, data.Path);
@@ -1155,6 +1267,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected override void WriteRule(XmlWriter writer, XacmlRule data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.RuleId, data.RuleId);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Effect, data.Effect.ToString());
@@ -1201,8 +1321,13 @@ namespace Abc.Xacml {
         /// <param name="data">The data.</param>
         /// <exception cref="System.InvalidOperationException"></exception>
         protected override void WriteMatch(XmlWriter writer, XacmlMatch data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.SubjectMatch, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.MatchId, data.MatchId.OriginalString);
@@ -1210,7 +1335,7 @@ namespace Abc.Xacml {
             this.WriteAttributeValue(writer, data.AttributeValue);
 
             if (data.AttributeSelector == null && data.AttributeDesignator == null) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw new InvalidOperationException("AttributeSelector and AttributeDesignator is null.");
             }
 
             if (data.AttributeDesignator != null) {
@@ -1230,6 +1355,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected override void WriteTarget(XmlWriter writer, XacmlTarget data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             //// Start Target
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Target, this.version.NamespacePolicy);
 
@@ -1257,16 +1390,24 @@ namespace Abc.Xacml {
         /// Writes the apply.
         /// </summary>
         /// <param name="writer">The writer.</param>
-        /// <param name="xacmlApply">The xacml apply.</param>
-        protected override void WriteApply(XmlWriter writer, XacmlApply xacmlApply) {
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy);
-            writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, xacmlApply.FunctionId.OriginalString);
-
-            if (xacmlApply.Description != null) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.version.NamespacePolicy, xacmlApply.Description);
+        /// <param name="data">The xacml apply.</param>
+        protected override void WriteApply(XmlWriter writer, XacmlApply data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
             }
 
-            foreach (IXacmlApply applyElem in xacmlApply.Parameters) {
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy);
+            writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, data.FunctionId.OriginalString);
+
+            if (data.Description != null) {
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.version.NamespacePolicy, data.Description);
+            }
+
+            foreach (IXacmlApply applyElem in data.Parameters) {
                 this.WriteExpressionType(writer, new XacmlExpression() { Property = applyElem });
             }
         }
@@ -1277,8 +1418,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlContextAttributes ReadContextAttributes(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Attributes, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attributes, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri category = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category);
             string id = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Id, namespaceURI: XacmlConstants.Namespaces.XmlNamespace, isRequered: false);
@@ -1310,10 +1456,12 @@ namespace Abc.Xacml {
         /// <returns></returns>
         /// <exception cref="System.InvalidOperationException"></exception>
         public override XacmlContextRequest ReadContextRequest(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
             if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.version.NamespaceContext)) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException());
+                throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             bool returnPolicyIdList = this.ReadAttribute<bool>(reader, XacmlConstants.AttributeNames.ReturnPolicyIdList);
@@ -1321,7 +1469,7 @@ namespace Abc.Xacml {
             //PROFILE - Multiple Decision Profile - #POL01 - #SPEC2760
             bool combinedDecision = this.ReadAttribute<bool>(reader, XacmlConstants.AttributeNames.CombinedDecision);
             if (combinedDecision) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new Abc.Xacml.Runtime.XacmlInvalidDataTypeException("Multiple Decision Profile not implemented"));
+                throw new Abc.Xacml.Runtime.XacmlInvalidDataTypeException("Multiple Decision Profile not implemented");
             }
 
             reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
@@ -1376,8 +1524,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected override XacmlContextResult ReadContextResult(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Result, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Result, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             string resourceId = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.ResourceId, isRequered: false);
 
@@ -1387,9 +1540,9 @@ namespace Abc.Xacml {
             XacmlContextResult result = new XacmlContextResult(
                 this.ReadRequired(XacmlConstants.ElementNames.Decision, this.version.NamespaceContext, ReadContextDecision, reader)
                 ) {
-                    Status = this.ReadOptional(XacmlConstants.ElementNames.Status, this.version.NamespaceContext, ReadContextStatus, reader),
-                    ResourceId = resourceId,
-                };
+                Status = this.ReadOptional(XacmlConstants.ElementNames.Status, this.version.NamespaceContext, ReadContextStatus, reader),
+                ResourceId = resourceId,
+            };
 
             if (reader.IsStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy)) {
                 reader.ReadStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy);
@@ -1436,8 +1589,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlContextPolicyIdReference ReadPolicyIdReference_3_0(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             string version = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Version, isRequered: false);
             string earliestVersion = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.EarliestVersion, isRequered: false);
@@ -1459,8 +1617,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlContextPolicySetIdReference ReadPolicySetIdReference_3_0(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             string version = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Version, isRequered: false);
             string earliestVersion = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.EarliestVersion, isRequered: false);
@@ -1482,8 +1645,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected override XacmlObligation ReadObligation(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Obligation, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Obligation, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri gaObligationId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ObligationId);
 
@@ -1503,8 +1671,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected virtual XacmlAdvice ReadAdvice(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.Advice, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Advice, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri gaAdviceId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.AdviceId);
 
@@ -1524,8 +1697,13 @@ namespace Abc.Xacml {
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
         protected override XacmlAttributeAssignment ReadAttributeAssigment(XmlReader reader) {
-            Contract.Requires<ArgumentNullException>(reader != null, "reader");
-            Contract.Requires<XmlException>(reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespaceContext));
+            if (reader == null) {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespaceContext)) {
+                throw ThrowHelperXml(reader, "XML message is not valid.");
+            }
 
             Uri gaDataType = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.DataType);
             Uri gaAttributeId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.AttributeId);
@@ -1549,8 +1727,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteContextAttributes(XmlWriter writer, XacmlContextAttributes data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attributes, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Category, data.Category.OriginalString);
@@ -1589,6 +1772,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         public override void WriteContextRequest(XmlWriter writer, XacmlContextRequest data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ReturnPolicyIdList, data.ReturnPolicyIdList.ToString());
             writer.WriteAttributeString(XacmlConstants.AttributeNames.CombinedDecision, data.CombinedDecision.ToString());
@@ -1630,8 +1821,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected override void WriteAttributeAssignment(XmlWriter writer, XacmlAttributeAssignment data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy);
 
@@ -1662,6 +1858,14 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected override void WriteObligation(XmlWriter writer, XacmlObligation data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ObligationId, data.ObligationId.OriginalString);
 
@@ -1678,8 +1882,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WriteAdvice(XmlWriter writer, XacmlAdvice data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Advice, this.version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AdviceId, data.AdviceId.OriginalString);
@@ -1695,50 +1904,58 @@ namespace Abc.Xacml {
         /// Writes the context result.
         /// </summary>
         /// <param name="writer">The writer.</param>
-        /// <param name="result">The result.</param>
-        protected override void WriteContextResult(XmlWriter writer, XacmlContextResult result) {
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
-
-            this.WriteContextDecision(writer, result.Decision);
-
-            if (result.Status != null) {
-                this.WriteContextStatus(writer, result.Status);
+        /// <param name="data">The result.</param>
+        protected override void WriteContextResult(XmlWriter writer, XacmlContextResult data) {
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
             }
 
-            if (result.Obligations.Count > 0) {
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
+
+            this.WriteContextDecision(writer, data.Decision);
+
+            if (data.Status != null) {
+                this.WriteContextStatus(writer, data.Status);
+            }
+
+            if (data.Obligations.Count > 0) {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy);
 
-                foreach (XacmlObligation val in result.Obligations) {
+                foreach (XacmlObligation val in data.Obligations) {
                     this.WriteObligation(writer, val);
                 }
 
                 writer.WriteEndElement();
             }
 
-            if (result.Advices.Count > 0) {
+            if (data.Advices.Count > 0) {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AssociatedAdvice, this.version.NamespacePolicy);
 
-                foreach (XacmlAdvice val in result.Advices) {
+                foreach (XacmlAdvice val in data.Advices) {
                     this.WriteAdvice(writer, val);
                 }
 
                 writer.WriteEndElement();
             }
 
-            if (result.Attributes.Count > 0) {
-                foreach (XacmlContextAttributes attr in result.Attributes) {
+            if (data.Attributes.Count > 0) {
+                foreach (XacmlContextAttributes attr in data.Attributes) {
                     this.WriteContextAttributes(writer, attr);
                 }
             }
 
-            if (result.PolicyIdReferences.Count > 0 || result.PolicySetIdReferences.Count > 0) {
+            if (data.PolicyIdReferences.Count > 0 || data.PolicySetIdReferences.Count > 0) {
                 writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIdentifierList, this.version.NamespacePolicy);
 
-                foreach (XacmlContextPolicyIdReference pref in result.PolicyIdReferences) {
+                foreach (XacmlContextPolicyIdReference pref in data.PolicyIdReferences) {
                     this.WritePolicyIdReference(writer, pref);
                 }
 
-                foreach (XacmlContextPolicySetIdReference psref in result.PolicySetIdReferences) {
+                foreach (XacmlContextPolicySetIdReference psref in data.PolicySetIdReferences) {
                     this.WritePolicySetIdReference(writer, psref);
                 }
 
@@ -1754,8 +1971,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WritePolicyIdReference(XmlWriter writer, XacmlContextPolicyIdReference data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespacePolicy);
 
@@ -1780,8 +2002,13 @@ namespace Abc.Xacml {
         /// <param name="writer">The writer.</param>
         /// <param name="data">The data.</param>
         protected virtual void WritePolicySetIdReference(XmlWriter writer, XacmlContextPolicySetIdReference data) {
-            Contract.Requires<ArgumentNullException>(writer != null);
-            Contract.Requires<ArgumentNullException>(data != null);
+            if (writer == null) {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            if (data == null) {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespacePolicy);
 
@@ -1803,32 +2030,32 @@ namespace Abc.Xacml {
         #region Not supported 
 
         protected override XacmlSubject ReadSubject(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
         protected override XacmlAction ReadAction(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
         protected override XacmlResource ReadResource(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
         protected override XacmlEnvironment ReadEnvironment(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0."));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
         protected override Uri ReadPolicyIdReference(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0. Use ReadPolicyIdReference_3_0 instead"));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ReadPolicyIdReference_3_0 instead");
 
         }
 
         protected override Uri ReadPolicySetIdReference(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0. Use ReadPolicySetIdReference_3_0 instead"));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ReadPolicySetIdReference_3_0 instead");
         }
 
         protected override XacmlContextAttribute ReadContextAttribute(XmlReader reader) {
-            throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlSerializationException("Not supported function in 3.0. Use ŖeadAttribute instead"));
+            throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ŖeadAttribute instead");
         }
 
         #endregion

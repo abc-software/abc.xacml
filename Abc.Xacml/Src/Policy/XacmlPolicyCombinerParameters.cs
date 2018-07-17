@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlPolicyCombinerParameters</c> class element conveys parameters associated with a particular policy within a policy set for a policy-combining algorithm.
@@ -37,7 +36,10 @@ namespace Abc.Xacml.Policy {
         /// <param name="policySetIdRef">The policy identifier reference.</param>
         public XacmlPolicyCombinerParameters(Uri policyIdRef)
             : base() {
-            Contract.Requires<ArgumentNullException>(policyIdRef != null);
+            if (policyIdRef == null) {
+                throw new ArgumentNullException(nameof(policyIdRef));
+            }
+
             this.idRef = policyIdRef;
         }
 
@@ -53,7 +55,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.idRef = value;
             }
         }

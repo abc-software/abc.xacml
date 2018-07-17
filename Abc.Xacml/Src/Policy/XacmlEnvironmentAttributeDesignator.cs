@@ -19,7 +19,6 @@
 
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlEnvironmentAttributeDesignator</c> class element retrieves a bag of values for a named environment attribute from the request context.

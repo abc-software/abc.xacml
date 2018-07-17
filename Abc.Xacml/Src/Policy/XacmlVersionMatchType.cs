@@ -18,19 +18,15 @@
 // ----------------------------------------------------------------------------
  
 namespace Abc.Xacml.Policy {
+    using System;
     using System.Text.RegularExpressions;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class XacmlVersionMatchType {
         private readonly string value;
 
         public XacmlVersionMatchType(string value) {
             if (!Regex.IsMatch(value, @"((\d+|\*)\.)*(\d+|\*|\+)")) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgument("Wrong VersionMatch format");
+                throw new ArgumentException("Wrong VersionMatch format.", nameof(value));
             }
 
             this.value = value;

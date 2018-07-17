@@ -16,12 +16,11 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
     using Abc.Xacml.Policy;
 
     /// <summary>
@@ -45,7 +44,9 @@ namespace Abc.Xacml.Context {
         /// <param name="decision">The authorization decision.</param>
         /// <param name="status">The status.</param>
         public XacmlContextResult(XacmlContextDecision decision, XacmlContextStatus status) {
-            Contract.Requires<ArgumentNullException>(status != null);
+            if (status == null) {
+                throw new ArgumentNullException(nameof(status));
+            }
 
             this.decision = decision;
             this.status = status;

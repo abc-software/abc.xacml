@@ -20,7 +20,6 @@
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextAction</c> class specifies the requested action on the resource.
@@ -40,7 +39,6 @@ namespace Abc.Xacml.Context {
         /// <param name="attribute">The attribute.</param>
         public XacmlContextAction(XacmlContextAttribute attribute)
             : this(new XacmlContextAttribute[] { attribute }) {
-            Contract.Requires<ArgumentNullException>(attribute != null);
         }
 
         /// <summary>
@@ -49,7 +47,6 @@ namespace Abc.Xacml.Context {
         /// <param name="attributes">The attributes.</param>
         public XacmlContextAction(IEnumerable<XacmlContextAttribute> attributes)
             : base(attributes) {
-            Contract.Requires<ArgumentNullException>(attributes != null);
         }
     }
 }

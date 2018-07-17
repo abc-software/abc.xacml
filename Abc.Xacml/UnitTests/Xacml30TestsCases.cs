@@ -7,11 +7,11 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using NUnit.Framework;
 
-namespace Abc.IdentityModel.Xacml.UnitTests {
+namespace Abc.Xacml.UnitTests {
     public class Xacml30TestsCases {
-        internal static string TestCasePath = @"..\..\_Data\XACML_Samples\3.0\OfficialTestCases";// @"OfficialTestCases\3.0";
+        internal static readonly string TestCasePath = GetTestCasePath();
         static string[] TestCaseToIgnore = { "IIE003", "IID029", "IID030", };
-        static string[] NotRealisedPrifilesTest = { 
+        static string[] NotRealisedProfilesTest = { 
                                                       "IIIE301", // multiple requests
                                                       "IIA002", // attribute repository
                                                       "IIIC001", // Hierarhy
@@ -24,6 +24,11 @@ namespace Abc.IdentityModel.Xacml.UnitTests {
                 { "IIA005", typeof(XmlException) },
                 { "IIIF002", typeof(XmlException) },
             };
+
+        private static string GetTestCasePath() {
+            var dir = Path.GetDirectoryName(new Uri(typeof(Xacml20TestsCases).Assembly.CodeBase).LocalPath);
+            return Path.Combine(dir, @"..\..\_Data\XACML_Samples\3.0\OfficialTestCases");
+        }
 
         public static IEnumerable TestCases {
             get {
@@ -55,17 +60,20 @@ namespace Abc.IdentityModel.Xacml.UnitTests {
                     if (!string.IsNullOrEmpty(error))
                         yield return new TestCaseData(null, null, null).SetCategory("Errors_30").SetName(error);
                     else {
-                        if (NotRealisedPrifilesTest.Contains(key)) {
-                            yield return new TestCaseData(policy, request, response).SetCategory("Official_30_NotImplemented").SetName(key + "_30");
+                        Type expectedException = null;
+                        if (TestCaseWithError.ContainsKey(key)) {
+                            expectedException = TestCaseWithError[key];
                         }
-                        else {
-                            var testCaseData = new TestCaseData(policy, request, response).SetCategory("Official_30").SetName(key + "_30");
-                            if (TestCaseWithError.ContainsKey(key)) {
-                                yield return testCaseData.Throws(TestCaseWithError[key]);
-                            }
 
-                            yield return testCaseData;
+                        var testCaseData = new TestCaseData(policy, request, response, expectedException)
+                            .SetCategory("Official_30")
+                            .SetName(key + "_30");
+
+                        if (NotRealisedProfilesTest.Contains(key)) {
+                            testCaseData.Ignore("Not implemeneted");
                         }
+
+                        yield return testCaseData;
                     }
                 }
             }

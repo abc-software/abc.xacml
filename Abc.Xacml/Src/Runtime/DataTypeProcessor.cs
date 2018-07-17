@@ -21,16 +21,13 @@ namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+#if NET40 || NET45
     using System.ComponentModel.Composition.Hosting;
+#endif
     using System.Linq;
     using Abc.Xacml.DataTypes;
     using Abc.Xacml.Interfaces;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class DataTypeProcessor {
         private static DataTypeProcessor processor = null;
@@ -82,6 +79,7 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new DataTypeProcessor();
+#if NET40 || NET45
                             var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
 
                             var container = new CompositionContainer(catalog);
@@ -92,6 +90,7 @@ namespace Abc.Xacml.Runtime {
                                     DataTypeProcessor.typeConverters.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
+#endif
                         }
                     }
                 }
@@ -107,7 +106,7 @@ namespace Abc.Xacml.Runtime {
                     return converter;
                 }
                 else {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows data type name in match expression");
+                    throw new ArgumentException("Unknown data type name in match expression", nameof(value));
                 }
             }
         }
@@ -116,7 +115,7 @@ namespace Abc.Xacml.Runtime {
             get {
                 var pair = DataTypeProcessor.typeConverters.Where(o => o.Value.IsForType(value));
                 if (!pair.Any()) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows TypeConverter in match expression");
+                    throw new ArgumentException("Unknown TypeConverter in match expression", nameof(value));
                 }
 
                 return pair.First().Key;

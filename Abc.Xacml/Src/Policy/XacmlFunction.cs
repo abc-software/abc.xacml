@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlEnvironmentAttributeDesignator</c> class element retrieves a bag of values for a named environment attribute from the request context.
@@ -36,7 +35,10 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="functionId">The function identifier.</param>
         public XacmlFunction(Uri functionId) {
-            Contract.Requires<ArgumentNullException>(functionId != null);
+            if (functionId == null) {
+                throw new ArgumentNullException(nameof(functionId));
+            }
+
             this.functionId = functionId;
         }
 
@@ -52,7 +54,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.functionId = value;
             }
         }

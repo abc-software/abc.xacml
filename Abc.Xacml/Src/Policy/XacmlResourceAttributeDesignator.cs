@@ -19,7 +19,6 @@
 
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlResourceAttributeDesignator</c> class element retrieves a bag of values for a named resource attribute from the request context.
@@ -36,8 +35,6 @@ namespace Abc.Xacml.Policy {
         /// <param name="dataType">The attribute element data type.</param>
         public XacmlResourceAttributeDesignator(Uri attributeId, Uri dataType)
             : base(attributeId, dataType) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
-            Contract.Requires<ArgumentNullException>(dataType != null);
         }
     }
 }

@@ -16,19 +16,20 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
 
     public class XacmlAttribute {
         private readonly ICollection<XacmlAttributeValue> attributeValues = new Collection<XacmlAttributeValue>();
         private Uri attributeId;
 
         public XacmlAttribute(Uri attributeId, bool includeInResult) {
-            Contract.Requires<ArgumentNullException>(attributeId != null);
+            if (attributeId == null) {
+                throw new ArgumentNullException(nameof(attributeId));
+            }
 
             this.attributeId = attributeId;
             this.IncludeInResult = includeInResult;
@@ -54,7 +55,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeId = value;
             }
         }

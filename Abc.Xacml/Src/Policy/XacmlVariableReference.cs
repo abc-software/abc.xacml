@@ -19,7 +19,6 @@
  
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlVariableReference</c> class element is used to reference a value defined within the same encompassing &lt;Policy&gt; element.
@@ -36,7 +35,14 @@ namespace Abc.Xacml.Policy {
         /// </summary>
         /// <param name="variableReference">The variable reference.</param>
         public XacmlVariableReference(string variableReference) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(variableReference)); 
+            if (variableReference == null) {
+                throw new ArgumentNullException(nameof(variableReference));
+            }
+
+            if (variableReference.Length == 0) {
+                throw new ArgumentException("Value cannot be empty.", nameof(variableReference));
+            }
+
             this.variableReference = variableReference;
         }
 
@@ -52,7 +58,14 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(value));
+                if (variableReference == null) {
+                    throw new ArgumentNullException(nameof(variableReference));
+                }
+
+                if (variableReference.Length == 0) {
+                    throw new ArgumentException("Value cannot be empty.", nameof(variableReference));
+                }
+
                 this.variableReference = value;
             }
         }

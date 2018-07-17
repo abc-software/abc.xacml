@@ -32,7 +32,7 @@ namespace Abc.Xacml.DataTypes {
         }
 
         public bool Equals(IPAddress other) {
-            return string.Equals(this.value, other.value, StringComparison.InvariantCultureIgnoreCase);
+            return string.Equals(this.value, other.value, StringComparison.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object obj) {

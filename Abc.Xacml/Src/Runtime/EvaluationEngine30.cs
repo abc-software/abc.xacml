@@ -16,22 +16,16 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class EvaluationEngine30 : EvaluationEngine {
         protected IDictionary<XacmlEffectType, List<XacmlAdvice>> advices;
@@ -129,7 +123,7 @@ namespace Abc.Xacml.Runtime {
 
             foreach (var attribute in this.pip.GetAttributesWithIncludeInResult()) {
                 result.Attributes.Add(attribute);
-            };
+            }
 
             if (decision == XacmlDecisionResult.Permit) {
                 foreach (var obligation in this.obligations[XacmlEffectType.Permit]) {
@@ -301,7 +295,7 @@ namespace Abc.Xacml.Runtime {
                             }));
                                 }
                                 else {
-                                    throw DiagnosticTools.ExceptionUtil.ThrowHelperFatal("Policy reference not URI - Not implemented", new NotImplementedException("Policy reference not URI - Not implemented"));
+                                    throw new NotImplementedException("Policy reference not URI - Not implemented");
                                 }
                             }
 
@@ -311,7 +305,7 @@ namespace Abc.Xacml.Runtime {
                                 if (Uri.TryCreate(polRef.Value, UriKind.RelativeOrAbsolute, out uri)) {
                                     XacmlPolicySet pol = this.ch.RequestPolicySet(uri);
                                     if (pol == null) {
-                                        throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString()));
+                                        throw new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString());
                                     }
 
                                     policyResultsFunctions.Add(new Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>(
@@ -343,7 +337,7 @@ namespace Abc.Xacml.Runtime {
                             }));
                                 }
                                 else {
-                                    throw DiagnosticTools.ExceptionUtil.ThrowHelperFatal("PolicySet reference not URI - Not implemented", new NotImplementedException("PolicySet reference not URI - Not implemented"));
+                                    throw new NotImplementedException("PolicySet reference not URI - Not implemented");
                                 }
                             }
 
@@ -735,7 +729,9 @@ namespace Abc.Xacml.Runtime {
         /// <param name="expression"></param>
         /// <returns></returns>
         protected virtual IEnumerable<XacmlAttributeAssignment> AttributeAssignmentExpressionEvaluate(XacmlAttributeAssignmentExpression expression) {
-            Contract.Requires<ArgumentNullException>(expression != null);
+            if (expression == null) {
+                throw new ArgumentNullException(nameof(expression));
+            }
 
             object expressionResult = this.ExpressionEvaluate(expression.Property);
 
@@ -758,8 +754,12 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected virtual XacmlAttributeAssignment AttributeAssignmentCreate(object value, XacmlAttributeAssignmentExpression expression) {
-            Contract.Requires<ArgumentNullException>(value != null);
-            Contract.Requires<ArgumentNullException>(expression != null);
+            if (value == null) {
+                throw new ArgumentNullException(nameof(value));
+            }
+            if (expression == null) {
+                throw new ArgumentNullException(nameof(expression));
+            }
 
             TypeConverter con = TypeDescriptor.GetConverter(value.GetType());
             string type = this.types[con];
@@ -783,7 +783,7 @@ namespace Abc.Xacml.Runtime {
                 XacmlVariableReference reference = expression as XacmlVariableReference;
                 XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.SingleOrDefault(o => o.VariableId == reference.VariableReference);
                 if (definition == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
+                    throw new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference);
                 }
 
                 // Cache value
@@ -883,7 +883,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected bool? MatchEvaluation(XacmlMatch match) {
-            Contract.Requires<ArgumentNullException>(match != null);
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
 
             // get function
             DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
@@ -952,7 +954,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected IEnumerable<string> GetAttributeDesignator(XacmlAttributeDesignator designator) {
-            Contract.Requires<ArgumentNullException>(designator != null);
+            if (designator == null) {
+                throw new ArgumentNullException(nameof(designator));
+            }
 
             IEnumerable<string> attributeBag = this.pip.GetAttributeDesignatorValues(
                     designator.AttributeId,

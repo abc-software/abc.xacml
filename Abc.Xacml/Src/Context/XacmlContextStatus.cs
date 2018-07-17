@@ -20,7 +20,6 @@
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.ObjectModel;
-    using System.Diagnostics.Contracts;
     using System.Xml;
 
     /// <summary>
@@ -37,7 +36,10 @@ namespace Abc.Xacml.Context {
         /// </summary>
         /// <param name="statusCode">The status code.</param>
         public XacmlContextStatus(XacmlContextStatusCode statusCode) {
-            Contract.Requires<ArgumentNullException>(statusCode != null);
+            if (statusCode == null) {
+                throw new ArgumentNullException(nameof(statusCode));
+            }
+
             this.statusCode = statusCode;
         }
 
@@ -77,7 +79,10 @@ namespace Abc.Xacml.Context {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.statusCode = value;
             }
         }

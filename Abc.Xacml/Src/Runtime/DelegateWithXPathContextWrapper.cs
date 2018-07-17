@@ -19,27 +19,30 @@
 
 namespace Abc.Xacml.Runtime {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Reflection;
-    using System.Xml;
 
     /// <summary>
     /// The wrapper class for delegate.
     /// </summary>
     public class DelegateWithXPathContextWrapper : DelegateWrapper {
+        public DelegateWithXPathContextWrapper(Type type, MethodInfo method)
+            : base(type, method) {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateWithXPathContextWrapper"/> class.
         /// </summary>
         /// <param name="del">The delegate.</param>
         public DelegateWithXPathContextWrapper(Delegate del)
-            : base(del) { 
+            : base(del) {
         }
 
         /// <inheritdoc/>
         public override object DynamicInvoke(XPathContext xpathContext, params object[] param) {
-            Contract.Requires<ArgumentNullException>(xpathContext != null);
+            if (xpathContext == null) {
+                throw new ArgumentNullException(nameof(xpathContext));
+            }
 
             try {
                 // fix params keyword

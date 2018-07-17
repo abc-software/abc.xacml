@@ -16,11 +16,10 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Context {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlContextEnvironment</c> class represents an authorization decision result for the resource.
@@ -40,7 +39,6 @@ namespace Abc.Xacml.Context {
         /// <param name="attributes">The attributes.</param>
         public XacmlContextEnvironment(IEnumerable<XacmlContextAttribute> attributes)
             : base(attributes) {
-            Contract.Requires<ArgumentNullException>(attributes != null);
         }
     }
 }

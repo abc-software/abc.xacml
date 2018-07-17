@@ -20,16 +20,11 @@
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.Contracts;
+    using System.Diagnostics;
     using System.Linq;
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class EvaluationEngine {
         public IXacmlPolicyRepository ch;
@@ -61,7 +56,9 @@ namespace Abc.Xacml.Runtime {
         /// </summary>
         /// <param name="policy">The XACML policy.</param>
         public EvaluationEngine(XacmlPolicy policy) {
-            Contract.Requires<ArgumentNullException>(policy != null);
+            if (policy == null) {
+                throw new ArgumentNullException(nameof(policy));
+            }
 
             this.types = DataTypeProcessor.Instance;
             this.functions = FunctionsProcessor.Instance;
@@ -76,7 +73,9 @@ namespace Abc.Xacml.Runtime {
         /// </summary>
         /// <param name="policySet">The XACML policy set.</param>
         public EvaluationEngine(XacmlPolicySet policySet) {
-            Contract.Requires<ArgumentNullException>(policySet != null);
+            if (policySet == null) {
+                throw new ArgumentNullException(nameof(policySet));
+            }
 
             this.types = DataTypeProcessor.Instance;
             this.functions = FunctionsProcessor.Instance;
@@ -93,8 +92,13 @@ namespace Abc.Xacml.Runtime {
         /// <param name="requestDoc">The request document.</param>
         /// <returns>The response.</returns>
         public virtual XacmlContextResponse Evaluate(XacmlContextRequest request, XmlDocument requestDoc) {
-            Contract.Requires<ArgumentNullException>(request != null);
-            Contract.Requires<ArgumentNullException>(requestDoc != null);
+            if (request == null) {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (requestDoc == null) {
+                throw new ArgumentNullException(nameof(requestDoc));
+            }
 
             this.requestDoc = requestDoc;
             this.obligations = new Dictionary<XacmlEffectType, List<XacmlObligation>>()
@@ -107,8 +111,11 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected virtual IEnumerable<XacmlContextResult> RequestEvaluate(XacmlContextRequest request) {
-            Contract.Requires<ArgumentNullException>(request != null);
-            Contract.Assert(this.requestDoc != null);
+            if (request == null) {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            Debug.Assert(this.requestDoc != null);
 
             this.pip = new PolicyInformationPoint(request, this.requestDoc);
 
@@ -127,11 +134,11 @@ namespace Abc.Xacml.Runtime {
                 var refRequest = new XacmlContextRequest(resource, request.Action, request.Subjects);
                 return this.RequestEvaluate(refRequest);
             }
-             */ 
+             */
 
             XacmlContextResult result = null;
             try {
-                XacmlDecisionResult decisionResult; 
+                XacmlDecisionResult decisionResult;
                 if (this.policySet != null) {
                     decisionResult = this.PolicySetEvaluate(this.policySet);
                 }
@@ -139,13 +146,13 @@ namespace Abc.Xacml.Runtime {
                     decisionResult = this.PolicyEvaluate(this.policy);
                 }
                 else {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new InvalidOperationException("Policy missing"));
+                    throw new InvalidOperationException("Policy missing");
                 }
 
                 result = this.MakeResult(decisionResult, new XacmlContextStatus(XacmlContextStatusCode.Success));
             }
             catch (XacmlException ex) {
-                DiagnosticTools.ExceptionUtil.ThrowHelperError(ex);
+                // TODO: trace warning DiagnosticTools.ExceptionUtil.ThrowHelperError(ex);
                 result = this.MakeResult(XacmlDecisionResult.Indeterminate, new XacmlContextStatus(new XacmlContextStatusCode(ex.StatusCode)) { StatusMessage = ex.Message });
             }
 
@@ -194,7 +201,9 @@ namespace Abc.Xacml.Runtime {
         /// <param name="policySet">Izveidotājs PolicySet objekts</param>
         /// <returns></returns>
         public virtual XacmlDecisionResult PolicySetEvaluate(XacmlPolicySet policySet) {
-            Contract.Requires<ArgumentNullException>(policySet != null);
+            if (policySet == null) {
+                throw new ArgumentNullException(nameof(policySet));
+            }
 
             ///// <Target>                <Policy>                                    <Policy Set>
             ///// "Match"                 At least one rule value is its Decision     Specified by the policy combining algorithm
@@ -287,7 +296,7 @@ namespace Abc.Xacml.Runtime {
             foreach (Uri polRef in policySet.PolicyIdReferences) {
                 XacmlPolicy pol = this.ch.RequestPolicy(polRef);
                 if (pol == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown Policy reference: " + polRef.ToString()));
+                    throw new XacmlIndeterminateException("Unknown Policy reference: " + polRef.ToString());
                 }
 
                 policyResultsFunctions.Add(new Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>(
@@ -321,7 +330,7 @@ namespace Abc.Xacml.Runtime {
             foreach (Uri polRef in policySet.PolicySetIdReferences) {
                 XacmlPolicySet pol = this.ch.RequestPolicySet(polRef);
                 if (pol == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString()));
+                    throw new XacmlIndeterminateException("Unknown PolicySet reference: " + polRef.ToString());
                 }
 
                 policyResultsFunctions.Add(new Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>(
@@ -372,7 +381,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public virtual XacmlDecisionResult PolicyEvaluate(XacmlPolicy policy) {
-            Contract.Requires<ArgumentNullException>(policy != null);
+            if (policy == null) {
+                throw new ArgumentNullException(nameof(policy));
+            }
 
             XacmlPolicy previousPolicy = this.currentEvaluatingPolicy;
             this.currentEvaluatingPolicy = policy;
@@ -445,7 +456,9 @@ namespace Abc.Xacml.Runtime {
         /// <param name="policy"></param>
         /// <returns>Rezultats un Rule Effect type, lai varētu korrekti piemerot Rule Combined Algorithms</returns>
         protected virtual Tuple<XacmlDecisionResult, string> RuleEvaluate(XacmlRule rule) {
-            Contract.Requires<ArgumentNullException>(rule != null);
+            if (rule == null) {
+                throw new ArgumentNullException(nameof(rule));
+            }
 
             ///// <Target>            <Condition>         <Rule>
             ///// "Match"             "True"              Effect
@@ -491,24 +504,28 @@ namespace Abc.Xacml.Runtime {
         }
 
         public bool? ConditionEvaluate(XacmlExpression condition) {
-            Contract.Requires<ArgumentNullException>(condition != null);
+            if (condition == null) {
+                throw new ArgumentNullException(nameof(condition));
+            }
 
             try {
                 object conditionResult = this.ExpressionEvaluate(condition.Property);
                 return conditionResult as bool?;
             }
             catch (XacmlIndeterminateException ex) {
-                DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
+                // TODO: trace warning DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
                 return null;
             }
             catch (InvalidOperationException ex) {
-                DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
+                // TODO: trace warning DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
                 return null;
             }
         }
 
         protected virtual object ExpressionEvaluate(IXacmlApply expression) {
-            Contract.Requires<ArgumentNullException>(expression != null);
+            if (expression == null) {
+                throw new ArgumentNullException(nameof(expression));
+            }
 
             object result = null;
 
@@ -517,7 +534,7 @@ namespace Abc.Xacml.Runtime {
                 XacmlVariableReference reference = expression as XacmlVariableReference;
                 XacmlVariableDefinition definition = this.currentEvaluatingPolicy.VariableDefinitions.SingleOrDefault(o => o.VariableId == reference.VariableReference);
                 if (definition == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference));
+                    throw new XacmlInvalidSyntaxException("Missing Variable definition " + reference.VariableReference);
                 }
 
                 // Cache value
@@ -548,7 +565,7 @@ namespace Abc.Xacml.Runtime {
                 IEnumerable<string> designatorsNames = this.GetActionAttributeDesignator(design);
 
                 if (designatorsNames == null) {
-                    throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlIndeterminateException("XacmlActionAttributeDesignator indeterminate"));
+                    throw new XacmlIndeterminateException("XacmlActionAttributeDesignator indeterminate");
                 }
 
                 TypeConverterWrapper typeConverter = this.types[design.DataType.ToString()];
@@ -592,7 +609,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected object ApplyEvaluate(XacmlApply apply) {
-            Contract.Requires<ArgumentNullException>(apply != null);
+            if (apply == null) {
+                throw new ArgumentNullException(nameof(apply));
+            }
 
             // get function
             DelegateWrapper matchFunction = this.functions[apply.FunctionId.ToString()];
@@ -602,7 +621,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected virtual XacmlMatchResult TargetEvaluate(XacmlTarget target) {
-            Contract.Requires<ArgumentNullException>(target != null);
+            if (target == null) {
+                throw new ArgumentNullException(nameof(target));
+            }
 
             //// Subjects
             ///// <Subject> values                <Subjects> Value
@@ -652,8 +673,9 @@ namespace Abc.Xacml.Runtime {
             ///// least one “Indeterminate”
             ///// All “No match”                  “No match”
             XacmlMatchResult resourceResult = XacmlMatchResult.NoMatch;
-            if (target.Resources.Count == 0)
+            if (target.Resources.Count == 0) {
                 resourceResult = XacmlMatchResult.Match;
+            }
 
             foreach (XacmlResource res in target.Resources) {
                 ///// <ResourceMatch> values      <Resource> Value
@@ -693,8 +715,9 @@ namespace Abc.Xacml.Runtime {
             ///// least one “Indeterminate”
             ///// All “No match”                  “No match”
             XacmlMatchResult actionsResult = XacmlMatchResult.NoMatch;
-            if (target.Actions.Count == 0)
+            if (target.Actions.Count == 0) {
                 actionsResult = XacmlMatchResult.Match;
+            }
 
             foreach (XacmlAction act in target.Actions) {
                 ///// <ActionMatch> values        <Action> Value
@@ -734,8 +757,9 @@ namespace Abc.Xacml.Runtime {
             ///// least one “Indeterminate”
             ///// All “No match”                  “No match”
             XacmlMatchResult environmentResult = XacmlMatchResult.NoMatch;
-            if (target.Environments.Count == 0)
+            if (target.Environments.Count == 0) {
                 environmentResult = XacmlMatchResult.Match;
+            }
 
             foreach (XacmlEnvironment env in target.Environments) {
                 ///// <EnvironmentMatch> values   <Environment> Value
@@ -792,7 +816,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public bool? SubjectMatchEvaluation(XacmlSubjectMatch match) {
-            Contract.Requires<ArgumentNullException>(match != null);
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
 
             // get function
             DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
@@ -848,7 +874,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public bool? ResourceMatchEvaluation(XacmlResourceMatch match) {
-            Contract.Requires<ArgumentNullException>(match != null);
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
 
             // get function
             DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
@@ -904,7 +932,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public bool? ActionMatchEvaluation(XacmlActionMatch match) {
-            Contract.Requires<ArgumentNullException>(match != null);
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
 
             // get function
             DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
@@ -960,7 +990,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         public bool? EnvironmentMatchEvaluation(XacmlEnvironmentMatch match) {
-            Contract.Requires<ArgumentNullException>(match != null);
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
 
             // get function
             DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
@@ -1016,7 +1048,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected virtual IEnumerable<string> GetAttributeSelector(XacmlAttributeSelector selector) {
-            Contract.Requires<ArgumentNullException>(selector != null);
+            if (selector == null) {
+                throw new ArgumentNullException(nameof(selector));
+            }
 
             IEnumerable<XmlNode> attributeBag = this.pip.GetAttributeByXPath(this.xpathVersion, selector.Path, this.namespaces);
 
@@ -1031,7 +1065,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected IEnumerable<string> GetSubjectAttributeDesignator(XacmlSubjectAttributeDesignator designator) {
-            Contract.Requires<ArgumentNullException>(designator != null);
+            if (designator == null) {
+                throw new ArgumentNullException(nameof(designator));
+            }
 
             IEnumerable<string> attributeBag = this.pip.GetSubjectAttributeDesignatorValues(
                     designator.AttributeId,
@@ -1051,7 +1087,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected IEnumerable<string> GetResourceAttributeDesignator(XacmlResourceAttributeDesignator designator) {
-            Contract.Requires<ArgumentNullException>(designator != null);
+            if (designator == null) {
+                throw new ArgumentNullException(nameof(designator));
+            }
 
             IEnumerable<string> attributeBag = this.pip.GetResourceAttributeDesignatorValues(
                     designator.AttributeId,
@@ -1070,7 +1108,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected IEnumerable<string> GetActionAttributeDesignator(XacmlActionAttributeDesignator designator) {
-            Contract.Requires<ArgumentNullException>(designator != null);
+            if (designator == null) {
+                throw new ArgumentNullException(nameof(designator));
+            }
 
             IEnumerable<string> attributeBag = this.pip.GetActionAttributeDesignatorValues(
                     designator.AttributeId,
@@ -1089,7 +1129,9 @@ namespace Abc.Xacml.Runtime {
         }
 
         protected IEnumerable<string> GetEnvironmentAttributeDesignator(XacmlEnvironmentAttributeDesignator designator) {
-            Contract.Requires<ArgumentNullException>(designator != null);
+            if (designator == null) {
+                throw new ArgumentNullException(nameof(designator));
+            }
 
             IEnumerable<string> attributeBag = this.pip.GetEnvironmentAttributeDesignatorValues(
                     designator.AttributeId,

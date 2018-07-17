@@ -19,19 +19,21 @@
  
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     public class XacmlVariableDefinition : XacmlExpression {
         private object calculatedValue = null;
-
         private string variableId;
+
+        public XacmlVariableDefinition(string variableId)
+            : base() {
+            this.VariableId = variableId;
+        }
 
         public string VariableId {
             get {
                 return this.variableId;
             }
             set {
-                Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(value));
                 this.variableId = value;
             }
         }
@@ -50,11 +52,6 @@ namespace Abc.Xacml.Policy {
             set {
                 this.calculatedValue = value;
             }
-        }
-
-        public XacmlVariableDefinition(string variableId)
-            : base() {
-            this.VariableId = variableId;
         }
     }
 }

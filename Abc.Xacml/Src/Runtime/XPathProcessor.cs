@@ -16,21 +16,17 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
+#if NET40 || NET45
     using System.ComponentModel.Composition.Hosting;
-    using System.Diagnostics.Contracts;
+#endif
     using System.Xml;
     using System.Xml.XPath;
     using Abc.Xacml.DataTypes;
     using Abc.Xacml.Interfaces;
-#if NET40
-    using Diagnostic;
-#else
-    using Abc.Diagnostics;
-#endif
 
     public class XPathProcessor {
         public delegate IEnumerable<XmlNode> XPathRunner(XmlDocument xml, string xpathContextSelector, string xPathExpression, IDictionary<string, string> namespaces = null, XPathExpressionType changeContextExpression = null);
@@ -56,7 +52,7 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new XPathProcessor();
-
+#if NET40 || NET45
                             var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
                             var container = new CompositionContainer(catalog);
                             var exportedTypes = container.GetExportedValues<IXPathExtender>();
@@ -66,6 +62,7 @@ namespace Abc.Xacml.Runtime {
                                     XPathProcessor.versions.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
+#endif
                         }
                     }
                 }
@@ -81,14 +78,30 @@ namespace Abc.Xacml.Runtime {
                     return action;
                 }
 
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperArgumentNull("Unknows combining algorithm name");
+                throw new ArgumentException("Unknown combining algorithm name", nameof(value));
             }
         }
 
         public static IEnumerable<XmlNode> DotNetXPath(XmlDocument xml, string xpathContextSelector, string xPathExpression, IDictionary<string, string> namespaces, XPathExpressionType changeContextExpression) {
-            Contract.Requires<ArgumentNullException>(xml != null);
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(xpathContextSelector));
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(xPathExpression));
+            if (xml == null) {
+                throw new ArgumentNullException(nameof(xml));
+            }
+
+            if (xpathContextSelector == null) {
+                throw new ArgumentNullException(nameof(xpathContextSelector));
+            }
+
+            if (xPathExpression == null) {
+                throw new ArgumentNullException(nameof(xPathExpression));
+            }
+
+            if (xpathContextSelector.Length == 0) {
+                throw new ArgumentException("Value cannot be empty.", nameof(xpathContextSelector));
+            }
+
+            if (xPathExpression.Length == 0) {
+                throw new ArgumentException("Value cannot be empty.", nameof(xPathExpression));
+            }
 
             XmlNode context = xml.SelectSingleNode(xpathContextSelector);
 
@@ -120,7 +133,7 @@ namespace Abc.Xacml.Runtime {
 
             }
             catch (XPathException ex) {
-                throw DiagnosticTools.ExceptionUtil.ThrowHelperError(new XacmlInvalidDataTypeException("Invalid XPath query", ex));
+                throw new XacmlInvalidDataTypeException("Invalid XPath query", ex);
             }
 
             if (iterator.Count > 0) {

@@ -16,10 +16,9 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlCombinerParameter</c> class element conveys a single parameter for a policy- or rule-combining algorithm.
@@ -38,8 +37,17 @@ namespace Abc.Xacml.Policy {
         /// <param name="parameterName">The identifier of the parameter.</param>
         /// <param name="attributeValue">The value of the parameter.</param>
         public XacmlCombinerParameter(string parameterName, XacmlAttributeValue attributeValue) {
-            Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(parameterName));
-            Contract.Requires<ArgumentNullException>(attributeValue != null);
+            if (parameterName == null) {
+                throw new ArgumentNullException(nameof(parameterName));
+            }
+
+            if (parameterName.Length == 0) {
+                throw new ArgumentException("Value cannot be empty.", nameof(parameterName));
+            }
+
+            if (attributeValue == null) {
+                throw new ArgumentNullException(nameof(attributeValue));
+            }
 
             this.parameterName = parameterName;
             this.attributeValue = attributeValue;
@@ -57,7 +65,14 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(value));
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                if (value.Length == 0) {
+                    throw new ArgumentException("Value cannot be empty.", nameof(value));
+                }
+
                 this.parameterName = value;
             }
         }
@@ -74,7 +89,10 @@ namespace Abc.Xacml.Policy {
             }
 
             set {
-                Contract.Requires<ArgumentNullException>(value != null);
+                if (value == null) {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 this.attributeValue = value;
             }
         }

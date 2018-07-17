@@ -19,7 +19,6 @@
  
 namespace Abc.Xacml.Policy {
     using System;
-    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// The <c>XacmlActionAttributeDesignator</c> class element retrieves a bag of values for a named action attribute from the request context.
