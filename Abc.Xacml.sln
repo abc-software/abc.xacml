@@ -3,16 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo", "Abc.GeoXacml\Src\Abc.Xacml.Geo.csproj", "{DC486D2C-3D81-4707-9A82-B53D01A2AA05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Xacml.Geo", "Abc.GeoXacml\Src\Abc.Xacml.Geo.csproj", "{DC486D2C-3D81-4707-9A82-B53D01A2AA05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.UnitTests", "Abc.Xacml\UnitTests\Abc.Xacml.UnitTests.csproj", "{3CB08246-27A1-41AD-8116-645AF900766A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Xacml.UnitTests", "Abc.Xacml\UnitTests\Abc.Xacml.UnitTests.csproj", "{3CB08246-27A1-41AD-8116-645AF900766A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo.UnitTests", "Abc.GeoXacml\UnitTests\Abc.Xacml.Geo.UnitTests.csproj", "{076F25DD-A816-4829-B46C-4D9BBB2A0095}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Xacml.Geo.UnitTests", "Abc.GeoXacml\UnitTests\Abc.Xacml.Geo.UnitTests.csproj", "{076F25DD-A816-4829-B46C-4D9BBB2A0095}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Xacml", "Abc.Xacml\Src\Abc.Xacml.csproj", "{526BBF96-0629-4319-B5EF-B53A62564368}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6D98CD26-47FB-47ED-A1B2-BD550F4566E3}"
 	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
 		README.md = README.md
 	EndProjectSection
 EndProject

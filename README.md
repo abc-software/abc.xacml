@@ -1,4 +1,5 @@
-# abc.xacml
+[![Build Status](https://dev.azure.com/Gekiss/Abc.Xacml/_apis/build/status/abc-software.abc.xacml)](https://dev.azure.com/Gekiss/Abc.Xacml/_build/latest?definitionId=1)
+# abc.xacml 
 
 This is a .NET library was to implement the [XACML](http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xacml) specification released by [Oasis](http://www.oasis-open.org/home/index.php). 
 Library is under the GNU LGPLv3 licence. 
@@ -14,7 +15,7 @@ Features:
 * Policy repositories
 
 ### Install with NuGet package manager
-[![NuGet](https://img.shields.io/badge/nuget-v1.2.0-blue.svg)](http://nuget.abcsoftware.lv/nuget/Packages(Id='Abc.Xacml',Version='1.2.0'))
+[![NuGet status](https://img.shields.io/nuget/v/Abc.Xacml.png)](https://www.nuget.org/packages/Abc.Xacml)
 ```
 PM> Install-Package Abc.Xacml
 ```
@@ -26,7 +27,7 @@ Features:
 * This code implements GeoXACML 1.0.0
 
 ### Install with NuGet package manager
-[![NuGet](https://img.shields.io/badge/nuget-v1.2.0-blue.svg)](http://nuget.abcsoftware.lv/nuget/Packages(Id='Abc.Xacml.Geo',Version='1.2.0'))
+[![NuGet status](https://img.shields.io/nuget/v/Abc.Xacml.Geo.png)](https://www.nuget.org/packages/Abc.Xacml.Geo)
 ```
 PM> Install-Package Abc.Xacml.Geo
 ```

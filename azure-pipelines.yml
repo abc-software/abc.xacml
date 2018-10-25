@@ -28,3 +28,17 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**\bin\$(buildConfiguration)\**\*.nupkg'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: NuGetCommand@2
+  inputs:
+    command: push
+    packagesToPush: '$(build.artifactstagingdirectory)/**/*.nupkg'
+    nuGetFeedType: external
+    publishFeedCredentials: nuget.org
+
