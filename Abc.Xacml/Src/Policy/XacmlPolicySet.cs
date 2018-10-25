@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="XacmlPolicySet.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -30,6 +30,7 @@ namespace Abc.Xacml.Policy {
     /// <remarks>See the xacml:XacmlPolicySet element defined in [XacmlCore, 5.1] for more details.</remarks>
     public class XacmlPolicySet {
         public IDictionary<string, string> Namespaces { get; set; }
+
         private readonly ICollection<XacmlPolicy> policies = new Collection<XacmlPolicy>();
         private readonly ICollection<XacmlPolicySet> policySets = new Collection<XacmlPolicySet>();
         private readonly ICollection<Uri> policyIdReferences = new Collection<Uri>();
@@ -48,6 +49,7 @@ namespace Abc.Xacml.Policy {
         // v 3.0
         public XacmlPolicyIssuer PolicyIssuer { get; set; }
         public int? MaxDelegationDepth { get; set; }
+
         private readonly ICollection<XacmlObligationExpression> obligations_3_0 = new Collection<XacmlObligationExpression>();
         private readonly ICollection<XacmlAdviceExpression> advices = new Collection<XacmlAdviceExpression>();
 
@@ -135,6 +137,7 @@ namespace Abc.Xacml.Policy {
                 if (value == null) {
                     throw new ArgumentNullException(nameof(value));
                 }
+
                 this.policySetId = value;
             }
         }
@@ -143,6 +146,7 @@ namespace Abc.Xacml.Policy {
             get {
                 return this.version;
             }
+
             set {
                 if (value != null) {
                     if (System.Text.RegularExpressions.Regex.IsMatch(value, @"(\d+\.)*\d+")) {

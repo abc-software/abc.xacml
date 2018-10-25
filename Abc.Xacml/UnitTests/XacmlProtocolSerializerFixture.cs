@@ -20,6 +20,13 @@
             this.readersettings = null; //HACK:
         }
 
+        private static string TestCasePath {
+            get {
+                var dir = SetUpClass.BaseDirectory;
+                return Path.Combine(dir, @"..\..\..\_Data");
+            }
+        }
+
         #region XACML 1.0/1.1
 
         [Test()]
@@ -61,7 +68,7 @@
             }
 
             string xml = builder.ToString();
-            ValidateMessage(xml, @"..\..\_Data\cs-xacml-schema-policy-01.xsd");
+            ValidateMessage(xml, Path.Combine(TestCasePath, "cs-xacml-schema-context-01.xsd"));
         }
 
         [Test]
@@ -80,7 +87,7 @@
             }
 
             string xml = builder.ToString();
-            ValidateMessage(xml, @"..\..\_Data\cs-xacml-schema-context-01.xsd");
+            ValidateMessage(xml, Path.Combine(TestCasePath, "cs-xacml-schema-context-01.xsd"));
         }
 
         [Test]
@@ -96,13 +103,13 @@
             }
 
             string xml = builder.ToString();
-            ValidateMessage(xml, @"..\..\_Data\cs-xacml-schema-context-01.xsd");
+            ValidateMessage(xml, Path.Combine(TestCasePath, "cs-xacml-schema-context-01.xsd"));
         }
 
         [Test]
         public void ReadRequest_11() {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"..\..\_Data\XACML_Samples\1.1\Example_1\Request.xml");
+            xmlDoc.Load(Path.Combine(TestCasePath, @"XACML_Samples\1.1\Example_1\Request.xml"));
 
             var serialize = new Xacml10ProtocolSerializer();
 
@@ -156,7 +163,7 @@
         [Test]
         public void ReadPolicy_11() {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"..\..\_Data\XACML_Samples\1.1\Example_1\Rule_1.xml");
+            xmlDoc.Load(Path.Combine(TestCasePath, @"XACML_Samples\1.1\Example_1\Rule_1.xml"));
 
             var serialize = new Xacml10ProtocolSerializer();
 
@@ -171,7 +178,7 @@
         public void ReadResponse_11()
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"..\..\_Data\XACML_Samples\1.1\Example_1\Response.xml");
+            xmlDoc.Load(Path.Combine(TestCasePath, @"XACML_Samples\1.1\Example_1\Response.xml"));
 
             var serialize = new Xacml10ProtocolSerializer();
 
@@ -269,7 +276,7 @@
             }
 
             string xml = builder.ToString();
-            ValidateMessage(xml, @"..\..\_Data\access_control-xacml-2.0-policy-schema-os.xsd");
+            ValidateMessage(xml, Path.Combine(TestCasePath, "access_control-xacml-2.0-policy-schema-os.xsd"));
         }
 
 
@@ -283,6 +290,7 @@
         private XmlReaderSettings readersettings;
         private void ValidateMessage(string xml, string schema)
         {
+#if !NETSTANDARD1_6
             if (readersettings == null) {
                 readersettings = new XmlReaderSettings();
                 readersettings.IgnoreWhitespace = true;
@@ -313,6 +321,7 @@
             using (XmlReader vr = XmlReader.Create(new System.IO.StringReader(xml), readersettings)) {
                 while (vr.Read()) ;
             }
+#endif
         }
     }
 }

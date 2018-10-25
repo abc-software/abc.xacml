@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="AlgorithmsProcessor.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -20,66 +20,65 @@
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
-#if NET40 || NET45
-    using System.ComponentModel.Composition.Hosting;
-#endif
     using Abc.Xacml.Interfaces;
     using Abc.Xacml.Policy;
+
+#pragma warning disable 1591 // Missing XML comment
 
     public class AlgorithmsProcessor {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="algorithmsElementsData">
-        /// <code> IEnumerable<Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>> </code>
-        ///        IEnumerable - katrai Policy/Role
-        ///                    Tuple - parametru kopa, kura tiek nodota Algoritmu funkcijai
-        ///                         IEnumerable<XacmlCombinerParameters> - saraksts ar parametriem, kuri tiek piesaistīti konkrētam Policy/Rule
-        ///                                                                IDictionary<string, Func<object> saraksts ar funkcijam, kuras var izmantot algoritmi
-        ///                                                                                   Func - funkcija, kuru izpildot tiek iegūts Policy/Rule rezultāts
-        ///                                                                                             XacmlDecisionResult - Policy/Rule rezultāts
+        /// <code> IEnumerable{Tuple{IEnumerable{XacmlCombinerParameter}, IDictionary{string, Func{object}}}} </code>
+        ///        IEnumerable - for each Policy/Role
+        ///                    Tuple - a set of parameters that is passed to the Algorithm function
+        ///                         IEnumerable{XacmlCombinerParameters} - a list of parameters that are assigned to a particular Policy/Rule
+        ///                                                                IDictionary{string, Func{object} - a list of functions that can be used by algorithms
+        ///                                                                                   Func - a function that executes the Policy/Rule result
+        ///                                                                                             XacmlDecisionResult - Policy/Rule result
         ///                                                                                             string - Rule EffectType
         /// </param>
         /// <param name="additionalParams">
-        /// Papildparametru saraksts, CombinerParameters elements
+        /// Advanced parameter list, CombinerParameters elements
         /// </param>
         /// <returns></returns>
         public delegate XacmlDecisionResult AlgorithmsRunner(IEnumerable<Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>> algorithmsElementsData, IEnumerable<XacmlCombinerParameter> additionalParams);
 
         private static AlgorithmsProcessor processor = null;
-        private static object locker = new object();
+        private static readonly object locker = new object();
 
         /// <summary>
-        /// Nepadodu pilnu rule objektu, lai funkcijam nedot iespēju mainīt rule objektu
+        /// Do not place the full rule object in order to prevent the function from changing the rule object
         /// </summary>
         private static SortedDictionary<string, AlgorithmsRunner> algorithms = new SortedDictionary<string, AlgorithmsRunner>()
         {
-            { "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides", RuleDenyOverrides  },
-            { "urn:oasis:names:tc:xacml:1.1:rule-combining-algorithm:ordered-deny-overrides", RuleDenyOverrides  },
-            { "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:permit-overrides", RulePermitOverrides  },
-            { "urn:oasis:names:tc:xacml:1.1:rule-combining-algorithm:ordered-permit-overrides", RulePermitOverrides  },
-            { "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable", RuleFirstApplicable  },
+            { "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides", RuleDenyOverrides },
+            { "urn:oasis:names:tc:xacml:1.1:rule-combining-algorithm:ordered-deny-overrides", RuleDenyOverrides },
+            { "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:permit-overrides", RulePermitOverrides },
+            { "urn:oasis:names:tc:xacml:1.1:rule-combining-algorithm:ordered-permit-overrides", RulePermitOverrides },
+            { "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable", RuleFirstApplicable },
 
-            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:deny-overrides", PolicyDenyOverrides  },
-            { "urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:ordered-deny-overrides", PolicyDenyOverrides  },
-            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:permit-overrides", PolicyPermitOverrides  },
-            { "urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:ordered-permit-overrides", PolicyPermitOverrides  },
-            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:first-applicable", PolicyFirstApplicable  },
-            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:only-one-applicable", PolicyOnlyOneApplicable  },
+            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:deny-overrides", PolicyDenyOverrides },
+            { "urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:ordered-deny-overrides", PolicyDenyOverrides },
+            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:permit-overrides", PolicyPermitOverrides },
+            { "urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:ordered-permit-overrides", PolicyPermitOverrides },
+            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:first-applicable", PolicyFirstApplicable },
+            { "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:only-one-applicable", PolicyOnlyOneApplicable },
 
             // 3.0
-            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides", DenyOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-overrides", DenyOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-deny-overrides", DenyOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:ordered-deny-overrides", DenyOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-overrides", PermitOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:permit-overrides", PermitOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-permit-overrides", PermitOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:ordered-permit-overrides", PermitOvverides_30  },
-            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-unless-permit", DenyUnlessPermit_30  },
-            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit", DenyUnlessPermit_30  },
-            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-unless-deny", PermitUnlessDeny_30  },
-            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:permit-unless-deny", PermitUnlessDeny_30  },
+            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides", DenyOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-overrides", DenyOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-deny-overrides", DenyOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:ordered-deny-overrides", DenyOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-overrides", PermitOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:permit-overrides", PermitOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:ordered-permit-overrides", PermitOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:ordered-permit-overrides", PermitOvverides_30 },
+            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-unless-permit", DenyUnlessPermit_30 },
+            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit", DenyUnlessPermit_30 },
+            { "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-unless-deny", PermitUnlessDeny_30 },
+            { "urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:permit-unless-deny", PermitUnlessDeny_30 },
         };
 
         /// <summary>
@@ -345,10 +344,10 @@ namespace Abc.Xacml.Runtime {
         }
 
         public static XacmlDecisionResult DenyOvverides_30(IEnumerable<Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>> results, IEnumerable<XacmlCombinerParameter> additionalParams) {
-            Boolean atLeastOneErrorD = false;
-            Boolean atLeastOneErrorP = false;
-            Boolean atLeastOneErrorDP = false;
-            Boolean atLeastOnePermit = false;
+            bool atLeastOneErrorD = false;
+            bool atLeastOneErrorP = false;
+            bool atLeastOneErrorDP = false;
+            bool atLeastOnePermit = false;
 
             foreach (Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>> elem in results) {
                 Tuple<XacmlDecisionResult, string> decisionRes = (Tuple<XacmlDecisionResult, string>)elem.Item2["evaluate"]();
@@ -498,17 +497,12 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new AlgorithmsProcessor();
-#if NET40 || NET45
-                            var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
-                            var container = new CompositionContainer(catalog);
-                            var exportedTypes = container.GetExportedValues<IAlgorithmsExtender>();
-                            foreach (var t in exportedTypes) {
+                            foreach (var t in ExtensibilityManager.GetExportedTypes<IAlgorithmsExtender>()) {
                                 IDictionary<string, AlgorithmsRunner> extensionTypes = t.GetExtensionAlgorithms();
                                 foreach (var extensionType in extensionTypes) {
                                     AlgorithmsProcessor.algorithms.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
-#endif
                         }
                     }
                 }
@@ -528,4 +522,6 @@ namespace Abc.Xacml.Runtime {
             }
         }
     }
+
+#pragma warning restore 1591 // Missing XML comment
 }

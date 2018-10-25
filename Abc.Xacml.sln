@@ -1,23 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.40", "Abc.Xacml\Src\Abc.Xacml.40.csproj", "{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo", "Abc.GeoXacml\Src\Abc.Xacml.Geo.csproj", "{DC486D2C-3D81-4707-9A82-B53D01A2AA05}"
-EndProject
-Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Abc.Xacml.NuGet", "Abc.Xacml\NuGet\Abc.Xacml.NuGet.nuproj", "{3569F9F0-5E39-40AE-B37C-24855DB501FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.UnitTests", "Abc.Xacml\UnitTests\Abc.Xacml.UnitTests.csproj", "{3CB08246-27A1-41AD-8116-645AF900766A}"
 EndProject
-Project("{E09DD79A-4488-4AB9-8D3F-A7EEE78BF432}") = "Abc.Xacml.Geo.NuGet", "Abc.GeoXacml\NuGet\Abc.Xacml.Geo.NuGet.nuproj", "{8FBF74E6-DCF4-433E-8F5A-580E23FA6AA8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.Geo.UnitTests", "Abc.GeoXacml\UnitTests\Abc.Xacml.Geo.UnitTests.csproj", "{076F25DD-A816-4829-B46C-4D9BBB2A0095}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.45", "Abc.Xacml\Src\Abc.Xacml.45.csproj", "{B0C47D9B-91BC-4F6A-BA39-955813CB126B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Xacml", "Abc.Xacml\Src\Abc.Xacml.csproj", "{526BBF96-0629-4319-B5EF-B53A62564368}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.Xacml.16", "Abc.Xacml\Src\Abc.Xacml.16.csproj", "{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6D98CD26-47FB-47ED-A1B2-BD550F4566E3}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,40 +22,27 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5938FD08-4B0C-4DD0-8E69-4014A0EEE585}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC486D2C-3D81-4707-9A82-B53D01A2AA05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC486D2C-3D81-4707-9A82-B53D01A2AA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC486D2C-3D81-4707-9A82-B53D01A2AA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC486D2C-3D81-4707-9A82-B53D01A2AA05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3569F9F0-5E39-40AE-B37C-24855DB501FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3569F9F0-5E39-40AE-B37C-24855DB501FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3569F9F0-5E39-40AE-B37C-24855DB501FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3569F9F0-5E39-40AE-B37C-24855DB501FA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CB08246-27A1-41AD-8116-645AF900766A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3CB08246-27A1-41AD-8116-645AF900766A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CB08246-27A1-41AD-8116-645AF900766A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CB08246-27A1-41AD-8116-645AF900766A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8FBF74E6-DCF4-433E-8F5A-580E23FA6AA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8FBF74E6-DCF4-433E-8F5A-580E23FA6AA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8FBF74E6-DCF4-433E-8F5A-580E23FA6AA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FBF74E6-DCF4-433E-8F5A-580E23FA6AA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{076F25DD-A816-4829-B46C-4D9BBB2A0095}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0C47D9B-91BC-4F6A-BA39-955813CB126B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF4444C2-0BB2-40C2-ADBF-D715D7E63E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{526BBF96-0629-4319-B5EF-B53A62564368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{526BBF96-0629-4319-B5EF-B53A62564368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{526BBF96-0629-4319-B5EF-B53A62564368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{526BBF96-0629-4319-B5EF-B53A62564368}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5BDA7135-D0FF-42C7-9A31-EF3D7E6A3246}
 	EndGlobalSection
 EndGlobal

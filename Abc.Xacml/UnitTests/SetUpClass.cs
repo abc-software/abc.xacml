@@ -10,11 +10,18 @@ namespace Abc.Xacml.UnitTests {
     public class SetUpClass {
         [OneTimeSetUp]
         public void RunBeforeAnyTests() {
-            var dir = Path.GetDirectoryName(new Uri(typeof(SetUpClass).Assembly.CodeBase).LocalPath);
-            Environment.CurrentDirectory = dir;
+            Directory.SetCurrentDirectory(BaseDirectory);
+        }
 
-            // or
-            //Directory.SetCurrentDirectory(dir);
+        public static string BaseDirectory {
+            get {
+#if NETSTANDARD1_6
+                var dir = AppContext.BaseDirectory;
+#else
+                var dir = Path.GetDirectoryName(new Uri(typeof(Xacml30TestsCases).Assembly.CodeBase).LocalPath);
+#endif
+                return dir;
+            }
         }
     }
 }

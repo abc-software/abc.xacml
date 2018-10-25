@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="Xacml30ProtocolSerializer.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -28,8 +28,8 @@ namespace Abc.Xacml {
         /// <summary>
         /// Initializes a new instance of the <see cref="Xacml30ProtocolSerializer"/> class.
         /// </summary>
-        public Xacml30ProtocolSerializer() :
-            base(XacmlVersion.Xacml30) {
+        public Xacml30ProtocolSerializer() 
+            : base(XacmlVersion.Xacml30) {
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Match, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Match, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -53,12 +53,12 @@ namespace Abc.Xacml {
                 throw ThrowHelperXml(reader, "MatchId IsNullOrEmpty");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Match, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Match, this.Version.NamespacePolicy);
 
             var attributeValue = ReadAttributeValue(reader);
 
             XacmlMatch result;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.Version.NamespacePolicy)) {
                 var attributeDesignator = this.ReadAttributeDesignator(reader);
                 result = new XacmlMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, attributeDesignator);
             }
@@ -81,7 +81,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -98,7 +98,7 @@ namespace Abc.Xacml {
                 reader.Read();
             }
             else {
-                reader.ReadStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy);
+                reader.ReadStartElement(XacmlConstants.ElementNames.AttributeDesignator, this.Version.NamespacePolicy);
                 reader.ReadEndElement();
             }
 
@@ -117,18 +117,16 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeSelector, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            XacmlAttributeSelector result = new XacmlAttributeSelector(
+            var result = new XacmlAttributeSelector(
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category),
                 this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Path),
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.DataType),
                 this.ReadAttribute<bool>(reader, XacmlConstants.AttributeNames.MustBePresent)
-                ) {
-                ContextSelectorId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ContextSelectorId, isRequered: false)
-            };
+                ) { ContextSelectorId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ContextSelectorId, isRequered: false) };
 
             reader.ReadInnerXml();
 
@@ -146,7 +144,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -155,24 +153,24 @@ namespace Abc.Xacml {
                 return new XacmlTarget(null);
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Target, this.Version.NamespacePolicy);
 
             XacmlTarget target = new XacmlTarget(null);
 
             // AnyOf
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "Target should contain AnyOf or be empty");
             }
 
-            //this.ReadList<ICollection<ICollection<XacmlMatch>>>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy,
+            //this.ReadList<ICollection<ICollection<XacmlMatch>>>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy,
             //    a => {
-            //        a.ReadStartElement(XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy);
+            //        a.ReadStartElement(XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy);
             //        ICollection<ICollection<XacmlMatch>> am = new List<ICollection<XacmlMatch>>();
-            //        this.ReadList<ICollection<XacmlMatch>>(am, XacmlConstants.ElementNames.AllOf, this.version.NamespacePolicy,
+            //        this.ReadList<ICollection<XacmlMatch>>(am, XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy,
             //            o => {
-            //                o.ReadStartElement(XacmlConstants.ElementNames.AllOf, this.version.NamespacePolicy);
+            //                o.ReadStartElement(XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy);
             //                ICollection<XacmlMatch> m = new List<XacmlMatch>();
-            //                this.ReadList<XacmlMatch>(m, XacmlConstants.ElementNames.Match, this.version.NamespacePolicy, this.ReadMatch, o, true);
+            //                this.ReadList<XacmlMatch>(m, XacmlConstants.ElementNames.Match, this.Version.NamespacePolicy, this.ReadMatch, o, true);
             //                o.ReadEndElement();
             //                return m;
             //            }, a, true);
@@ -180,22 +178,21 @@ namespace Abc.Xacml {
             //        return am;
             //    }, reader, false);
 
-            this.ReadList<XacmlAnyOf>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy,
+            this.ReadList<XacmlAnyOf>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy,
                 a => {
-                    a.ReadStartElement(XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy);
+                    a.ReadStartElement(XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy);
                     ICollection<XacmlAllOf> am = new List<XacmlAllOf>();
-                    this.ReadList<XacmlAllOf>(am, XacmlConstants.ElementNames.AllOf, this.version.NamespacePolicy,
+                    this.ReadList<XacmlAllOf>(am, XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy,
                         o => {
-                            o.ReadStartElement(XacmlConstants.ElementNames.AllOf, this.version.NamespacePolicy);
+                            o.ReadStartElement(XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy);
                             ICollection<XacmlMatch> m = new List<XacmlMatch>();
-                            this.ReadList<XacmlMatch>(m, XacmlConstants.ElementNames.Match, this.version.NamespacePolicy, this.ReadMatch, o, true);
+                            this.ReadList<XacmlMatch>(m, XacmlConstants.ElementNames.Match, this.Version.NamespacePolicy, this.ReadMatch, o, true);
                             o.ReadEndElement();
                             return new XacmlAllOf(m);
                         }, a, true);
                     a.ReadEndElement();
                     return new XacmlAnyOf(am);
                 }, reader, false);
-
 
             reader.ReadEndElement();
             return target;
@@ -218,8 +215,8 @@ namespace Abc.Xacml {
             IXacmlApply result;
 
             switch (reader.Name) {
-                case XacmlConstants.ElementNames.VariableReference: {
-                        result = this.ReadOptional(XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy,
+                case XacmlConstants.ElementNames.VariableReference:
+                        result = this.ReadOptional(XacmlConstants.ElementNames.VariableReference, this.Version.NamespacePolicy,
                             new ReadElement<XacmlVariableReference>(
                                 o => {
                                     string res = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.VariableId);
@@ -228,30 +225,23 @@ namespace Abc.Xacml {
                                 }
                             ), reader);
                         break;
-                    }
-                case XacmlConstants.ElementNames.AttributeSelector: {
-                        result = this.ReadOptional(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy, this.ReadAttributeSelector, reader);
+                case XacmlConstants.ElementNames.AttributeSelector:
+                        result = this.ReadOptional(XacmlConstants.ElementNames.AttributeSelector, this.Version.NamespacePolicy, this.ReadAttributeSelector, reader);
                         break;
-                    }
-                case XacmlConstants.ElementNames.AttributeDesignator: {
-                        result = this.ReadOptional(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy, this.ReadAttributeDesignator, reader);
+                case XacmlConstants.ElementNames.AttributeDesignator:
+                        result = this.ReadOptional(XacmlConstants.ElementNames.AttributeDesignator, this.Version.NamespacePolicy, this.ReadAttributeDesignator, reader);
                         break;
-                    }
-                case XacmlConstants.ElementNames.AttributeValue: {
-                        result = this.ReadOptional(XacmlConstants.ElementNames.AttributeValue, this.version.NamespacePolicy, this.ReadAttributeValue, reader);
+                case XacmlConstants.ElementNames.AttributeValue:
+                        result = this.ReadOptional(XacmlConstants.ElementNames.AttributeValue, this.Version.NamespacePolicy, this.ReadAttributeValue, reader);
                         break;
-                    }
-                case XacmlConstants.ElementNames.Function: {
-                        result = this.ReadOptional(XacmlConstants.ElementNames.Function, this.version.NamespacePolicy, this.ReadFunction, reader);
+                case XacmlConstants.ElementNames.Function: 
+                        result = this.ReadOptional(XacmlConstants.ElementNames.Function, this.Version.NamespacePolicy, this.ReadFunction, reader);
                         break;
-                    }
-                case XacmlConstants.ElementNames.Apply: {
-                        result = this.ReadOptional(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy, this.ReadApply, reader);
+                case XacmlConstants.ElementNames.Apply: 
+                        result = this.ReadOptional(XacmlConstants.ElementNames.Apply, this.Version.NamespacePolicy, this.ReadApply, reader);
                         break;
-                    }
-                default: {
+                default: 
                         throw ThrowHelperXml(reader, "Wrong VariableDefinition element content");
-                    }
             }
 
             return result;
@@ -267,11 +257,11 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Condition, this.Version.NamespacePolicy);
 
             XacmlExpression condition = new XacmlExpression() {
                 Property = this.ReadExpressionType(reader)
@@ -291,28 +281,28 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Apply, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             Uri functionId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.FunctionId);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Apply, this.Version.NamespacePolicy);
 
             XacmlApply apply = new XacmlApply(functionId);
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy)) {
-                apply.Description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy)) {
+                apply.Description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy);
             }
 
             IDictionary<Tuple<string, string>, Action> dicts = new Dictionary<Tuple<string, string>, Action>()
             {
-                { new Tuple<string, string>(XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadApply(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.Function, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadFunction(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeValue, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeValue(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeSelector(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy), () => apply.Parameters.Add(this.ReadOptional(XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy,
+                { new Tuple<string, string>(XacmlConstants.ElementNames.Apply, this.Version.NamespacePolicy), () => apply.Parameters.Add(this.ReadApply(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.Function, this.Version.NamespacePolicy), () => apply.Parameters.Add(this.ReadFunction(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeValue, this.Version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeValue(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeDesignator, this.Version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeDesignator(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.AttributeSelector, this.Version.NamespacePolicy), () => apply.Parameters.Add(this.ReadAttributeSelector(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.VariableReference, this.Version.NamespacePolicy), () => apply.Parameters.Add(this.ReadOptional(XacmlConstants.ElementNames.VariableReference, this.Version.NamespacePolicy,
                             new ReadElement<XacmlVariableReference>(
                                 o =>
                                     {
@@ -340,7 +330,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attribute, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -351,9 +341,9 @@ namespace Abc.Xacml {
 
             result.Issuer = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Issuer, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Attribute, this.Version.NamespacePolicy);
 
-            this.ReadList<XacmlAttributeValue>(result.AttributeValues, XacmlConstants.ElementNames.AttributeValue, this.version.NamespacePolicy, this.ReadAttributeValue, reader, isRequired: true);
+            this.ReadList<XacmlAttributeValue>(result.AttributeValues, XacmlConstants.ElementNames.AttributeValue, this.Version.NamespacePolicy, this.ReadAttributeValue, reader, isRequired: true);
 
             reader.ReadEndElement();
 
@@ -371,7 +361,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIssuer, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -383,15 +373,15 @@ namespace Abc.Xacml {
                 return new XacmlPolicyIssuer();
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.PolicyIssuer, this.Version.NamespacePolicy);
 
             XacmlPolicyIssuer result = new XacmlPolicyIssuer();
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Content, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Content, this.Version.NamespacePolicy)) {
                 result.Content = reader.ReadInnerXml();
             }
 
-            this.ReadList<XacmlAttribute>(result.Attributes, XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy, ReadAttribute, reader, false);
+            this.ReadList<XacmlAttribute>(result.Attributes, XacmlConstants.ElementNames.Attribute, this.Version.NamespacePolicy, ReadAttribute, reader, false);
 
             reader.ReadEndElement();
 
@@ -408,7 +398,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignmentExpression, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -416,12 +406,9 @@ namespace Abc.Xacml {
             Uri category = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category, isRequered: false);
             string issuer = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Issuer, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.AttributeAssignmentExpression, this.Version.NamespacePolicy);
 
-            XacmlAttributeAssignmentExpression result = new XacmlAttributeAssignmentExpression(
-                attributeId,
-                this.ReadExpressionType(reader)
-                );
+            var result = new XacmlAttributeAssignmentExpression(attributeId, this.ReadExpressionType(reader));
 
             reader.ReadEndElement();
 
@@ -439,7 +426,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpression, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -455,14 +442,11 @@ namespace Abc.Xacml {
                 throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
-            XacmlObligationExpression result = new XacmlObligationExpression(
-                this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ObligationId),
-                effectType
-                );
+            var result = new XacmlObligationExpression(this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ObligationId), effectType);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpression, this.Version.NamespacePolicy);
 
-            this.ReadList<XacmlAttributeAssignmentExpression>(result.AttributeAssignmentExpressions, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy, this.ReadAttributeAssignmentExpression, reader, isRequired: false);
+            this.ReadList<XacmlAttributeAssignmentExpression>(result.AttributeAssignmentExpressions, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.Version.NamespacePolicy, this.ReadAttributeAssignmentExpression, reader, isRequired: false);
 
             reader.ReadEndElement();
 
@@ -480,7 +464,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpression, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -501,9 +485,9 @@ namespace Abc.Xacml {
                 effectType
                 );
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpression, this.Version.NamespacePolicy);
 
-            this.ReadList<XacmlAttributeAssignmentExpression>(result.AttributeAssignmentExpressions, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy, this.ReadAttributeAssignmentExpression, reader, isRequired: false);
+            this.ReadList<XacmlAttributeAssignmentExpression>(result.AttributeAssignmentExpressions, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.Version.NamespacePolicy, this.ReadAttributeAssignmentExpression, reader, isRequired: false);
 
             reader.ReadEndElement();
 
@@ -562,32 +546,32 @@ namespace Abc.Xacml {
 
             string version = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Version, isRequered: false);
 
-            int? maxDelegationDepth = this.ReadAttribute<int?>(reader, XacmlConstants.AttributeNames.MaxDelegationDepth, this.version.NamespacePolicy, isRequered: false);
+            int? maxDelegationDepth = this.ReadAttribute<int?>(reader, XacmlConstants.AttributeNames.MaxDelegationDepth, this.Version.NamespacePolicy, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Policy, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Policy, this.Version.NamespacePolicy);
 
             string description = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy)) {
-                description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy)) {
+                description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy);
             }
 
-            XacmlPolicyIssuer issuer = this.ReadOptional<XacmlPolicyIssuer>(XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy, this.ReadPolicyIssuer, reader);
+            XacmlPolicyIssuer issuer = this.ReadOptional<XacmlPolicyIssuer>(XacmlConstants.ElementNames.PolicyIssuer, this.Version.NamespacePolicy, this.ReadPolicyIssuer, reader);
 
             // PolicyDefault
             string xpathVersion = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.PolicyDefaults, this.Version.NamespacePolicy);
 
-                if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
+                if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy)) {
                     throw ThrowHelperXml(reader, "XPathVerison NotStartElement");
                 }
 
-                xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
+                xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy);
 
                 reader.ReadEndElement();
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Target, this.Version.NamespacePolicy)) {
                 throw new XmlException("Target IsNullOrEmpty");
             }
 
@@ -599,19 +583,19 @@ namespace Abc.Xacml {
                 PolicyIssuer = issuer,
                 MaxDelegationDepth = maxDelegationDepth,
                 Namespaces = nsMgr,
-                Version = version
+                Version = version,
             };
 
             IDictionary<Tuple<string, string>, Action> dicts = new Dictionary<Tuple<string, string>, Action>()
             {
-                { new Tuple<string, string>(XacmlConstants.ElementNames.CombinerParameters, this.version.NamespacePolicy), () => {
-                    reader.ReadStartElement(XacmlConstants.ElementNames.CombinerParameters, this.version.NamespacePolicy);
-                    this.ReadList(policy.ChoiceCombinerParameters, XacmlConstants.ElementNames.CombinerParameter, this.version.NamespacePolicy, this.ReadCombinerParameter, reader, isRequired: false);
-                    reader.ReadEndElement();
-                }},
-                { new Tuple<string, string>(XacmlConstants.ElementNames.RuleCombinerParameters, this.version.NamespacePolicy), () => policy.RuleCombinerParameters.Add(this.ReadRuleCombinerParameters(reader))},
-                { new Tuple<string, string>(XacmlConstants.ElementNames.VariableDefinition, this.version.NamespacePolicy), () => policy.VariableDefinitions.Add(this.ReadVariableDefinition(reader))},
-                { new Tuple<string, string>(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy), () => policy.Rules.Add(this.ReadRule(reader))},
+                { new Tuple<string, string>(XacmlConstants.ElementNames.CombinerParameters, this.Version.NamespacePolicy), () => {
+                    reader.ReadStartElement(XacmlConstants.ElementNames.CombinerParameters, this.Version.NamespacePolicy);
+                    this.ReadList(policy.ChoiceCombinerParameters, XacmlConstants.ElementNames.CombinerParameter, this.Version.NamespacePolicy, this.ReadCombinerParameter, reader, isRequired: false);
+                    reader.ReadEndElement(); }
+                },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.RuleCombinerParameters, this.Version.NamespacePolicy), () => policy.RuleCombinerParameters.Add(this.ReadRuleCombinerParameters(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.VariableDefinition, this.Version.NamespacePolicy), () => policy.VariableDefinitions.Add(this.ReadVariableDefinition(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.Rule, this.Version.NamespacePolicy), () => policy.Rules.Add(this.ReadRule(reader)) },
             };
 
             this.ReadChoiceMultiply(reader, dicts);
@@ -629,15 +613,15 @@ namespace Abc.Xacml {
                 throw ThrowHelperXml(reader, "RuleCombinerParameters count > 1");
             }
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy);
-                this.ReadList(policy.ObligationExpressions, XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy, this.ReadObligationExpression, reader, isRequired: true);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy);
+                this.ReadList(policy.ObligationExpressions, XacmlConstants.ElementNames.ObligationExpression, this.Version.NamespacePolicy, this.ReadObligationExpression, reader, isRequired: true);
                 reader.ReadEndElement();
             }
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy);
-                this.ReadList(policy.AdviceExpressions, XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy, this.ReadAdviceExpression, reader, isRequired: true);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy);
+                this.ReadList(policy.AdviceExpressions, XacmlConstants.ElementNames.AdviceExpression, this.Version.NamespacePolicy, this.ReadAdviceExpression, reader, isRequired: true);
                 reader.ReadEndElement();
             }
 
@@ -675,33 +659,33 @@ namespace Abc.Xacml {
             Uri gaPolicyCombiningAlgId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.PolicyCombiningAlgId);
             string version = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Version, isRequered: false);
 
-            int? maxDelegationDepth = this.ReadAttribute<int?>(reader, XacmlConstants.AttributeNames.MaxDelegationDepth, this.version.NamespacePolicy, isRequered: false);
+            int? maxDelegationDepth = this.ReadAttribute<int?>(reader, XacmlConstants.AttributeNames.MaxDelegationDepth, this.Version.NamespacePolicy, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.PolicySet, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.PolicySet, this.Version.NamespacePolicy);
 
             string description = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy)) {
-                description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy)) {
+                description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy);
             }
 
-            XacmlPolicyIssuer issuer = this.ReadOptional<XacmlPolicyIssuer>(XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy, this.ReadPolicyIssuer, reader);
+            XacmlPolicyIssuer issuer = this.ReadOptional<XacmlPolicyIssuer>(XacmlConstants.ElementNames.PolicyIssuer, this.Version.NamespacePolicy, this.ReadPolicyIssuer, reader);
 
             // PolicySetDefault
             string xpathVersion = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.PolicySetDefaults, this.Version.NamespacePolicy);
 
-                if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
+                if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy)) {
                     throw ThrowHelperXml(reader, "XPathVerison NotStartElement");
                 }
 
-                xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy);
+                xpathVersion = reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy);
 
                 reader.ReadEndElement();
             }
 
             XacmlTarget target = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Target, this.Version.NamespacePolicy)) {
                 target = ReadTarget(reader);
             }
 
@@ -711,36 +695,36 @@ namespace Abc.Xacml {
                 MaxDelegationDepth = maxDelegationDepth,
                 PolicyIssuer = issuer,
                 Namespaces = nsMgr,
-                Version = version
+                Version = version,
             };
 
             IDictionary<Tuple<string, string>, Action> dicts = new Dictionary<Tuple<string, string>, Action>()
             {
-                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySet, this.version.NamespacePolicy), () => policySet.PolicySets.Add(this.ReadPolicySet(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.Policy, this.version.NamespacePolicy), () => policySet.Policies.Add(this.ReadPolicy(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespacePolicy), () => policySet.PolicySetIdReferences_3_0.Add(this.ReadPolicySetIdReference_3_0(reader)) },
-                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespacePolicy), () => policySet.PolicyIdReferences_3_0.Add(this.ReadPolicyIdReference_3_0(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySet, this.Version.NamespacePolicy), () => policySet.PolicySets.Add(this.ReadPolicySet(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.Policy, this.Version.NamespacePolicy), () => policySet.Policies.Add(this.ReadPolicy(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySetIdReference, this.Version.NamespacePolicy), () => policySet.PolicySetIdReferences_3_0.Add(this.ReadPolicySetIdReference_3_0(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicyIdReference, this.Version.NamespacePolicy), () => policySet.PolicyIdReferences_3_0.Add(this.ReadPolicyIdReference_3_0(reader)) },
 
-                { new Tuple<string, string>(XacmlConstants.ElementNames.CombinerParameters, this.version.NamespacePolicy), () => {
-                    reader.ReadStartElement(XacmlConstants.ElementNames.CombinerParameters, this.version.NamespacePolicy);
-                    this.ReadList(policySet.CombinerParameters, XacmlConstants.ElementNames.CombinerParameter, this.version.NamespacePolicy, this.ReadCombinerParameter, reader, isRequired: false);
-                    reader.ReadEndElement();
-                }},
-                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicyCombinerParameters, this.version.NamespacePolicy), () => policySet.PolicyCombinerParameters.Add(this.ReadPolicyCombinerParameters(reader))},
-                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySetCombinerParameters, this.version.NamespacePolicy), () => policySet.PolicySetCombinerParameters.Add(this.ReadPolicySetCombinerParameters(reader))},
+                { new Tuple<string, string>(XacmlConstants.ElementNames.CombinerParameters, this.Version.NamespacePolicy), () => {
+                    reader.ReadStartElement(XacmlConstants.ElementNames.CombinerParameters, this.Version.NamespacePolicy);
+                    this.ReadList(policySet.CombinerParameters, XacmlConstants.ElementNames.CombinerParameter, this.Version.NamespacePolicy, this.ReadCombinerParameter, reader, isRequired: false);
+                    reader.ReadEndElement(); }
+                },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicyCombinerParameters, this.Version.NamespacePolicy), () => policySet.PolicyCombinerParameters.Add(this.ReadPolicyCombinerParameters(reader)) },
+                { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySetCombinerParameters, this.Version.NamespacePolicy), () => policySet.PolicySetCombinerParameters.Add(this.ReadPolicySetCombinerParameters(reader)) },
             };
 
             this.ReadChoiceMultiply(reader, dicts);
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy);
-                this.ReadList(policySet.Obligations_3_0, XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy, this.ReadObligationExpression, reader, isRequired: true);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy);
+                this.ReadList(policySet.Obligations_3_0, XacmlConstants.ElementNames.ObligationExpression, this.Version.NamespacePolicy, this.ReadObligationExpression, reader, isRequired: true);
                 reader.ReadEndElement();
             }
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy);
-                this.ReadList(policySet.Advices, XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy, this.ReadAdviceExpression, reader, isRequired: true);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy);
+                this.ReadList(policySet.Advices, XacmlConstants.ElementNames.AdviceExpression, this.Version.NamespacePolicy, this.ReadAdviceExpression, reader, isRequired: true);
                 reader.ReadEndElement();
             }
 
@@ -763,7 +747,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Rule, this.Version.NamespacePolicy)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -785,37 +769,37 @@ namespace Abc.Xacml {
                 throw ThrowHelperXml(reader, "Wrong XacmlEffectType value");
             }
 
-
             if (string.IsNullOrEmpty(gaEffect)) {
                 throw ThrowHelperXml(reader, "Effect IsNullEmpty");
             }
-            reader.ReadStartElement(XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy);
+
+            reader.ReadStartElement(XacmlConstants.ElementNames.Rule, this.Version.NamespacePolicy);
 
             string description = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy)) {
-                description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy)) {
+                description = reader.ReadElementContentAsString(XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy);
             }
 
             XacmlTarget target = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Target, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Target, this.Version.NamespacePolicy)) {
                 target = this.ReadTarget(reader);
             }
 
             XacmlExpression condition = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Condition, this.Version.NamespacePolicy)) {
                 condition = this.ReadCondition(reader);
             }
 
             XacmlRule result = new XacmlRule(gaRuleId, effectType) { Description = description, Target = target, Condition = condition };
-            if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy);
-                this.ReadList(result.Obligations, XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy, this.ReadObligationExpression, reader, isRequired: true);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy);
+                this.ReadList(result.Obligations, XacmlConstants.ElementNames.ObligationExpression, this.Version.NamespacePolicy, this.ReadObligationExpression, reader, isRequired: true);
                 reader.ReadEndElement();
             }
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy);
-                this.ReadList(result.Advices, XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy, this.ReadAdviceExpression, reader, isRequired: true);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy);
+                this.ReadList(result.Advices, XacmlConstants.ElementNames.AdviceExpression, this.Version.NamespacePolicy, this.ReadAdviceExpression, reader, isRequired: true);
                 reader.ReadEndElement();
             }
 
@@ -837,14 +821,14 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIssuer, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIssuer, this.Version.NamespacePolicy);
 
             if (!string.IsNullOrEmpty(data.Content)) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Content, this.version.NamespacePolicy, data.Content);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Content, this.Version.NamespacePolicy, data.Content);
             }
 
             foreach (XacmlAttribute attr in data.Attributes) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Attribute, this.Version.NamespacePolicy);
 
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.AttributeId, attr.AttributeId.OriginalString);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.IncludeInResult, attr.IncludeInResult.ToString());
@@ -877,7 +861,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Policy, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Policy, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicyId, data.PolicyId.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.RuleCombiningAlgId, data.RuleCombiningAlgId.OriginalString);
 
@@ -891,7 +875,7 @@ namespace Abc.Xacml {
 
             // ?Description
             if (data.Description != null) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.version.NamespacePolicy, data.Description);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy, data.Description);
             }
 
             if (data.PolicyIssuer != null) {
@@ -900,8 +884,8 @@ namespace Abc.Xacml {
 
             // PolicyDefaults
             if (data.XPathVersion != null) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyDefaults, this.version.NamespacePolicy);
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy, data.XPathVersion.ToString());
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyDefaults, this.Version.NamespacePolicy);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy, data.XPathVersion.ToString());
                 writer.WriteEndElement();
             }
 
@@ -909,7 +893,7 @@ namespace Abc.Xacml {
             this.WriteTarget(writer, data.Target);
 
             if (data.CombinerParameters.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.CombinerParameters, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.CombinerParameters, this.Version.NamespacePolicy);
 
                 foreach (var combinerParameter in data.ChoiceCombinerParameters) {
                     this.WriteCombinerParameter(writer, combinerParameter);
@@ -919,7 +903,7 @@ namespace Abc.Xacml {
             }
 
             foreach (var ruleCombinedParameters in data.RuleCombinerParameters) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.RuleCombinerParameters, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.RuleCombinerParameters, this.Version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.RuleIdRef, ruleCombinedParameters.RuleIdRef);
 
                 foreach (var combinedParameter in ruleCombinedParameters.CombinerParameters) {
@@ -939,7 +923,7 @@ namespace Abc.Xacml {
             }
 
             if (data.ObligationExpressions.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy);
 
                 foreach (XacmlObligationExpression ex in data.ObligationExpressions) {
                     this.WriteObligationExpression(writer, ex);
@@ -949,7 +933,7 @@ namespace Abc.Xacml {
             }
 
             if (data.AdviceExpressions.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy);
 
                 foreach (XacmlAdviceExpression ex in data.AdviceExpressions) {
                     this.WriteAdviceExpression(writer, ex);
@@ -975,7 +959,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySet, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySet, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicySetId, data.PolicySetId.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicyCombiningAlgId, data.PolicyCombiningAlgId.OriginalString);
 
@@ -988,7 +972,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Description != null) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.version.NamespacePolicy, data.Description);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy, data.Description);
             }
 
             if (data.PolicyIssuer != null) {
@@ -997,8 +981,8 @@ namespace Abc.Xacml {
 
             // PolicySetDefaults
             if (data.XPathVersion != null) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetDefaults, this.version.NamespacePolicy);
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy, data.XPathVersion.ToString());
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetDefaults, this.Version.NamespacePolicy);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy, data.XPathVersion.ToString());
                 writer.WriteEndElement();
             }
 
@@ -1026,7 +1010,7 @@ namespace Abc.Xacml {
             }
 
             if (data.CombinerParameters.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.CombinerParameters, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.CombinerParameters, this.Version.NamespacePolicy);
 
                 foreach (var combinerParameter in data.CombinerParameters) {
                     this.WriteCombinerParameter(writer, combinerParameter);
@@ -1036,7 +1020,7 @@ namespace Abc.Xacml {
             }
 
             foreach (var policyCombinedParameters in data.PolicyCombinerParameters) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyCombinerParameters, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyCombinerParameters, this.Version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicyIdRef, policyCombinedParameters.PolicyIdRef.OriginalString);
 
                 foreach (var combinedParameter in policyCombinedParameters.CombinerParameters) {
@@ -1047,7 +1031,7 @@ namespace Abc.Xacml {
             }
 
             foreach (var policySetCombinedParameters in data.PolicySetCombinerParameters) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetCombinerParameters, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetCombinerParameters, this.Version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.PolicySetIdRef, policySetCombinedParameters.PolicySetIdRef.OriginalString);
 
                 foreach (var combinedParameter in policySetCombinedParameters.CombinerParameters) {
@@ -1058,7 +1042,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Obligations_3_0.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy);
 
                 foreach (XacmlObligationExpression ex in data.Obligations_3_0) {
                     this.WriteObligationExpression(writer, ex);
@@ -1068,7 +1052,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Advices.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy);
 
                 foreach (XacmlAdviceExpression ex in data.Advices) {
                     this.WriteAdviceExpression(writer, ex);
@@ -1094,7 +1078,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpression, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpression, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ObligationId, data.ObligationId.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.FulfillOn, data.FulfillOn.ToString());
 
@@ -1119,7 +1103,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpression, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpression, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AdviceId, data.AdviceId.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AppliesTo, data.AppliesTo.ToString());
 
@@ -1144,7 +1128,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignmentExpression, this.Version.NamespacePolicy);
 
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AttributeId, data.AttributeId.OriginalString);
 
@@ -1175,7 +1159,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeDesignator, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeDesignator, this.Version.NamespacePolicy);
 
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Category, data.Category.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AttributeId, data.AttributeId.OriginalString);
@@ -1205,13 +1189,13 @@ namespace Abc.Xacml {
 
             Type applyElemType = data.Property.GetType();
             if (applyElemType == typeof(XacmlVariableReference)) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.VariableReference, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.VariableReference, this.Version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.VariableId, (data.Property as XacmlVariableReference).VariableReference);
                 writer.WriteEndElement();
             }
             else if (applyElemType == typeof(XacmlAttributeSelector)) {
                 XacmlAttributeSelector prop = data.Property as XacmlAttributeSelector;
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.Version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.RequestContextPath, prop.Path);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, prop.DataType.OriginalString);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, XmlConvert.ToString(prop.MustBePresent.HasValue && prop.MustBePresent.Value));
@@ -1225,7 +1209,7 @@ namespace Abc.Xacml {
                 this.WriteAttributeValue(writer, data.Property as XacmlAttributeValue);
             }
             else if (applyElemType == typeof(XacmlFunction)) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Function, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Function, this.Version.NamespacePolicy);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, (data.Property as XacmlFunction).FunctionId.OriginalString);
                 writer.WriteEndElement();
             }
@@ -1248,7 +1232,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeSelector, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Category, data.Category.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Path, data.Path);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, data.DataType.OriginalString);
@@ -1275,12 +1259,12 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Rule, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Rule, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.RuleId, data.RuleId);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Effect, data.Effect.ToString());
 
             if (data.Description != null) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.version.NamespacePolicy, data.Description);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy, data.Description);
             }
 
             if (data.Target != null) {
@@ -1292,7 +1276,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Obligations.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpressions, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.ObligationExpressions, this.Version.NamespacePolicy);
 
                 foreach (XacmlObligationExpression ex in data.Obligations) {
                     this.WriteObligationExpression(writer, ex);
@@ -1302,7 +1286,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Advices.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpressions, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AdviceExpressions, this.Version.NamespacePolicy);
 
                 foreach (XacmlAdviceExpression ex in data.Advices) {
                     this.WriteAdviceExpression(writer, ex);
@@ -1329,7 +1313,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.SubjectMatch, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.SubjectMatch, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.MatchId, data.MatchId.OriginalString);
 
             this.WriteAttributeValue(writer, data.AttributeValue);
@@ -1364,13 +1348,13 @@ namespace Abc.Xacml {
             }
 
             //// Start Target
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Target, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Target, this.Version.NamespacePolicy);
 
             foreach (ICollection<ICollection<XacmlMatch>> anyOf in data.AnyOf) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AnyOf, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy);
 
                 foreach (ICollection<XacmlMatch> allOf in anyOf) {
-                    writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AllOf, this.version.NamespacePolicy);
+                    writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy);
 
                     foreach (XacmlMatch match in allOf) {
                         this.WriteMatch(writer, match);
@@ -1400,11 +1384,11 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Apply, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Apply, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.FunctionId, data.FunctionId.OriginalString);
 
             if (data.Description != null) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.version.NamespacePolicy, data.Description);
+                writer.WriteElementString(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Description, this.Version.NamespacePolicy, data.Description);
             }
 
             foreach (IXacmlApply applyElem in data.Parameters) {
@@ -1422,7 +1406,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attributes, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attributes, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -1436,13 +1420,13 @@ namespace Abc.Xacml {
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Attributes, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Attributes, this.Version.NamespacePolicy);
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Content, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Content, this.Version.NamespacePolicy)) {
                 result.Content = reader.ReadInnerXml();
             }
 
-            this.ReadList<XacmlAttribute>(result.Attributes, XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy, ReadAttribute, reader, false);
+            this.ReadList<XacmlAttribute>(result.Attributes, XacmlConstants.ElementNames.Attribute, this.Version.NamespacePolicy, ReadAttribute, reader, false);
 
             reader.ReadEndElement();
 
@@ -1460,7 +1444,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.version.NamespaceContext)) {
+            if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -1472,34 +1456,34 @@ namespace Abc.Xacml {
                 throw new Abc.Xacml.Runtime.XacmlInvalidDataTypeException("Multiple Decision Profile not implemented");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.Version.NamespaceContext);
 
             Uri pathVersion = null;
-            if (reader.IsStartElement(XacmlConstants.ElementNames.RequestDefaults, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.RequestDefaults, this.version.NamespacePolicy);
-                if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.RequestDefaults, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.RequestDefaults, this.Version.NamespacePolicy);
+                if (!reader.IsStartElement(XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy)) {
                     throw new XmlException("XPathVerison NotStartElement");
                 }
 
-                pathVersion = new Uri(reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy), UriKind.RelativeOrAbsolute);
+                pathVersion = new Uri(reader.ReadElementContentAsString(XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy), UriKind.RelativeOrAbsolute);
                 reader.ReadEndElement();
             }
 
             List<XacmlContextAttributes> attributes = new List<XacmlContextAttributes>();
-            this.ReadList<XacmlContextAttributes>(attributes, XacmlConstants.ElementNames.Attributes, this.version.NamespaceContext, this.ReadContextAttributes, reader, isRequired: true);
+            this.ReadList<XacmlContextAttributes>(attributes, XacmlConstants.ElementNames.Attributes, this.Version.NamespaceContext, this.ReadContextAttributes, reader, isRequired: true);
 
             XacmlContextRequest result = new XacmlContextRequest(returnPolicyIdList, combinedDecision, attributes) {
-                XPathVersion = pathVersion
+                XPathVersion = pathVersion,
             };
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.MultiRequests, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.MultiRequests, this.version.NamespaceContext);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.MultiRequests, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.MultiRequests, this.Version.NamespaceContext);
 
-                this.ReadList<XacmlContextRequestReference>(result.RequestReferences, XacmlConstants.ElementNames.RequestReference, this.version.NamespaceContext,
+                this.ReadList<XacmlContextRequestReference>(result.RequestReferences, XacmlConstants.ElementNames.RequestReference, this.Version.NamespaceContext,
                     o => {
-                        reader.ReadStartElement(XacmlConstants.ElementNames.RequestReference, this.version.NamespaceContext);
+                        reader.ReadStartElement(XacmlConstants.ElementNames.RequestReference, this.Version.NamespaceContext);
                         ICollection<string> refer = new List<string>();
-                        this.ReadList<string>(refer, XacmlConstants.ElementNames.AttributesReference, this.version.NamespaceContext,
+                        this.ReadList<string>(refer, XacmlConstants.ElementNames.AttributesReference, this.Version.NamespaceContext,
                             b => {
                                 var referenceId = this.ReadAttribute<string>(b, XacmlConstants.AttributeNames.ReferenceId);
                                 b.Read();
@@ -1528,49 +1512,49 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Result, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Result, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             string resourceId = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.ResourceId, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Result, this.Version.NamespaceContext);
 
+            // Read elements
             XacmlContextResult result = new XacmlContextResult(
-                this.ReadRequired(XacmlConstants.ElementNames.Decision, this.version.NamespaceContext, ReadContextDecision, reader)
+                this.ReadRequired(XacmlConstants.ElementNames.Decision, this.Version.NamespaceContext, ReadContextDecision, reader)
                 ) {
-                Status = this.ReadOptional(XacmlConstants.ElementNames.Status, this.version.NamespaceContext, ReadContextStatus, reader),
+                Status = this.ReadOptional(XacmlConstants.ElementNames.Status, this.Version.NamespaceContext, ReadContextStatus, reader),
                 ResourceId = resourceId,
             };
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Obligations, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.Obligations, this.Version.NamespacePolicy);
 
-                this.ReadList<XacmlObligation>(result.Obligations, XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy, ReadObligation, reader, isRequired: true);
+                this.ReadList<XacmlObligation>(result.Obligations, XacmlConstants.ElementNames.Obligation, this.Version.NamespacePolicy, ReadObligation, reader, isRequired: true);
 
                 // end obligations
                 reader.ReadEndElement();
             }
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.AssociatedAdvice, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.AssociatedAdvice, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.AssociatedAdvice, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.AssociatedAdvice, this.Version.NamespacePolicy);
 
-                this.ReadList<XacmlAdvice>(result.Advices, XacmlConstants.ElementNames.Advice, this.version.NamespacePolicy, this.ReadAdvice, reader, isRequired: true);
+                this.ReadList<XacmlAdvice>(result.Advices, XacmlConstants.ElementNames.Advice, this.Version.NamespacePolicy, this.ReadAdvice, reader, isRequired: true);
 
                 // end advice
                 reader.ReadEndElement();
             }
 
-            this.ReadList<XacmlContextAttributes>(result.Attributes, XacmlConstants.ElementNames.Attributes, this.version.NamespaceContext, this.ReadContextAttributes, reader, isRequired: false);
+            this.ReadList<XacmlContextAttributes>(result.Attributes, XacmlConstants.ElementNames.Attributes, this.Version.NamespaceContext, this.ReadContextAttributes, reader, isRequired: false);
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdentifierList, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.PolicyIdentifierList, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdentifierList, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.PolicyIdentifierList, this.Version.NamespacePolicy);
 
                 IDictionary<Tuple<string, string>, Action> dicts = new Dictionary<Tuple<string, string>, Action>()
                 {
-                    { new Tuple<string, string>(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespacePolicy), () => result.PolicyIdReferences.Add(this.ReadPolicyIdReference_3_0(reader)) },
-                    { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespacePolicy), () => result.PolicySetIdReferences.Add(this.ReadPolicySetIdReference_3_0(reader)) },
+                    { new Tuple<string, string>(XacmlConstants.ElementNames.PolicyIdReference, this.Version.NamespacePolicy), () => result.PolicyIdReferences.Add(this.ReadPolicyIdReference_3_0(reader)) },
+                    { new Tuple<string, string>(XacmlConstants.ElementNames.PolicySetIdReference, this.Version.NamespacePolicy), () => result.PolicySetIdReferences.Add(this.ReadPolicySetIdReference_3_0(reader)) },
                 };
 
                 this.ReadChoiceMultiply(reader, dicts);
@@ -1593,7 +1577,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicyIdReference, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -1621,7 +1605,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.PolicySetIdReference, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -1649,16 +1633,16 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Obligation, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Obligation, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             Uri gaObligationId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ObligationId);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Obligation, this.Version.NamespacePolicy);
 
             List<XacmlAttributeAssignment> assigments = new List<XacmlAttributeAssignment>();
-            this.ReadList(assigments, XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy, this.ReadAttributeAssigment, reader, isRequired: true);
+            this.ReadList(assigments, XacmlConstants.ElementNames.AttributeAssignment, this.Version.NamespacePolicy, this.ReadAttributeAssigment, reader, isRequired: true);
 
             reader.ReadEndElement();
 
@@ -1675,16 +1659,16 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Advice, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Advice, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             Uri gaAdviceId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.AdviceId);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Advice, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Advice, this.Version.NamespacePolicy);
 
             List<XacmlAttributeAssignment> assigments = new List<XacmlAttributeAssignment>();
-            this.ReadList(assigments, XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy, this.ReadAttributeAssigment, reader, isRequired: true);
+            this.ReadList(assigments, XacmlConstants.ElementNames.AttributeAssignment, this.Version.NamespacePolicy, this.ReadAttributeAssigment, reader, isRequired: true);
 
             reader.ReadEndElement();
 
@@ -1701,7 +1685,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -1711,13 +1695,13 @@ namespace Abc.Xacml {
             Uri category = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category, isRequered: false);
             string issuer = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Issuer, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy);
+            reader.ReadStartElement(XacmlConstants.ElementNames.AttributeAssignment, this.Version.NamespacePolicy);
             string content = reader.ReadContentAsString();
             reader.ReadEndElement();
 
             return new XacmlAttributeAssignment(gaAttributeId, gaDataType, content) {
                 Category = category,
-                Issuer = issuer
+                Issuer = issuer,
             };
         }
 
@@ -1735,7 +1719,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attributes, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attributes, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Category, data.Category.OriginalString);
 
             if (data.Id != null) {
@@ -1743,11 +1727,11 @@ namespace Abc.Xacml {
             }
 
             if (!string.IsNullOrEmpty(data.Content)) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Content, this.version.NamespacePolicy, data.Content);
+                writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Content, this.Version.NamespacePolicy, data.Content);
             }
 
             foreach (var attr in data.Attributes) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attribute, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attribute, this.Version.NamespacePolicy);
 
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.AttributeId, attr.AttributeId.OriginalString);
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.IncludeInResult, attr.IncludeInResult.ToString());
@@ -1780,13 +1764,13 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Request, this.Version.NamespaceContext);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ReturnPolicyIdList, data.ReturnPolicyIdList.ToString());
             writer.WriteAttributeString(XacmlConstants.AttributeNames.CombinedDecision, data.CombinedDecision.ToString());
 
             if (data.XPathVersion != null) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.RequestDefaults, this.version.NamespacePolicy);
-                writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.XPathVersion, this.version.NamespacePolicy, data.XPathVersion.OriginalString);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.RequestDefaults, this.Version.NamespacePolicy);
+                writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.XPathVersion, this.Version.NamespacePolicy, data.XPathVersion.OriginalString);
                 writer.WriteEndElement();
             }
 
@@ -1795,13 +1779,13 @@ namespace Abc.Xacml {
             }
 
             if (data.RequestReferences.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.MultiRequests, this.version.NamespaceContext);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.MultiRequests, this.Version.NamespaceContext);
 
                 foreach (var referCol in data.RequestReferences) {
-                    writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.RequestReference, this.version.NamespaceContext);
+                    writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.RequestReference, this.Version.NamespaceContext);
 
                     foreach (string refer in referCol.AttributeReferences) {
-                        writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.AttributesReference, this.version.NamespaceContext);
+                        writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.AttributesReference, this.Version.NamespaceContext);
                         writer.WriteAttributeString(XacmlConstants.AttributeNames.ReferenceId, refer);
                         writer.WriteEndElement();
                     }
@@ -1829,7 +1813,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignment, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AttributeAssignment, this.Version.NamespacePolicy);
 
             writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, data.DataType.OriginalString);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AttributeId, data.AttributeId.OriginalString);
@@ -1866,7 +1850,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligation, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.ObligationId, data.ObligationId.OriginalString);
 
             foreach (XacmlAttributeAssignment attributeAssigment in data.AttributeAssignment) {
@@ -1890,7 +1874,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Advice, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Advice, this.Version.NamespacePolicy);
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AdviceId, data.AdviceId.OriginalString);
 
             foreach (var attributeAssigment in data.AttributeAssignment) {
@@ -1914,7 +1898,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.Version.NamespaceContext);
 
             this.WriteContextDecision(writer, data.Decision);
 
@@ -1923,7 +1907,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Obligations.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.Obligations, this.Version.NamespacePolicy);
 
                 foreach (XacmlObligation val in data.Obligations) {
                     this.WriteObligation(writer, val);
@@ -1933,7 +1917,7 @@ namespace Abc.Xacml {
             }
 
             if (data.Advices.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AssociatedAdvice, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.AssociatedAdvice, this.Version.NamespacePolicy);
 
                 foreach (XacmlAdvice val in data.Advices) {
                     this.WriteAdvice(writer, val);
@@ -1949,7 +1933,7 @@ namespace Abc.Xacml {
             }
 
             if (data.PolicyIdReferences.Count > 0 || data.PolicySetIdReferences.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIdentifierList, this.version.NamespacePolicy);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIdentifierList, this.Version.NamespacePolicy);
 
                 foreach (XacmlContextPolicyIdReference pref in data.PolicyIdReferences) {
                     this.WritePolicyIdReference(writer, pref);
@@ -1979,7 +1963,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIdReference, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicyIdReference, this.Version.NamespacePolicy);
 
             if (data.Version != null) {
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.Version, data.Version.ToString());
@@ -2010,7 +1994,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetIdReference, this.version.NamespacePolicy);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Policy, XacmlConstants.ElementNames.PolicySetIdReference, this.Version.NamespacePolicy);
 
             if (data.Version != null) {
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.Version, data.Version.ToString());
@@ -2047,7 +2031,6 @@ namespace Abc.Xacml {
 
         protected override Uri ReadPolicyIdReference(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ReadPolicyIdReference_3_0 instead");
-
         }
 
         protected override Uri ReadPolicySetIdReference(XmlReader reader) {

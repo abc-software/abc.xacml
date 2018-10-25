@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="XacmlProtocolSerializerContextWrite.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Request, this.Version.NamespaceContext);
 
             // Subject
             foreach (var subject in data.Subjects) {
@@ -67,7 +67,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(xacmlContextEnvironment));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Environment, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Environment, this.Version.NamespaceContext);
 
             foreach (var attr in xacmlContextEnvironment.Attributes) {
                 this.WriteContextAttribute(writer, attr);
@@ -85,7 +85,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(xacmlContextAction));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Action, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Action, this.Version.NamespaceContext);
 
             foreach (var attr in xacmlContextAction.Attributes) {
                 this.WriteContextAttribute(writer, attr);
@@ -103,7 +103,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Resource, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Resource, this.Version.NamespaceContext);
 
             // ResourceContent
             if (resource.ResourceContent != null) {
@@ -126,7 +126,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(xacmlContextResourceContent));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.ResourceContent, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.ResourceContent, this.Version.NamespaceContext);
 
             // UNDONE AnyAttribute
 
@@ -144,7 +144,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(subject));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Subject, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Subject, this.Version.NamespaceContext);
 
             if (subject.SubjectCategory != null) {
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.SubjectCategory, subject.SubjectCategory.ToString());
@@ -166,7 +166,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(attr));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext);
 
             writer.WriteAttributeString(XacmlConstants.AttributeNames.AttributeId, attr.AttributeId.ToString());
             writer.WriteAttributeString(XacmlConstants.AttributeNames.DataType, attr.DataType.ToString());
@@ -192,11 +192,12 @@ namespace Abc.Xacml {
             if (writer == null) {
                 throw new ArgumentNullException(nameof(writer));
             }
+
             if (xacmlContextAttributeValue == null) {
                 throw new ArgumentNullException(nameof(xacmlContextAttributeValue));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.AttributeValue, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.AttributeValue, this.Version.NamespaceContext);
 
             // UNDONE AnyAttribute
 
@@ -218,11 +219,12 @@ namespace Abc.Xacml {
             if (writer == null) {
                 throw new ArgumentNullException(nameof(writer));
             }
+
             if (data == null) {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Response, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Response, this.Version.NamespaceContext);
 
             // Results
             if (data.Results.Count == 0) {
@@ -240,11 +242,12 @@ namespace Abc.Xacml {
             if (writer == null) {
                 throw new ArgumentNullException(nameof(writer));
             }
+
             if (data == null) {
                 throw new ArgumentNullException(nameof(data));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Result, this.Version.NamespaceContext);
 
             if (!string.IsNullOrEmpty(data.ResourceId)) {
                 writer.WriteAttributeString(XacmlConstants.AttributeNames.ResourceId, data.ResourceId);
@@ -273,20 +276,21 @@ namespace Abc.Xacml {
             if (writer == null) {
                 throw new ArgumentNullException(nameof(writer));
             }
+
             if (xacmlContextStatus == null) {
                 throw new ArgumentNullException(nameof(xacmlContextStatus));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Status, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Status, this.Version.NamespaceContext);
 
             this.WriteContextStatusCode(writer, xacmlContextStatus.StatusCode);
 
             if (!string.IsNullOrEmpty(xacmlContextStatus.StatusMessage)) {
-                writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusMessage, this.version.NamespaceContext, xacmlContextStatus.StatusMessage);
+                writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusMessage, this.Version.NamespaceContext, xacmlContextStatus.StatusMessage);
             }
 
             if (xacmlContextStatus.StatusDetail.Count > 0) {
-                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusDetail, this.version.NamespaceContext);
+                writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusDetail, this.Version.NamespaceContext);
 
                 foreach (XmlElement element in xacmlContextStatus.StatusDetail) {
                     element.WriteTo(writer);
@@ -302,11 +306,12 @@ namespace Abc.Xacml {
             if (writer == null) {
                 throw new ArgumentNullException(nameof(writer));
             }
+
             if (xacmlContextStatusCode == null) {
                 throw new ArgumentNullException(nameof(xacmlContextStatusCode));
             }
 
-            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusCode, this.version.NamespaceContext);
+            writer.WriteStartElement(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.StatusCode, this.Version.NamespaceContext);
 
             writer.WriteAttributeString(XacmlConstants.AttributeNames.Value, xacmlContextStatusCode.Value.ToString());
 
@@ -344,7 +349,7 @@ namespace Abc.Xacml {
                     throw new InvalidOperationException("Wrong Decision value");
             }
 
-            writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Decision, this.version.NamespaceContext, value);
+            writer.WriteElementString(XacmlConstants.Prefixes.Context, XacmlConstants.ElementNames.Decision, this.Version.NamespaceContext, value);
         }
 
         #endregion Response

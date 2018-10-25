@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="XacmlContextResult.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -28,15 +28,17 @@ namespace Abc.Xacml.Context {
     /// </summary>
     /// <remarks>See the xacml-context:Result element defined in [XacmlCore, 6.10] for more details.</remarks>
     public class XacmlContextResult {
-        private XacmlContextDecision decision;
-        private XacmlContextStatus status;
         private readonly ICollection<XacmlObligation> obligations = new Collection<XacmlObligation>();
 
-        // 3.0
+#region XACML3.0
         private readonly ICollection<XacmlAdvice> advices = new Collection<XacmlAdvice>();
         private readonly ICollection<XacmlContextAttributes> attributes = new Collection<XacmlContextAttributes>();
         private readonly ICollection<XacmlContextPolicyIdReference> policyIdReferences = new Collection<XacmlContextPolicyIdReference>();
         private readonly ICollection<XacmlContextPolicySetIdReference> policySetIdReferences = new Collection<XacmlContextPolicySetIdReference>();
+#endregion
+
+        private XacmlContextDecision decision;
+        private XacmlContextStatus status;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XacmlContextResult"/> class.

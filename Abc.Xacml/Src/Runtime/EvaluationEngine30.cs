@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="EvaluationEngine30.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -26,20 +26,32 @@ namespace Abc.Xacml.Runtime {
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
+#if NETSTANDARD1_6
+    using System.Reflection;
+#endif
 
     public class EvaluationEngine30 : EvaluationEngine {
         protected IDictionary<XacmlEffectType, List<XacmlAdvice>> advices;
         protected IDictionary<XacmlEffectType, List<XacmlContextPolicyIdReference>> applicablePolicies;
         protected IDictionary<XacmlEffectType, List<XacmlContextPolicySetIdReference>> applicablePolicySets;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EvaluationEngine30"/> class.
+        /// </summary>
+        /// <param name="policy">The XACML policy.</param>
         public EvaluationEngine30(XacmlPolicy policy)
             : base(policy) {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EvaluationEngine30"/> class.
+        /// </summary>
+        /// <param name="policySet">The XACML policy set.</param>
         public EvaluationEngine30(XacmlPolicySet policySet)
             : base(policySet) {
         }
 
+        /// <inheritdoc/>
         public override XacmlContextResponse Evaluate(XacmlContextRequest request, XmlDocument requestDoc = null) {
             this.advices = new Dictionary<XacmlEffectType, List<XacmlAdvice>>()
             {
@@ -62,112 +74,7 @@ namespace Abc.Xacml.Runtime {
             return base.Evaluate(request, requestDoc);
         }
 
-        protected override IEnumerable<XacmlContextResult> RequestEvaluate(XacmlContextRequest request) {
-            // MultiRequests element in a Request
-            if (request.RequestReferences.Count > 0) {
-                var results = new List<XacmlContextResult>(request.RequestReferences.Count);
-                foreach (var reference in request.RequestReferences) {
-                    var refAttributes = request.Attributes.Where(x => reference.AttributeReferences.Contains(x.Id));
-                    if (refAttributes.Count() != reference.AttributeReferences.Count) {
-                        throw new XacmlInvalidSyntaxException("<RequestReference> contains an invalid reference.");
-                    }
-
-                    var refRequest = new XacmlContextRequest(request.ReturnPolicyIdList, false, refAttributes) { XPathVersion = request.XPathVersion };
-                    results.AddRange(this.RequestEvaluate(refRequest));
-                }
-
-                return results;
-            }
-
-            // multiple instances of an Attributes element with the same category ID
-            var category = request.Attributes
-                .GroupBy(o => o.Category.OriginalString)
-                .Where(x => x.Count() > 1)
-                .Select(o => o.Key).FirstOrDefault();
-            if (category != null) {
-                var results = new List<XacmlContextResult>();
-                var otherAttributes = request.Attributes.Where(x => x.Category.OriginalString != category);
-                foreach (XacmlContextAttributes categoryAttribute in request.Attributes.Where(o => o.Category.OriginalString == category)) {
-                    var refAttributes = otherAttributes.Concat(new XacmlContextAttributes[] { categoryAttribute });
-                    var refRequest = new XacmlContextRequest(request.ReturnPolicyIdList, false, refAttributes) { XPathVersion = request.XPathVersion };
-                    results.AddRange(this.RequestEvaluate(refRequest));
-                }
-
-                return results;
-            }
-
-            return base.RequestEvaluate(request);
-        }
-
-        protected override XacmlContextResult MakeResult(XacmlDecisionResult decision, XacmlContextStatus status) {
-            XacmlContextDecision resultDecision = XacmlContextDecision.NotApplicable;
-            switch (decision) {
-                case XacmlDecisionResult.Deny:
-                    resultDecision = XacmlContextDecision.Deny;
-                    break;
-                case XacmlDecisionResult.Indeterminate:
-                case XacmlDecisionResult.IndeterminateD:
-                case XacmlDecisionResult.IndeterminateP:
-                case XacmlDecisionResult.IndeterminateDP:
-                    resultDecision = XacmlContextDecision.Indeterminate;
-                    break;
-                case XacmlDecisionResult.Permit:
-                    resultDecision = XacmlContextDecision.Permit;
-                    break;
-            }
-
-            //PROFILE - Multiple Decision Profile - #POL01 (Fists())
-            var result = new XacmlContextResult(resultDecision) {
-                Status = status,
-            };
-
-            foreach (var attribute in this.pip.GetAttributesWithIncludeInResult()) {
-                result.Attributes.Add(attribute);
-            }
-
-            if (decision == XacmlDecisionResult.Permit) {
-                foreach (var obligation in this.obligations[XacmlEffectType.Permit]) {
-                    result.Obligations.Add(obligation);
-                }
-
-                foreach (var advice in this.advices[XacmlEffectType.Permit]) {
-                    result.Advices.Add(advice);
-                }
-
-                if (pip.ReturnPolicyIdList()) {
-                    foreach (var policyIdReferences in this.applicablePolicies[XacmlEffectType.Permit]) {
-                        result.PolicyIdReferences.Add(policyIdReferences);
-                    }
-
-                    foreach (var policySetIdReferences in this.applicablePolicySets[XacmlEffectType.Permit]) {
-                        result.PolicySetIdReferences.Add(policySetIdReferences);
-                    }
-                }
-            }
-
-            if (decision == XacmlDecisionResult.Deny) {
-                foreach (var obligation in this.obligations[XacmlEffectType.Deny]) {
-                    result.Obligations.Add(obligation);
-                }
-
-                foreach (var advice in this.advices[XacmlEffectType.Deny]) {
-                    result.Advices.Add(advice);
-                }
-
-                if (pip.ReturnPolicyIdList()) {
-                    foreach (var policyIdReferences in this.applicablePolicies[XacmlEffectType.Deny]) {
-                        result.PolicyIdReferences.Add(policyIdReferences);
-                    }
-
-                    foreach (var policySetIdReferences in this.applicablePolicySets[XacmlEffectType.Deny]) {
-                        result.PolicySetIdReferences.Add(policySetIdReferences);
-                    }
-                }
-            }
-
-            return result;
-        }
-
+        /// <inheritdoc/>
         public override XacmlDecisionResult PolicySetEvaluate(XacmlPolicySet policySet) {
             ///// <Target>                <Policy>                                    <Policy Set>
             ///// "Match"                 Don’t care                                  Specified by the rulecombining algorithm
@@ -210,7 +117,7 @@ namespace Abc.Xacml.Runtime {
                                     () =>
                                     {
                                         XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                        if(policyTargetResult == XacmlMatchResult.Indeterminate)
+                                        if (policyTargetResult == XacmlMatchResult.Indeterminate)
                                         {
                                             return null;
                                         }
@@ -241,7 +148,7 @@ namespace Abc.Xacml.Runtime {
                                     () =>
                                     {
                                         XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                        if(policyTargetResult == XacmlMatchResult.Indeterminate)
+                                        if (policyTargetResult == XacmlMatchResult.Indeterminate)
                                         {
                                             return null;
                                         }
@@ -279,7 +186,7 @@ namespace Abc.Xacml.Runtime {
                                     () =>
                                     {
                                         XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                        if(policyTargetResult == XacmlMatchResult.Indeterminate)
+                                        if (policyTargetResult == XacmlMatchResult.Indeterminate)
                                         {
                                             return null;
                                         }
@@ -321,7 +228,7 @@ namespace Abc.Xacml.Runtime {
                                     () =>
                                     {
                                         XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                        if(policyTargetResult == XacmlMatchResult.Indeterminate)
+                                        if (policyTargetResult == XacmlMatchResult.Indeterminate)
                                         {
                                             return null;
                                         }
@@ -341,8 +248,8 @@ namespace Abc.Xacml.Runtime {
                                 }
                             }
 
-                            algResult = this.algorithms[policySet.PolicyCombiningAlgId.ToString()].Invoke(policyResultsFunctions,
-                                policySet.CombinerParameters);
+                            algResult = this.algorithms[policySet.PolicyCombiningAlgId.ToString()]
+                                .Invoke(policyResultsFunctions, policySet.CombinerParameters);
 
                             if (targetResult == XacmlMatchResult.Indeterminate) {
                                 algResult = this.SpecifyCombiningAlgorithmResult(algResult);
@@ -447,6 +354,7 @@ namespace Abc.Xacml.Runtime {
             return algResult;
         }
 
+        /// <inheritdoc/>
         public override XacmlDecisionResult PolicyEvaluate(XacmlPolicy policy) {
             XacmlPolicy previousPolicy = this.currentEvaluatingPolicy;
             this.currentEvaluatingPolicy = policy;
@@ -482,8 +390,8 @@ namespace Abc.Xacml.Runtime {
                             }));
                     }
 
-                    algResult = this.algorithms[policy.RuleCombiningAlgId.ToString()].Invoke(ruleResultsFunctions,
-                        policy.CombinerParameters.Concat(policy.ChoiceCombinerParameters));
+                    algResult = this.algorithms[policy.RuleCombiningAlgId.ToString()]
+                        .Invoke(ruleResultsFunctions, policy.CombinerParameters.Concat(policy.ChoiceCombinerParameters));
 
                     this.currentEvaluatingPolicy = previousPolicy;
 
@@ -582,16 +490,126 @@ namespace Abc.Xacml.Runtime {
                     Version = new XacmlVersionMatchType(policy.Version)
                 });
             }
+
             if (algResult == XacmlDecisionResult.Deny) {
                 this.applicablePolicies[XacmlEffectType.Deny].Add(new XacmlContextPolicyIdReference() {
                     Value = policy.PolicyId.OriginalString,
-                    Version = new XacmlVersionMatchType(policy.Version)
+                    Version = new XacmlVersionMatchType(policy.Version),
                 });
             }
 
             return algResult;
         }
 
+        /// <inheritdoc/>
+        protected override IEnumerable<XacmlContextResult> RequestEvaluate(XacmlContextRequest request) {
+            // MultiRequests element in a Request
+            if (request.RequestReferences.Count > 0) {
+                var results = new List<XacmlContextResult>(request.RequestReferences.Count);
+                foreach (var reference in request.RequestReferences) {
+                    var refAttributes = request.Attributes.Where(x => reference.AttributeReferences.Contains(x.Id));
+                    if (refAttributes.Count() != reference.AttributeReferences.Count) {
+                        throw new XacmlInvalidSyntaxException("<RequestReference> contains an invalid reference.");
+                    }
+
+                    var refRequest = new XacmlContextRequest(request.ReturnPolicyIdList, false, refAttributes) { XPathVersion = request.XPathVersion };
+                    results.AddRange(this.RequestEvaluate(refRequest));
+                }
+
+                return results;
+            }
+
+            // multiple instances of an Attributes element with the same category ID
+            var category = request.Attributes
+                .GroupBy(o => o.Category.OriginalString)
+                .Where(x => x.Count() > 1)
+                .Select(o => o.Key).FirstOrDefault();
+            if (category != null) {
+                var results = new List<XacmlContextResult>();
+                var otherAttributes = request.Attributes.Where(x => x.Category.OriginalString != category);
+                foreach (XacmlContextAttributes categoryAttribute in request.Attributes.Where(o => o.Category.OriginalString == category)) {
+                    var refAttributes = otherAttributes.Concat(new XacmlContextAttributes[] { categoryAttribute });
+                    var refRequest = new XacmlContextRequest(request.ReturnPolicyIdList, false, refAttributes) { XPathVersion = request.XPathVersion };
+                    results.AddRange(this.RequestEvaluate(refRequest));
+                }
+
+                return results;
+            }
+
+            return base.RequestEvaluate(request);
+        }
+
+        /// <inheritdoc/>
+        protected override XacmlContextResult MakeResult(XacmlDecisionResult decision, XacmlContextStatus status) {
+            XacmlContextDecision resultDecision = XacmlContextDecision.NotApplicable;
+            switch (decision) {
+                case XacmlDecisionResult.Deny:
+                    resultDecision = XacmlContextDecision.Deny;
+                    break;
+                case XacmlDecisionResult.Indeterminate:
+                case XacmlDecisionResult.IndeterminateD:
+                case XacmlDecisionResult.IndeterminateP:
+                case XacmlDecisionResult.IndeterminateDP:
+                    resultDecision = XacmlContextDecision.Indeterminate;
+                    break;
+                case XacmlDecisionResult.Permit:
+                    resultDecision = XacmlContextDecision.Permit;
+                    break;
+            }
+
+            //PROFILE - Multiple Decision Profile - #POL01 (Fists())
+            var result = new XacmlContextResult(resultDecision) {
+                Status = status,
+            };
+
+            foreach (var attribute in this.pip.GetAttributesWithIncludeInResult()) {
+                result.Attributes.Add(attribute);
+            }
+
+            if (decision == XacmlDecisionResult.Permit) {
+                foreach (var obligation in this.obligations[XacmlEffectType.Permit]) {
+                    result.Obligations.Add(obligation);
+                }
+
+                foreach (var advice in this.advices[XacmlEffectType.Permit]) {
+                    result.Advices.Add(advice);
+                }
+
+                if (pip.ReturnPolicyIdList()) {
+                    foreach (var policyIdReferences in this.applicablePolicies[XacmlEffectType.Permit]) {
+                        result.PolicyIdReferences.Add(policyIdReferences);
+                    }
+
+                    foreach (var policySetIdReferences in this.applicablePolicySets[XacmlEffectType.Permit]) {
+                        result.PolicySetIdReferences.Add(policySetIdReferences);
+                    }
+                }
+            }
+
+            if (decision == XacmlDecisionResult.Deny) {
+                foreach (var obligation in this.obligations[XacmlEffectType.Deny]) {
+                    result.Obligations.Add(obligation);
+                }
+
+                foreach (var advice in this.advices[XacmlEffectType.Deny]) {
+                    result.Advices.Add(advice);
+                }
+
+                if (pip.ReturnPolicyIdList()) {
+                    foreach (var policyIdReferences in this.applicablePolicies[XacmlEffectType.Deny]) {
+                        result.PolicyIdReferences.Add(policyIdReferences);
+                    }
+
+                    foreach (var policySetIdReferences in this.applicablePolicySets[XacmlEffectType.Deny]) {
+                        result.PolicySetIdReferences.Add(policySetIdReferences);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc/>
         protected override Tuple<XacmlDecisionResult, string> RuleEvaluate(XacmlRule rule) {
             ///// <Target>                        <Condition>         <Rule>
             ///// "Match" or no target            "True"              Effect
@@ -644,7 +662,7 @@ namespace Abc.Xacml.Runtime {
                                 List<XacmlAttributeAssignment> attributeAssigments = new List<XacmlAttributeAssignment>();
                                 foreach (XacmlAttributeAssignmentExpression ex in expression.AttributeAssignmentExpressions) {
                                     IEnumerable<XacmlAttributeAssignment> assignment = this.AttributeAssignmentExpressionEvaluate(ex);
-                                    // ja Indeterminate, tad rezultāts arī
+                                    // if Indeterminate then result Indeterminate also
                                     if (assignment == null) {
                                         return new Tuple<XacmlDecisionResult, string>(XacmlDecisionResult.Indeterminate, Enum.GetName(typeof(XacmlEffectType), rule.Effect));
                                     }
@@ -723,25 +741,29 @@ namespace Abc.Xacml.Runtime {
             return new Tuple<XacmlDecisionResult, string>(ruleResult, Enum.GetName(typeof(XacmlEffectType), rule.Effect));
         }
 
-        /// <summary>
+        /// <inheritdoc/>
+        /// <remarks>
         /// XacmlAttributeAssignmentExpression ----> XacmlAttributeAssignment
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
+        /// </remarks>
         protected virtual IEnumerable<XacmlAttributeAssignment> AttributeAssignmentExpressionEvaluate(XacmlAttributeAssignmentExpression expression) {
             if (expression == null) {
                 throw new ArgumentNullException(nameof(expression));
             }
 
             object expressionResult = this.ExpressionEvaluate(expression.Property);
-
             if (expressionResult == null) {
                 return null;
             }
 
             List<XacmlAttributeAssignment> result = new List<XacmlAttributeAssignment>();
 
-            if ((typeof(IEnumerable)).IsAssignableFrom(expressionResult.GetType()) && !(expressionResult is string)) {
+#if NETSTANDARD1_6
+            var type = typeof(IEnumerable).GetTypeInfo();
+#else
+            var type = typeof(IEnumerable);
+#endif
+
+            if (type.IsAssignableFrom(expressionResult.GetType()) && !(expressionResult is string)) {
                 foreach (object elem in (IEnumerable)expressionResult) {
                     result.Add(this.AttributeAssignmentCreate(elem, expression));
                 }
@@ -757,6 +779,7 @@ namespace Abc.Xacml.Runtime {
             if (value == null) {
                 throw new ArgumentNullException(nameof(value));
             }
+
             if (expression == null) {
                 throw new ArgumentNullException(nameof(expression));
             }
@@ -769,12 +792,13 @@ namespace Abc.Xacml.Runtime {
 
             XacmlAttributeAssignment result = new XacmlAttributeAssignment(expression.AttributeId, typeUri, value.ToString()) {
                 Category = expression.Category,
-                Issuer = expression.Issuer
+                Issuer = expression.Issuer,
             };
 
             return result;
         }
 
+        /// <inheritdoc/>
         protected override object ExpressionEvaluate(IXacmlApply expression) {
             object result = null;
 
@@ -824,6 +848,7 @@ namespace Abc.Xacml.Runtime {
             return result;
         }
 
+        /// <inheritdoc/>
         protected override XacmlMatchResult TargetEvaluate(XacmlTarget target) {
             if (target.AnyOf.Count == 0) {
                 return XacmlMatchResult.Match;
@@ -931,6 +956,7 @@ namespace Abc.Xacml.Runtime {
                 if (!functionResult.HasValue) {
                     matchResult = null;
                 }
+
                 // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
                 else if (functionResult.Value) {
                     return true;
@@ -940,6 +966,7 @@ namespace Abc.Xacml.Runtime {
             return matchResult;
         }
 
+        /// <inheritdoc/>
         protected override IEnumerable<string> GetAttributeSelector(XacmlAttributeSelector selector) {
             IEnumerable<XmlNode> attributeBag = this.pip.GetAttributeByXPath(this.xpathVersion, selector.Path, selector.Category, selector.ContextSelectorId, this.namespaces);
 
@@ -962,8 +989,7 @@ namespace Abc.Xacml.Runtime {
                     designator.AttributeId,
                     designator.DataType,
                     designator.Issuer,
-                    designator.Category
-                    );
+                    designator.Category);
 
             if (!attributeBag.Any()) {
                 if (designator.MustBePresent.HasValue && designator.MustBePresent.Value) {

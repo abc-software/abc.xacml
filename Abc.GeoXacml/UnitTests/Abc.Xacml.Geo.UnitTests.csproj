@@ -1,105 +1,35 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{076F25DD-A816-4829-B46C-4D9BBB2A0095}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Abc.Xacml.Geo.UnitTests</RootNamespace>
-    <AssemblyName>Abc.Xacml.Geo.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
+    <TargetFrameworks>net40;net45;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>Properties\abc.snk</AssemblyOriginatorKeyFile>
+    <Authors>ABC software</Authors>
+    <Company>ABC software</Company>
+    <Product></Product>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <Copyright>Copyright © ABC software 2011-2018</Copyright>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
   </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
+  </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GeoXacmlTestsCases.cs" />
-    <Compile Include="XacmlEvaluationEngineFixture.cs" />
+    <ProjectReference Include="..\Src\Abc.Xacml.Geo.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Content Include="_Data\GeoXacml\GX001Policy.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="_Data\GeoXacml\GX001Request.xml" />
-    <Content Include="_Data\GeoXacml\GX001Response.xml" />
-    <Content Include="_Data\GeoXacml\GX002Policy.xml" />
-    <Content Include="_Data\GeoXacml\GX002Request.xml" />
-    <Content Include="_Data\GeoXacml\GX002Response.xml" />
-    <Content Include="_Data\GeoXacml\GX003Policy.xml" />
-    <Content Include="_Data\GeoXacml\GX003Request.xml" />
-    <Content Include="_Data\GeoXacml\GX003Response.xml" />
-    <Content Include="_Data\GeoXacml\GX004Policy.xml" />
-    <Content Include="_Data\GeoXacml\GX004Request.xml" />
-    <Content Include="_Data\GeoXacml\GX004Response.xml" />
-    <Content Include="_Data\GeoXacml\GX005Policy.xml" />
-    <Content Include="_Data\GeoXacml\GX005Request.xml" />
-    <Content Include="_Data\GeoXacml\GX005Response.xml" />
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Abc.Xacml\Src\Abc.Xacml.40.csproj">
-      <Project>{5938fd08-4b0c-4dd0-8e69-4014a0eee585}</Project>
-      <Name>Abc.Xacml.40</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Src\Abc.Xacml.Geo.csproj">
-      <Project>{dc486d2c-3d81-4707-9a82-b53d01a2aa05}</Project>
-      <Name>Abc.Xacml.Geo</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>@rem IF NOT EXIST "$(ProjectDir)$(OutDir)OfficialTestCases\Geo" MKDIR "$(ProjectDir)$(OutDir)OfficialTestCases\1.1"
-@rem copy "$(ProjectDir)_Data\GeoXacml\*.*" "$(ProjectDir)$(OutDir)OfficialTestCases\Geo"
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

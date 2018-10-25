@@ -1,18 +1,18 @@
 // ----------------------------------------------------------------------------
 // <copyright file="DataTypeProcessor.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -21,9 +21,6 @@ namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-#if NET40 || NET45
-    using System.ComponentModel.Composition.Hosting;
-#endif
     using System.Linq;
     using Abc.Xacml.DataTypes;
     using Abc.Xacml.Interfaces;
@@ -31,7 +28,7 @@ namespace Abc.Xacml.Runtime {
 
     public class DataTypeProcessor {
         private static DataTypeProcessor processor = null;
-        private static object locker = new object();
+        private static readonly object locker = new object();
 
         private static SortedDictionary<string, TypeConverterWrapper> typeConverters = new SortedDictionary<string, TypeConverterWrapper>()
         {
@@ -50,18 +47,18 @@ namespace Abc.Xacml.Runtime {
             { "urn:oasis:names:tc:xacml:1.0:data-type:rfc822Name", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(Rfc822Name)), typeof(Rfc822Name)) },
             { "urn:oasis:names:tc:xacml:1.0:data-type:x500Name", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(x500Name)), typeof(x500Name)) },
             { "urn:oasis:names:tc:xacml:2.0:data-type:ipAddress", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(IPAddress)), typeof(IPAddress)) },
-            { "urn:oasis:names:tc:xacml:2.0:data-type:dnsName", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(DNSName)), typeof(DNSName)) },
+            { "urn:oasis:names:tc:xacml:2.0:data-type:dnsName", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(DnsName)), typeof(DnsName)) },
         
             // 3.0
             { "http://www.w3.org/2001/XMLSchema#dayTimeDuration", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(DayTimeDuration)), typeof(DayTimeDuration)) },
             { "http://www.w3.org/2001/XMLSchema#yearMonthDuration", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(YearMonthDuration)), typeof(YearMonthDuration)) },
-            { "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(XPathExpressionType)), typeof(XPathExpressionType), 
-                (source, dest) => 
+            { "urn:oasis:names:tc:xacml:3.0:data-type:xpathExpression", new TypeConverterWrapper(TypeDescriptor.GetConverter(typeof(XPathExpressionType)), typeof(XPathExpressionType),
+                (source, dest) =>
                 {
                     XacmlAttributeValue convSource = source as XacmlAttributeValue;
                     XPathExpressionType exprType = dest as XPathExpressionType;
 
-                    if(convSource != null && exprType != null)
+                    if (convSource != null && exprType != null)
                     {
                         string xPathCategory;
                         xPathCategory = convSource.Attributes.FirstOrDefault(a => a.Name == "XPathCategory").Value;
@@ -79,18 +76,12 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new DataTypeProcessor();
-#if NET40 || NET45
-                            var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
-
-                            var container = new CompositionContainer(catalog);
-                            var exportedTypes = container.GetExportedValues<ITypesExtender>();
-                            foreach (var t in exportedTypes) {
+                            foreach (var t in ExtensibilityManager.GetExportedTypes<ITypesExtender>()) {
                                 IDictionary<string, TypeConverterWrapper> extensionTypes = t.GetExtensionTypes();
                                 foreach (var extensionType in extensionTypes) {
                                     DataTypeProcessor.typeConverters.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
-#endif
                         }
                     }
                 }

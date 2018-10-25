@@ -8,9 +8,18 @@ using System.Xml;
 
 namespace Abc.Xacml.Geo.UnitTests {
     public class GeoXacmlTestsCases {
-        internal static string TestCasePath = @"..\..\_Data\GeoXacml";
+        internal static string TestCasePath = GetTestCasePath();
         public static string[] TestCaseToIgnore = { };
         public static string[] NotRealisedPrifilesTest = { };
+
+        private static string GetTestCasePath() {
+#if NETSTANDARD1_6
+            var dir = AppContext.BaseDirectory;
+#else
+            var dir = Path.GetDirectoryName(new Uri(typeof(GeoXacmlTestsCases).Assembly.CodeBase).LocalPath);
+#endif
+            return Path.Combine(dir, @"..\..\..\_Data\GeoXacml");
+        }
 
         public static IEnumerable TestCases {
             get {

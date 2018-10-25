@@ -14,9 +14,9 @@ namespace Abc.Xacml.UnitTests {
         static string[] TestCaseToIgnore = { "IIE003", "IID029", "IID030" };
         static string[] NotRealisedProfilesTest = { 
                                                       "IIA002", // Attribute Repository
-                                                      "IIIC001", // Hierarhy
-                                                      "IIIC002", // Hierarhy
-                                                      "IIIC003", // Hierarhy
+                                                      "IIIC001", // Hierarchical
+                                                      "IIIC002", // Hierarchical
+                                                      "IIIC003", // Hierarchical
                                                   };
         static IDictionary<string, Type> TestCaseWithError = new Dictionary<string, Type>()
             {
@@ -25,8 +25,8 @@ namespace Abc.Xacml.UnitTests {
             };
 
         private static string GetTestCasePath() {
-            var dir = Path.GetDirectoryName(new Uri(typeof(Xacml11TestsCases).Assembly.CodeBase).LocalPath);
-            return Path.Combine(dir, @"..\..\_Data\XACML_Samples\1.1\OfficialTestCases");
+            var dir = SetUpClass.BaseDirectory;
+            return Path.Combine(dir, @"..\..\..\_Data\XACML_Samples\1.1\OfficialTestCases");
         }
 
         public static IEnumerable TestCases {

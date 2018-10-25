@@ -1,82 +1,95 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="FunctionExtensions.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
 
-namespace Abc.Xacml {
+namespace Abc.Xacml.Geo {
     using System;
     using System.Collections.Generic;
+#if NET40 || NET45
+    using Convertinator;
     using System.ComponentModel.Composition;
+#endif
+#if NETSTANDARD1_6 || NETSTANDARD2_0
+    using System.Composition;
+#endif
     using System.Linq;
     using System.Reflection;
     using Abc.Xacml.Interfaces;
     using Abc.Xacml.Runtime;
-    using Convertinator;
     using GeoAPI.Geometries;
 
+    /// <summary>
+    /// Geo XACML functions.
+    /// </summary>
+    /// <seealso cref="Abc.Xacml.Interfaces.IFunctionsExtender" />
     [Export(typeof(IFunctionsExtender))]
     public class FunctionExtensions : IFunctionsExtender {
         private static SortedDictionary<string, DelegateWrapper> functions = new SortedDictionary<string, DelegateWrapper>()
         {
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-equals", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Equals", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-disjoint", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Disjoint", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-touches", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Touches", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-crosses", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Crosses", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-within", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Within", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-contains", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Contains", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-overlaps", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Overlaps", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-intersects", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("Intersects", BindingFlags.Static | BindingFlags.Public)))},
-            
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-buffer", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, double, IEnumerable<Geometry>>), null, typeof(FunctionExtensions).GetMethod("Buffer", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-boundary", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, IEnumerable<Geometry>>), null, typeof(FunctionExtensions).GetMethod("Boundary", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-convex-hull", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry>), null, typeof(FunctionExtensions).GetMethod("ConvexHull", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-centroid", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry>), null, typeof(FunctionExtensions).GetMethod("Centroid", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-difference", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), null, typeof(FunctionExtensions).GetMethod("Difference", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-sym-difference", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), null, typeof(FunctionExtensions).GetMethod("SymDifference", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-intersection", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), null, typeof(FunctionExtensions).GetMethod("Intersection", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-union", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), null, typeof(FunctionExtensions).GetMethod("Union", BindingFlags.Static | BindingFlags.Public)))},
-        
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-area", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, double>), null, typeof(FunctionExtensions).GetMethod("Area", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-distance", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, double>), null, typeof(FunctionExtensions).GetMethod("Distance", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-within-distance", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, Geometry, double, bool>), null, typeof(FunctionExtensions).GetMethod("IsWithinDistance", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-length", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, double>), null, typeof(FunctionExtensions).GetMethod("Length", BindingFlags.Static | BindingFlags.Public)))},
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-equals", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Equals", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-disjoint", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Disjoint", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-touches", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Touches", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-crosses", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Crosses", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-within", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Within", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-contains", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Contains", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-overlaps", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Overlaps", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-intersects", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Intersects", BindingFlags.Static | BindingFlags.Public)) },
 
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-simple", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("IsSimple", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-closed", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("IsClosed", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-valid", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, bool>), null, typeof(FunctionExtensions).GetMethod("IsValid", BindingFlags.Static | BindingFlags.Public)))},
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-buffer", new DelegateWrapper(typeof(Func<Geometry, double, IEnumerable<Geometry>>), typeof(FunctionExtensions).GetMethod("Buffer", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-boundary", new DelegateWrapper(typeof(Func<Geometry, IEnumerable<Geometry>>), typeof(FunctionExtensions).GetMethod("Boundary", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-convex-hull", new DelegateWrapper(typeof(Func<Geometry, Geometry>), typeof(FunctionExtensions).GetMethod("ConvexHull", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-centroid", new DelegateWrapper(typeof(Func<Geometry, Geometry>), typeof(FunctionExtensions).GetMethod("Centroid", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-difference", new DelegateWrapper(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), typeof(FunctionExtensions).GetMethod("Difference", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-sym-difference", new DelegateWrapper(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), typeof(FunctionExtensions).GetMethod("SymDifference", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-intersection", new DelegateWrapper(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), typeof(FunctionExtensions).GetMethod("Intersection", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-union", new DelegateWrapper(typeof(Func<Geometry, Geometry, IEnumerable<Geometry>>), typeof(FunctionExtensions).GetMethod("Union", BindingFlags.Static | BindingFlags.Public)) },
 
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, Geometry>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("OneAndOnly", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-size", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, int>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("BagSize", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-in", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<Geometry, IEnumerable<Geometry>, bool>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIsIn", typeof(Geometry), o => new Type[]{ o, typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag", new DelegateWrapper(Delegate.CreateDelegate(typeof(FunctionsProcessor.ParamsToEnumerable<Geometry>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("CreateBag", typeof(Geometry), o => new Type[]{ o.MakeArrayType() }))) },
-        
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-intersection", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIntersection", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-at-least-one-member-of", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("TypeAtLeastOneMemberOf", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-union", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("TypeUnion", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-subset", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSubset", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-set-equals", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), null, typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSetEquals", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) }))) },
-            
-            { "urn:ogc:def:function:geoxacml:1.0:convert-to-metre", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<double, string, double>), null, typeof(FunctionExtensions).GetMethod("ConvertToMetre", BindingFlags.Static | BindingFlags.Public)))},
-            { "urn:ogc:def:function:geoxacml:1.0:convert-to-square-metre", new DelegateWrapper(Delegate.CreateDelegate(typeof(Func<double, string, double>), null, typeof(FunctionExtensions).GetMethod("ConvertToSquareMetre", BindingFlags.Static | BindingFlags.Public)))},
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-area", new DelegateWrapper(typeof(Func<Geometry, double>), typeof(FunctionExtensions).GetMethod("Area", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-distance", new DelegateWrapper(typeof(Func<Geometry, Geometry, double>), typeof(FunctionExtensions).GetMethod("Distance", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-within-distance", new DelegateWrapper(typeof(Func<Geometry, Geometry, double, bool>), typeof(FunctionExtensions).GetMethod("IsWithinDistance", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-length", new DelegateWrapper(typeof(Func<Geometry, double>), typeof(FunctionExtensions).GetMethod("Length", BindingFlags.Static | BindingFlags.Public)) },
+
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-simple", new DelegateWrapper(typeof(Func<Geometry, bool>), typeof(FunctionExtensions).GetMethod("IsSimple", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-closed", new DelegateWrapper(typeof(Func<Geometry, bool>), typeof(FunctionExtensions).GetMethod("IsClosed", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-valid", new DelegateWrapper(typeof(Func<Geometry, bool>), typeof(FunctionExtensions).GetMethod("IsValid", BindingFlags.Static | BindingFlags.Public)) },
+
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, Geometry>), typeof(FunctionsProcessor).GetGenericMethodInfo("OneAndOnly", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-size", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, int>), typeof(FunctionsProcessor).GetGenericMethodInfo("BagSize", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-in", new DelegateWrapper(typeof(Func<Geometry, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIsIn", typeof(Geometry), o => new Type[]{ o, typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag", new DelegateWrapper(typeof(FunctionsProcessor.ParamsToEnumerable<Geometry>), typeof(FunctionsProcessor).GetGenericMethodInfo("CreateBag", typeof(Geometry), o => new Type[]{ o.MakeArrayType() })) },
+
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-intersection", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIntersection", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-at-least-one-member-of", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeAtLeastOneMemberOf", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-union", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeUnion", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-subset", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSubset", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-set-equals", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSetEquals", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+#if NET40 || NET45
+            { "urn:ogc:def:function:geoxacml:1.0:convert-to-metre", new DelegateWrapper(typeof(Func<double, string, double>), typeof(FunctionExtensions).GetMethod("ConvertToMetre", BindingFlags.Static | BindingFlags.Public)) },
+            { "urn:ogc:def:function:geoxacml:1.0:convert-to-square-metre", new DelegateWrapper(typeof(Func<double, string, double>), typeof(FunctionExtensions).GetMethod("ConvertToSquareMetre", BindingFlags.Static | BindingFlags.Public)) },
+#endif
         };
 
+        /// <inheritdoc/>
         public IDictionary<string, DelegateWrapper> GetExtensionFunctions() {
             return functions;
         }
+
+#pragma warning disable 1591 // Missing XML comment
 
         #region Topological Functions
 
@@ -186,8 +199,8 @@ namespace Abc.Xacml {
 
         #endregion
 
+#if NET40 || NET45
         #region Conversion Functions
-
         public static double ConvertToMetre(double d, string unitMeasure) {
             Unit meter = new Unit("meter").IsAlsoCalled("metre").CanBeAbbreviated("m");
             Unit angstrom = new Unit("ångström").CanBeAbbreviated("Å");
@@ -284,8 +297,8 @@ namespace Abc.Xacml {
             Measurement measurement = new Measurement(unitMeasure, (decimal)d);
             return (double)system.Convert(measurement, square_meter);
         }
-
         #endregion
+#endif
 
         public static IEnumerable<IGeometry> GeometryToList(IGeometry g) {
             IGeometryCollection collection = g as IGeometryCollection;
@@ -299,5 +312,7 @@ namespace Abc.Xacml {
                 };
             }
         }
+#pragma warning restore 1591
+
     }
 }

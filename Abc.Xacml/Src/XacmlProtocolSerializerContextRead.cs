@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="XacmlProtocolSerializerContextRead.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -48,22 +48,21 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.version.NamespaceContext)) {
+            if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Request, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Request, this.Version.NamespaceContext);
 
             List<XacmlContextSubject> subjects = new List<XacmlContextSubject>();
-            this.ReadList(subjects, XacmlConstants.ElementNames.Subject, this.version.NamespaceContext, ReadContextSubject, reader, isRequired: true);
+            this.ReadList(subjects, XacmlConstants.ElementNames.Subject, this.Version.NamespaceContext, ReadContextSubject, reader, isRequired: true);
 
             XacmlContextRequest result = new XacmlContextRequest(
-                this.ReadRequired(XacmlConstants.ElementNames.Resource, this.version.NamespaceContext, this.ReadContextResource, reader),
-                this.ReadRequired(XacmlConstants.ElementNames.Action, this.version.NamespaceContext, this.ReadContextAction, reader),
-                subjects
-                );
+                this.ReadRequired(XacmlConstants.ElementNames.Resource, this.Version.NamespaceContext, this.ReadContextResource, reader),
+                this.ReadRequired(XacmlConstants.ElementNames.Action, this.Version.NamespaceContext, this.ReadContextAction, reader),
+                subjects);
 
-            result.Environment = this.ReadOptional(XacmlConstants.ElementNames.Environment, this.version.NamespaceContext, this.ReadContextEnvironment, reader);
+            result.Environment = this.ReadOptional(XacmlConstants.ElementNames.Environment, this.Version.NamespaceContext, this.ReadContextEnvironment, reader);
 
             reader.ReadEndElement();
 
@@ -75,7 +74,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Subject, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Subject, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -83,16 +82,15 @@ namespace Abc.Xacml {
             result.SubjectCategory = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.SubjectCategory, isRequered: false);
 
             // Read attributes
-
             if (reader.IsEmptyElement) {
                 reader.Read();
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Subject, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Subject, this.Version.NamespaceContext);
 
-            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext, this.ReadContextAttribute, reader);
+            // Read elements
+            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext, this.ReadContextAttribute, reader);
 
             reader.ReadEndElement();
 
@@ -104,7 +102,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -118,14 +116,14 @@ namespace Abc.Xacml {
                 issueInstant = XmlConvert.ToDateTime(issueInstantString, XmlDateTimeSerializationMode.Local);
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext);
 
-            XacmlContextAttributeValue attrVal = this.ReadRequired(XacmlConstants.ElementNames.AttributeValue, this.version.NamespaceContext, this.ReadContextAttributeValue, reader);
+            // Read elements
+            XacmlContextAttributeValue attrVal = this.ReadRequired(XacmlConstants.ElementNames.AttributeValue, this.Version.NamespaceContext, this.ReadContextAttributeValue, reader);
 
             XacmlContextAttribute result = new XacmlContextAttribute(attributeId, dataType, attrVal) {
                 Issuer = issuer,
-                IssueInstant = issueInstant
+                IssueInstant = issueInstant,
             };
 
             reader.ReadEndElement();
@@ -138,7 +136,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeValue, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.AttributeValue, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -148,7 +146,7 @@ namespace Abc.Xacml {
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.AttributeValue, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.AttributeValue, this.Version.NamespaceContext);
 
             // Read elements
             result.Value = reader.ReadContentAsString(); // JG:
@@ -164,22 +162,22 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Action, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Action, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             XacmlContextAction result = new XacmlContextAction();
-            // Read attributes
 
+            // Read attributes
             if (reader.IsEmptyElement) {
                 reader.Read();
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Action, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Action, this.Version.NamespaceContext);
 
-            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext, this.ReadContextAttribute, reader, isRequired: false);
+            // Read elements
+            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext, this.ReadContextAttribute, reader, isRequired: false);
 
             reader.ReadEndElement();
 
@@ -191,22 +189,22 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Environment, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Environment, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             XacmlContextEnvironment result = new XacmlContextEnvironment();
-            // Read attributes
 
+            // Read attributes
             if (reader.IsEmptyElement) {
                 reader.Read();
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Environment, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Environment, this.Version.NamespaceContext);
 
-            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext, this.ReadContextAttribute, reader, isRequired: false);
+            // Read elements
+            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext, this.ReadContextAttribute, reader, isRequired: false);
 
             reader.ReadEndElement();
 
@@ -218,24 +216,24 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Resource, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Resource, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             XacmlContextResource result = new XacmlContextResource();
-            // Read attributes
 
+            // Read attributes
             if (reader.IsEmptyElement) {
                 reader.Read();
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Resource, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Resource, this.Version.NamespaceContext);
+
             // Read elements
+            result.ResourceContent = this.ReadOptional(XacmlConstants.ElementNames.ResourceContent, this.Version.NamespaceContext, this.ReadContextResourceContent, reader);
 
-            result.ResourceContent = this.ReadOptional(XacmlConstants.ElementNames.ResourceContent, this.version.NamespaceContext, this.ReadContextResourceContent, reader);
-
-            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.version.NamespaceContext, this.ReadContextAttribute, reader, isRequired: false);
+            this.ReadList(result.Attributes, XacmlConstants.ElementNames.Attribute, this.Version.NamespaceContext, this.ReadContextAttribute, reader, isRequired: false);
 
             reader.ReadEndElement();
 
@@ -247,19 +245,18 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.ResourceContent, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.ResourceContent, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             // UNDONE: Read attributes
-
             XacmlContextResourceContent result = new XacmlContextResourceContent();
             if (reader.IsEmptyElement) {
                 reader.Read();
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.ResourceContent, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.ResourceContent, this.Version.NamespaceContext);
             // Read elements
             result.Value = reader.ReadOuterXml();
 
@@ -277,14 +274,14 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Response, this.version.NamespaceContext)) {
+            if (!XacmlProtocolSerializer.CanReadContext(reader, XacmlConstants.ElementNames.Response, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Response, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Response, this.Version.NamespaceContext);
 
             List<XacmlContextResult> results = new List<XacmlContextResult>();
-            this.ReadList(results, XacmlConstants.ElementNames.Result, this.version.NamespaceContext, ReadContextResult, reader, isRequired: true);
+            this.ReadList(results, XacmlConstants.ElementNames.Result, this.Version.NamespaceContext, ReadContextResult, reader, isRequired: true);
 
             XacmlContextResponse result = new XacmlContextResponse(results);
 
@@ -298,27 +295,26 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Result, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Result, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
             // Read attributes
             string resourceId = this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.ResourceId, isRequered: false);
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Result, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Result, this.Version.NamespaceContext);
 
+            // Read elements
             XacmlContextResult result = new XacmlContextResult(
-                this.ReadRequired(XacmlConstants.ElementNames.Decision, this.version.NamespaceContext, ReadContextDecision, reader),
-                this.ReadRequired(XacmlConstants.ElementNames.Status, this.version.NamespaceContext, ReadContextStatus, reader)
-                ) {
+                this.ReadRequired(XacmlConstants.ElementNames.Decision, this.Version.NamespaceContext, ReadContextDecision, reader),
+                this.ReadRequired(XacmlConstants.ElementNames.Status, this.Version.NamespaceContext, ReadContextStatus, reader)) {
                 ResourceId = resourceId,
             };
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy)) {
-                reader.ReadStartElement(XacmlConstants.ElementNames.Obligations, this.version.NamespacePolicy);
+            if (reader.IsStartElement(XacmlConstants.ElementNames.Obligations, this.Version.NamespacePolicy)) {
+                reader.ReadStartElement(XacmlConstants.ElementNames.Obligations, this.Version.NamespacePolicy);
 
-                this.ReadList<XacmlObligation>(result.Obligations, XacmlConstants.ElementNames.Obligation, this.version.NamespacePolicy, ReadObligation, reader, isRequired: false);
+                this.ReadList<XacmlObligation>(result.Obligations, XacmlConstants.ElementNames.Obligation, this.Version.NamespacePolicy, ReadObligation, reader, isRequired: false);
 
                 // end obligations
                 reader.ReadEndElement();
@@ -334,21 +330,21 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Status, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Status, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Status, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.Status, this.Version.NamespaceContext);
 
             // Read elements
-            XacmlContextStatus result = new XacmlContextStatus(this.ReadRequired(XacmlConstants.ElementNames.StatusCode, this.version.NamespaceContext, ReadContextStatusCode, reader));
+            XacmlContextStatus result = new XacmlContextStatus(this.ReadRequired(XacmlConstants.ElementNames.StatusCode, this.Version.NamespaceContext, ReadContextStatusCode, reader));
 
-            result.StatusMessage = this.ReadOptional(XacmlConstants.ElementNames.StatusMessage, this.version.NamespaceContext, ReadContextStatusMessage, reader);
+            result.StatusMessage = this.ReadOptional(XacmlConstants.ElementNames.StatusMessage, this.Version.NamespaceContext, ReadContextStatusMessage, reader);
 
-            if (reader.IsStartElement(XacmlConstants.ElementNames.StatusDetail, this.version.NamespaceContext)) {
+            if (reader.IsStartElement(XacmlConstants.ElementNames.StatusDetail, this.Version.NamespaceContext)) {
                 bool isEmptyElement = reader.IsEmptyElement;
 
-                // XmlUtil.ValidateXsiType(reader, XacmlConstants.XmlTypes.StatusDetailType, this.version.NamespaceContext);
+                // XmlUtil.ValidateXsiType(reader, XacmlConstants.XmlTypes.StatusDetailType, this.Version.NamespaceContext);
 
                 if (isEmptyElement) {
                     reader.Read();
@@ -375,13 +371,13 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.StatusMessage, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.StatusMessage, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.StatusMessage, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.StatusMessage, this.Version.NamespaceContext);
 
+            // Read elements
             if (reader.IsEmptyElement) {
                 reader.Read();
                 return string.Empty;
@@ -399,7 +395,7 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.StatusCode, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.StatusCode, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
@@ -412,9 +408,9 @@ namespace Abc.Xacml {
                 return result;
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.StatusCode, this.version.NamespaceContext);
+            reader.ReadStartElement(XacmlConstants.ElementNames.StatusCode, this.Version.NamespaceContext);
             // Read elements
-            result.StatusCode = this.ReadOptional(XacmlConstants.ElementNames.StatusCode, this.version.NamespaceContext, ReadContextStatusCode, reader);
+            result.StatusCode = this.ReadOptional(XacmlConstants.ElementNames.StatusCode, this.Version.NamespaceContext, ReadContextStatusCode, reader);
 
             reader.ReadEndElement();
 
@@ -426,13 +422,13 @@ namespace Abc.Xacml {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (!reader.IsStartElement(XacmlConstants.ElementNames.Decision, this.version.NamespaceContext)) {
+            if (!reader.IsStartElement(XacmlConstants.ElementNames.Decision, this.Version.NamespaceContext)) {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            reader.ReadStartElement(XacmlConstants.ElementNames.Decision, this.version.NamespaceContext);
-            // Read elements
+            reader.ReadStartElement(XacmlConstants.ElementNames.Decision, this.Version.NamespaceContext);
 
+            // Read elements
             string decisionText = reader.ReadContentAsString();
             XacmlContextDecision result;
 

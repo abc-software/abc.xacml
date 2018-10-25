@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="AttributesProcessor.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -20,14 +20,11 @@
 namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
-#if NET40 || NET45
-    using System.ComponentModel.Composition.Hosting;
-#endif
     using Abc.Xacml.Interfaces;
 
     internal class AttributesProcessor {
         private static AttributesProcessor processor = null;
-        private static object locker = new object();
+        private static readonly object locker = new object();
         private static SortedDictionary<string, Func<string>> attributes = new SortedDictionary<string, Func<string>>()
         {
             { "urn:oasis:names:tc:xacml:1.0:environment:current-time", () => DateTime.Now.ToUniversalTime().ToString("o") },
@@ -44,17 +41,12 @@ namespace Abc.Xacml.Runtime {
                     lock (locker) {
                         if (processor == null) {
                             processor = new AttributesProcessor();
-#if NET40 || NET45
-                            var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, "Abc.Xacml.*.dll");
-                            var container = new CompositionContainer(catalog);
-                            var exportedTypes = container.GetExportedValues<IAttributesExtender>();
-                            foreach (var t in exportedTypes) {
+                            foreach (var t in ExtensibilityManager.GetExportedTypes<IAttributesExtender>()) {
                                 IDictionary<string, Func<string>> extensionTypes = t.GetExtensionAttributes();
                                 foreach (var extensionType in extensionTypes) {
                                     AttributesProcessor.attributes.Add(extensionType.Key, extensionType.Value);
                                 }
                             }
-#endif
                         }
                     }
                 }
@@ -63,12 +55,11 @@ namespace Abc.Xacml.Runtime {
             }
         }
 
-
         /// <summary>
-        /// Gets the <see cref="System.String"/> with the specified value.
+        /// Gets the <see cref="string"/> with the specified value.
         /// </summary>
         /// <value>
-        /// The <see cref="System.String"/> function name.
+        /// The <see cref="string"/> function name.
         /// </value>
         /// <param name="value">The function name.</param>
         /// <returns>The function result.</returns>

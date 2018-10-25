@@ -8,7 +8,7 @@
     using Abc.Xacml.Context;
     using Abc.Xacml.Runtime;
     using Abc.Xacml.Policy;
-    using Moq;
+    using NSubstitute;
 
     [TestFixture]
     public class XacmlEvaluationEngineFixture {
@@ -21,7 +21,8 @@
             for (int i = 0; i < responseResults.Count; i++) {
                 Assert.AreEqual(responseResults[i].ResourceId, evaluationResults[i].ResourceId);
                 Assert.AreEqual(responseResults[i].Decision, evaluationResults[i].Decision, evaluationResults[i].Status.StatusMessage);
-                // UNDONE: Assert.AreEqual(responseResults[i].Status.StatusCode.Value, evaluationResults[i].Status.StatusCode.Value);
+                // UNDONE: 
+                //Assert.AreEqual(responseResults[i].Status.StatusCode.Value, evaluationResults[i].Status.StatusCode.Value);
 
                 Assert.AreEqual(responseResults[i].Attributes.Count, evaluationResults[i].Attributes.Count, "Attributes count mismatch");
                 foreach (var responseAttribute in responseResults[i].Attributes) {
@@ -94,11 +95,11 @@
                 aPolicySetData = serialize.ReadPolicySet(reader);
             }
 
-            Mock<IXacmlPolicyRepository> policyRepositoryMock = new Mock<IXacmlPolicyRepository>();
-            policyRepositoryMock.Setup(x => x.RequestPolicy(aPolicyData.PolicyId)).Returns(aPolicyData);
-            policyRepositoryMock.Setup(x => x.RequestPolicySet(aPolicySetData.PolicySetId)).Returns(aPolicySetData);
+            var policyRepositoryMock = Substitute.For<IXacmlPolicyRepository>();
+            policyRepositoryMock.RequestPolicy(Arg.Is(aPolicyData.PolicyId)).Returns(aPolicyData);
+            policyRepositoryMock.RequestPolicySet(Arg.Is(aPolicySetData.PolicySetId)).Returns(aPolicySetData);
 
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock.Object);
+            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 
@@ -144,12 +145,12 @@
                 policy2Data = serialize.ReadPolicy(reader);
             }
 
-            Mock<IXacmlPolicyRepository> policyRepositoryMock = new Mock<IXacmlPolicyRepository>();
-            policyRepositoryMock.Setup(x => x.RequestPolicy(policy1Data.PolicyId)).Returns(policy1Data);
-            policyRepositoryMock.Setup(x => x.RequestPolicy(policy2Data.PolicyId)).Returns(policy2Data);
-            policyRepositoryMock.Setup(x => x.RequestPolicySet(It.IsAny<Uri>())).Returns<XacmlPolicySet>(null);
+            var policyRepositoryMock = Substitute.For<IXacmlPolicyRepository>();
+            policyRepositoryMock.RequestPolicy(Arg.Is(policy1Data.PolicyId)).Returns(policy1Data);
+            policyRepositoryMock.RequestPolicy(Arg.Is(policy2Data.PolicyId)).Returns(policy2Data);
+            policyRepositoryMock.RequestPolicySet(Arg.Any<Uri>()).Returns((XacmlPolicySet)null);
 
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock.Object);
+            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 
@@ -259,7 +260,7 @@
         [Test]
         public void EvaluateRun() {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"..\..\_Data\XACML_Samples\2.0\EvaluationSampleRequest.xml"); //c:\aa.xml
+            xmlDoc.Load(@"..\..\..\_Data\XACML_Samples\2.0\EvaluationSampleRequest.xml"); //c:\aa.xml
 
             var serialize = new Xacml20ProtocolSerializer();
 
@@ -268,7 +269,7 @@
 
 
                 XmlDocument xmlDoc2 = new XmlDocument();
-                xmlDoc2.Load(@"..\..\_Data\XACML_Samples\2.0\EvaluationSamplePolicy.xml"); //c:\aa.xml
+                xmlDoc2.Load(@"..\..\..\_Data\XACML_Samples\2.0\EvaluationSamplePolicy.xml"); //c:\aa.xml
 
                 var serialize2 = new Xacml20ProtocolSerializer();
 
@@ -341,11 +342,11 @@
                 aPolicySetData = serialize.ReadPolicySet(reader);
             }
 
-            Mock<IXacmlPolicyRepository> policyRepositoryMock = new Mock<IXacmlPolicyRepository>();
-            policyRepositoryMock.Setup(x => x.RequestPolicy(aPolicyData.PolicyId)).Returns(aPolicyData);
-            policyRepositoryMock.Setup(x => x.RequestPolicySet(aPolicySetData.PolicySetId)).Returns(aPolicySetData);
+            var policyRepositoryMock = Substitute.For<IXacmlPolicyRepository>();
+            policyRepositoryMock.RequestPolicy(Arg.Is(aPolicyData.PolicyId)).Returns(aPolicyData);
+            policyRepositoryMock.RequestPolicySet(Arg.Is(aPolicySetData.PolicySetId)).Returns(aPolicySetData);
 
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock.Object);
+            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 
@@ -391,12 +392,12 @@
                     policy2Data = serialize.ReadPolicy(reader);
             }
 
-            Mock<IXacmlPolicyRepository> policyRepositoryMock = new Mock<IXacmlPolicyRepository>();
-            policyRepositoryMock.Setup(x => x.RequestPolicy(policy1Data.PolicyId)).Returns(policy1Data);
-            policyRepositoryMock.Setup(x => x.RequestPolicy(policy2Data.PolicyId)).Returns(policy2Data);
-            policyRepositoryMock.Setup(x => x.RequestPolicySet(It.IsAny<Uri>())).Returns<XacmlPolicySet>(null);
+            var policyRepositoryMock = Substitute.For<IXacmlPolicyRepository>();
+            policyRepositoryMock.RequestPolicy(Arg.Is(policy1Data.PolicyId)).Returns(policy1Data);
+            policyRepositoryMock.RequestPolicy(Arg.Is(policy2Data.PolicyId)).Returns(policy2Data);
+            policyRepositoryMock.RequestPolicySet(Arg.Any<Uri>()).Returns((XacmlPolicySet)null);
 
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock.Object);
+            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 
@@ -511,11 +512,11 @@
             XacmlContextResponse responseData;
 
             Action action = () => {
-                using (XmlReader reader = new XmlNodeReader(request.DocumentElement)) {
+                using (XmlReader reader = XmlReader.Create(new StringReader(request.OuterXml))) {
                     requestData = serialize.ReadContextRequest(reader);
                 }
 
-                using (XmlReader reader = new XmlNodeReader(response.DocumentElement)) {
+                using (XmlReader reader = XmlReader.Create(new StringReader(response.OuterXml))) {
                     responseData = serialize.ReadContextResponse(reader);
                 }
 
@@ -557,11 +558,11 @@
                 aPolicySetData = serialize.ReadPolicySet(reader);
             }
 
-            Mock<IXacmlPolicyRepository> policyRepositoryMock = new Mock<IXacmlPolicyRepository>();
-            policyRepositoryMock.Setup(x => x.RequestPolicy(aPolicyData.PolicyId)).Returns(aPolicyData);
-            policyRepositoryMock.Setup(x => x.RequestPolicySet(aPolicySetData.PolicySetId)).Returns(aPolicySetData);
+            var policyRepositoryMock = Substitute.For<IXacmlPolicyRepository>();
+            policyRepositoryMock.RequestPolicy(Arg.Is(aPolicyData.PolicyId)).Returns(aPolicyData);
+            policyRepositoryMock.RequestPolicySet(Arg.Is(aPolicySetData.PolicySetId)).Returns(aPolicySetData);
 
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock.Object);
+            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 
@@ -606,12 +607,12 @@
                     policy2Data = serialize.ReadPolicy(reader);
             }
 
-            Mock<IXacmlPolicyRepository> policyRepositoryMock = new Mock<IXacmlPolicyRepository>();
-            policyRepositoryMock.Setup(x => x.RequestPolicy(policy1Data.PolicyId)).Returns(policy1Data);
-            policyRepositoryMock.Setup(x => x.RequestPolicy(policy2Data.PolicyId)).Returns(policy2Data);
-            policyRepositoryMock.Setup(x => x.RequestPolicySet(It.IsAny<Uri>())).Returns<XacmlPolicySet>(null);
+            var policyRepositoryMock = Substitute.For<IXacmlPolicyRepository>();
+            policyRepositoryMock.RequestPolicy(Arg.Is(policy1Data.PolicyId)).Returns(policy1Data);
+            policyRepositoryMock.RequestPolicy(Arg.Is(policy2Data.PolicyId)).Returns(policy2Data);
+            policyRepositoryMock.RequestPolicySet(Arg.Any<Uri>()).Returns((XacmlPolicySet)null);
 
-            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock.Object);
+            EvaluationEngine engine = EvaluationEngineFactory.Create(policy, policyRepositoryMock);
 
             XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 

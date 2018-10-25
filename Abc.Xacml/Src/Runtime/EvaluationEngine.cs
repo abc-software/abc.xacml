@@ -1,18 +1,18 @@
 ﻿// ----------------------------------------------------------------------------
 // <copyright file="EvaluationEngine.cs" company="ABC Software Ltd">
-//    Copyright © 2015 ABC Software Ltd. All rights reserved.
+//    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
-//    This library is free software; you can redistribute it and/or
+//    This library is free software; you can redistribute it and/or.
 //    modify it under the terms of the GNU Lesser General Public
-//    License  as published by the Free Software Foundation, either 
-//    version 3 of the License, or (at your option) any later version. 
+//    License  as published by the Free Software Foundation, either
+//    version 3 of the License, or (at your option) any later version.
 //
-//    This library is distributed in the hope that it will be useful, 
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of 
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //    Lesser General Public License for more details.
 //
-//    You should have received a copy of the GNU Lesser General Public 
+//    You should have received a copy of the GNU Lesser General Public
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
@@ -110,91 +110,6 @@ namespace Abc.Xacml.Runtime {
             return new XacmlContextResponse(this.RequestEvaluate(request));
         }
 
-        protected virtual IEnumerable<XacmlContextResult> RequestEvaluate(XacmlContextRequest request) {
-            if (request == null) {
-                throw new ArgumentNullException(nameof(request));
-            }
-
-            Debug.Assert(this.requestDoc != null);
-
-            this.pip = new PolicyInformationPoint(request, this.requestDoc);
-
-            // Hierarchical resources
-            /*
-            var scopeAttribute = request.Resources.SelectMany(x => x.Attributes).FirstOrDefault(y => y.AttributeId.OriginalString == "urn:oasis:names:tc:xacml:1.0:resource:scope");
-            if (scopeAttribute != null) {
-                
-                var resourceAttrubute = request.Resources.SelectMany(x => x.Attributes).FirstOrDefault(y => y.AttributeId.OriginalString == "urn:oasis:names:tc:xacml:1.0:resource:resource-id");
-                if (resourceAttrubute == null) {
-                    // TODO: throw new XacmlPo
-                }
-
-                var resource = new XacmlContextResource(resourceAttrubute); 
-
-                var refRequest = new XacmlContextRequest(resource, request.Action, request.Subjects);
-                return this.RequestEvaluate(refRequest);
-            }
-             */
-
-            XacmlContextResult result = null;
-            try {
-                XacmlDecisionResult decisionResult;
-                if (this.policySet != null) {
-                    decisionResult = this.PolicySetEvaluate(this.policySet);
-                }
-                else if (this.policy != null) {
-                    decisionResult = this.PolicyEvaluate(this.policy);
-                }
-                else {
-                    throw new InvalidOperationException("Policy missing");
-                }
-
-                result = this.MakeResult(decisionResult, new XacmlContextStatus(XacmlContextStatusCode.Success));
-            }
-            catch (XacmlException ex) {
-                // TODO: trace warning DiagnosticTools.ExceptionUtil.ThrowHelperError(ex);
-                result = this.MakeResult(XacmlDecisionResult.Indeterminate, new XacmlContextStatus(new XacmlContextStatusCode(ex.StatusCode)) { StatusMessage = ex.Message });
-            }
-
-            return new XacmlContextResult[] { result };
-        }
-
-        protected virtual XacmlContextResult MakeResult(XacmlDecisionResult decision, XacmlContextStatus status) {
-            XacmlContextDecision resultDecision = XacmlContextDecision.NotApplicable;
-            switch (decision) {
-                case XacmlDecisionResult.Deny:
-                    resultDecision = XacmlContextDecision.Deny;
-                    break;
-                case XacmlDecisionResult.Indeterminate:
-                case XacmlDecisionResult.IndeterminateD:
-                case XacmlDecisionResult.IndeterminateP:
-                case XacmlDecisionResult.IndeterminateDP:
-                    resultDecision = XacmlContextDecision.Indeterminate;
-                    break;
-                case XacmlDecisionResult.Permit:
-                    resultDecision = XacmlContextDecision.Permit;
-                    break;
-            }
-
-            var result = new XacmlContextResult(resultDecision) {
-                Status = status,
-            };
-
-            if (decision == XacmlDecisionResult.Permit) {
-                foreach (var obligation in this.obligations[XacmlEffectType.Permit]) {
-                    result.Obligations.Add(obligation);
-                }
-            }
-
-            if (decision == XacmlDecisionResult.Deny) {
-                foreach (var obligation in this.obligations[XacmlEffectType.Deny]) {
-                    result.Obligations.Add(obligation);
-                }
-            }
-
-            return result;
-        }
-
         /// <summary>
         /// Apstrāda PolicySet objektu
         /// </summary>
@@ -247,7 +162,7 @@ namespace Abc.Xacml.Runtime {
                             () =>
                             {
                                 XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                if(policyTargetResult == XacmlMatchResult.Indeterminate)
+                                if (policyTargetResult == XacmlMatchResult.Indeterminate)
                                 {
                                     return null;
                                 }
@@ -278,7 +193,7 @@ namespace Abc.Xacml.Runtime {
                             () =>
                             {
                                 XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                if(policyTargetResult == XacmlMatchResult.Indeterminate) {
+                                if (policyTargetResult == XacmlMatchResult.Indeterminate) {
                                     return null;
                                 }
 
@@ -312,7 +227,7 @@ namespace Abc.Xacml.Runtime {
                             () =>
                             {
                                 XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                if(policyTargetResult == XacmlMatchResult.Indeterminate) {
+                                if (policyTargetResult == XacmlMatchResult.Indeterminate) {
                                     return null;
                                 }
 
@@ -346,7 +261,7 @@ namespace Abc.Xacml.Runtime {
                             () =>
                             {
                                 XacmlMatchResult policyTargetResult = this.TargetEvaluate(pol.Target);
-                                if(policyTargetResult == XacmlMatchResult.Indeterminate)
+                                if (policyTargetResult == XacmlMatchResult.Indeterminate)
                                 {
                                     return null;
                                 }
@@ -366,15 +281,17 @@ namespace Abc.Xacml.Runtime {
                 return XacmlDecisionResult.NotApplicable;
             }
 
-            XacmlDecisionResult algResult = this.algorithms[policySet.PolicyCombiningAlgId.ToString()].Invoke(policyResultsFunctions,
-                policySet.CombinerParameters);
+            XacmlDecisionResult algResult = this.algorithms[policySet.PolicyCombiningAlgId.ToString()]
+                .Invoke(policyResultsFunctions, policySet.CombinerParameters);
 
             if (algResult == XacmlDecisionResult.Permit) {
-                this.obligations[XacmlEffectType.Permit].AddRange(policySet.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Permit));
+                this.obligations[XacmlEffectType.Permit]
+                    .AddRange(policySet.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Permit));
             }
 
             if (algResult == XacmlDecisionResult.Deny) {
-                this.obligations[XacmlEffectType.Deny].AddRange(policySet.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Deny));
+                this.obligations[XacmlEffectType.Deny]
+                    .AddRange(policySet.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Deny));
             }
 
             return algResult;
@@ -420,16 +337,18 @@ namespace Abc.Xacml.Runtime {
                             () =>
                             {
                                 Tuple<XacmlDecisionResult, string> res = this.RuleEvaluate(rule);
-                                if (res.Item1 != XacmlDecisionResult.NotApplicable)
+                                if (res.Item1 != XacmlDecisionResult.NotApplicable) {
                                     allRulesNotApplicable = false;
+                                }
+
                                 return res;
                             }
                         }
                     }));
             }
 
-            XacmlDecisionResult algResult = this.algorithms[policy.RuleCombiningAlgId.ToString()].Invoke(ruleResultsFunctions,
-                policy.CombinerParameters.Concat(policy.ChoiceCombinerParameters));
+            XacmlDecisionResult algResult = this.algorithms[policy.RuleCombiningAlgId.ToString()]
+                .Invoke(ruleResultsFunctions, policy.CombinerParameters.Concat(policy.ChoiceCombinerParameters));
 
             this.currentEvaluatingPolicy = previousPolicy;
 
@@ -438,15 +357,356 @@ namespace Abc.Xacml.Runtime {
             }
             else {
                 if (algResult == XacmlDecisionResult.Permit) {
-                    this.obligations[XacmlEffectType.Permit].AddRange(policy.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Permit));
+                    this.obligations[XacmlEffectType.Permit]
+                        .AddRange(policy.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Permit));
                 }
 
                 if (algResult == XacmlDecisionResult.Deny) {
-                    this.obligations[XacmlEffectType.Deny].AddRange(policy.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Deny));
+                    this.obligations[XacmlEffectType.Deny]
+                        .AddRange(policy.Obligations.Where(o => o.FulfillOn == XacmlEffectType.Deny));
                 }
 
                 return algResult;
             }
+        }
+
+        public bool? ConditionEvaluate(XacmlExpression condition) {
+            if (condition == null) {
+                throw new ArgumentNullException(nameof(condition));
+            }
+
+            try {
+                object conditionResult = this.ExpressionEvaluate(condition.Property);
+                return conditionResult as bool?;
+            }
+            catch (XacmlIndeterminateException ex) {
+                // TODO: trace warning DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
+            }
+
+            return null;
+        }
+
+        public bool? SubjectMatchEvaluation(XacmlSubjectMatch match) {
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
+
+            // get function
+            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
+
+            // get attribute value
+            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
+
+            IEnumerable<string> attribute2Values;
+            string dataType;
+            object source;
+
+            // get second attribute
+            if (match.AttributeDesignator != null) {
+                dataType = match.AttributeDesignator.DataType.ToString();
+                attribute2Values = this.GetSubjectAttributeDesignator(match.AttributeDesignator as XacmlSubjectAttributeDesignator);
+                source = match.AttributeDesignator;
+            }
+            else {
+                dataType = match.AttributeSelector.DataType.ToString();
+                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
+                source = match.AttributeSelector;
+            }
+
+            if (attribute2Values == null) {
+                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
+                return null;
+            }
+            else {
+                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
+                if (!attribute2Values.Any()) {
+                    return false;
+                }
+            }
+
+            bool? subjectMatchResult = false;
+            foreach (string designatorValue in attribute2Values) {
+                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
+
+                // evaluate
+                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
+
+                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
+                if (!functionResult.HasValue) {
+                    subjectMatchResult = null;
+                }
+
+                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
+                else if (functionResult.Value) {
+                    return true;
+                }
+            }
+
+            return subjectMatchResult;
+        }
+
+        public bool? ResourceMatchEvaluation(XacmlResourceMatch match) {
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
+
+            // get function
+            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
+
+            // get attribute value
+            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
+
+            IEnumerable<string> attribute2Values;
+            string dataType;
+            object source;
+
+            // get second attribute
+            if (match.AttributeDesignator != null) {
+                dataType = match.AttributeDesignator.DataType.ToString();
+                attribute2Values = this.GetResourceAttributeDesignator(match.AttributeDesignator as XacmlResourceAttributeDesignator);
+                source = match.AttributeDesignator;
+            }
+            else {
+                dataType = match.AttributeSelector.DataType.ToString();
+                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
+                source = match.AttributeSelector;
+            }
+
+            if (attribute2Values == null) {
+                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
+                return null;
+            }
+            else {
+                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
+                if (!attribute2Values.Any()) {
+                    return false;
+                }
+            }
+
+            bool? resourceMatchResult = false;
+            foreach (string designatorValue in attribute2Values) {
+                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
+
+                // evaluate
+                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
+
+                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
+                if (!functionResult.HasValue) {
+                    resourceMatchResult = null;
+                }
+
+                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
+                else if (functionResult.Value) {
+                    return true;
+                }
+            }
+
+            return resourceMatchResult;
+        }
+
+        public bool? ActionMatchEvaluation(XacmlActionMatch match) {
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
+
+            // get function
+            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
+
+            // get attribute value
+            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
+
+            IEnumerable<string> attribute2Values;
+            string dataType;
+            object source;
+
+            // get second attribute
+            if (match.AttributeDesignator != null) {
+                dataType = match.AttributeDesignator.DataType.ToString();
+                attribute2Values = this.GetActionAttributeDesignator(match.AttributeDesignator as XacmlActionAttributeDesignator);
+                source = match.AttributeDesignator;
+            }
+            else {
+                dataType = match.AttributeSelector.DataType.ToString();
+                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
+                source = match.AttributeSelector;
+            }
+
+            if (attribute2Values == null) {
+                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
+                return null;
+            }
+            else {
+                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
+                if (!attribute2Values.Any()) {
+                    return false;
+                }
+            }
+
+            bool? actionMatchResult = false;
+            foreach (string designatorValue in attribute2Values) {
+                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
+
+                // evaluate
+                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
+
+                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
+                if (!functionResult.HasValue) {
+                    actionMatchResult = null;
+                }
+
+                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
+                else if (functionResult.Value) {
+                    return true;
+                }
+            }
+
+            return actionMatchResult;
+        }
+
+        public bool? EnvironmentMatchEvaluation(XacmlEnvironmentMatch match) {
+            if (match == null) {
+                throw new ArgumentNullException(nameof(match));
+            }
+
+            // get function
+            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
+
+            // get attribute value
+            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
+
+            IEnumerable<string> attribute2Values;
+            string dataType;
+            object source;
+
+            // get second attribute
+            if (match.AttributeDesignator != null) {
+                dataType = match.AttributeDesignator.DataType.ToString();
+                attribute2Values = this.GetEnvironmentAttributeDesignator(match.AttributeDesignator as XacmlEnvironmentAttributeDesignator);
+                source = match.AttributeDesignator;
+            }
+            else {
+                dataType = match.AttributeSelector.DataType.ToString();
+                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
+                source = match.AttributeSelector;
+            }
+
+            if (attribute2Values == null) {
+                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
+                return null;
+            }
+            else {
+                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
+                if (!attribute2Values.Any()) {
+                    return false;
+                }
+            }
+
+            bool? environmentMatchResult = false;
+            foreach (string designatorValue in attribute2Values) {
+                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
+
+                // evaluate
+                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
+
+                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
+                if (!functionResult.HasValue) {
+                    environmentMatchResult = null;
+                }
+
+                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
+                else if (functionResult.Value) {
+                    return true;
+                }
+            }
+
+            return environmentMatchResult;
+        }
+
+        protected virtual IEnumerable<XacmlContextResult> RequestEvaluate(XacmlContextRequest request) {
+            if (request == null) {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            Debug.Assert(this.requestDoc != null);
+
+            this.pip = new PolicyInformationPoint(request, this.requestDoc);
+
+            // Hierarchical resources
+            /*
+            var scopeAttribute = request.Resources.SelectMany(x => x.Attributes).FirstOrDefault(y => y.AttributeId.OriginalString == "urn:oasis:names:tc:xacml:1.0:resource:scope");
+            if (scopeAttribute != null) {
+                
+                var resourceAttrubute = request.Resources.SelectMany(x => x.Attributes).FirstOrDefault(y => y.AttributeId.OriginalString == "urn:oasis:names:tc:xacml:1.0:resource:resource-id");
+                if (resourceAttrubute == null) {
+                    // TODO: throw new XacmlPo
+                }
+
+                var resource = new XacmlContextResource(resourceAttrubute); 
+
+                var refRequest = new XacmlContextRequest(resource, request.Action, request.Subjects);
+                return this.RequestEvaluate(refRequest);
+            }
+             */
+
+            XacmlContextResult result = null;
+            try {
+                XacmlDecisionResult decisionResult;
+                if (this.policySet != null) {
+                    decisionResult = this.PolicySetEvaluate(this.policySet);
+                }
+                else if (this.policy != null) {
+                    decisionResult = this.PolicyEvaluate(this.policy);
+                }
+                else {
+                    throw new InvalidOperationException("Policy missing");
+                }
+
+                result = this.MakeResult(decisionResult, (decisionResult == XacmlDecisionResult.Indeterminate) ?
+                    new XacmlContextStatus(XacmlContextStatusCode.MissingAttribute) :
+                    new XacmlContextStatus(XacmlContextStatusCode.Success));
+            }
+            catch (XacmlException ex) {
+                // TODO: trace warning DiagnosticTools.ExceptionUtil.ThrowHelperError(ex);
+                result = this.MakeResult(XacmlDecisionResult.Indeterminate, new XacmlContextStatus(new XacmlContextStatusCode(ex.StatusCode)) { StatusMessage = ex.Message });
+            }
+
+            return new XacmlContextResult[] { result };
+        }
+
+        protected virtual XacmlContextResult MakeResult(XacmlDecisionResult decision, XacmlContextStatus status) {
+            XacmlContextDecision resultDecision = XacmlContextDecision.NotApplicable;
+            switch (decision) {
+                case XacmlDecisionResult.Deny:
+                    resultDecision = XacmlContextDecision.Deny;
+                    break;
+                case XacmlDecisionResult.Indeterminate:
+                case XacmlDecisionResult.IndeterminateD:
+                case XacmlDecisionResult.IndeterminateP:
+                case XacmlDecisionResult.IndeterminateDP:
+                    resultDecision = XacmlContextDecision.Indeterminate;
+                    break;
+                case XacmlDecisionResult.Permit:
+                    resultDecision = XacmlContextDecision.Permit;
+                    break;
+            }
+
+            var result = new XacmlContextResult(resultDecision) {
+                Status = status,
+            };
+
+            if (decision == XacmlDecisionResult.Permit) {
+                foreach (var obligation in this.obligations[XacmlEffectType.Permit]) {
+                    result.Obligations.Add(obligation);
+                }
+            }
+
+            if (decision == XacmlDecisionResult.Deny) {
+                foreach (var obligation in this.obligations[XacmlEffectType.Deny]) {
+                    result.Obligations.Add(obligation);
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -501,25 +761,6 @@ namespace Abc.Xacml.Runtime {
             }
 
             return new Tuple<XacmlDecisionResult, string>(ruleResult, Enum.GetName(typeof(XacmlEffectType), rule.Effect));
-        }
-
-        public bool? ConditionEvaluate(XacmlExpression condition) {
-            if (condition == null) {
-                throw new ArgumentNullException(nameof(condition));
-            }
-
-            try {
-                object conditionResult = this.ExpressionEvaluate(condition.Property);
-                return conditionResult as bool?;
-            }
-            catch (XacmlIndeterminateException ex) {
-                // TODO: trace warning DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
-                return null;
-            }
-            catch (InvalidOperationException ex) {
-                // TODO: trace warning DiagnosticTools.ExceptionUtil.TraceHandledException(ex, System.Diagnostics.TraceEventType.Warning);
-                return null;
-            }
         }
 
         protected virtual object ExpressionEvaluate(IXacmlApply expression) {
@@ -608,18 +849,6 @@ namespace Abc.Xacml.Runtime {
             return result;
         }
 
-        protected object ApplyEvaluate(XacmlApply apply) {
-            if (apply == null) {
-                throw new ArgumentNullException(nameof(apply));
-            }
-
-            // get function
-            DelegateWrapper matchFunction = this.functions[apply.FunctionId.ToString()];
-            object[] parameters = apply.Parameters.Select(o => this.ExpressionEvaluate(o)).ToArray();
-            object result = matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), parameters);
-            return result;
-        }
-
         protected virtual XacmlMatchResult TargetEvaluate(XacmlTarget target) {
             if (target == null) {
                 throw new ArgumentNullException(nameof(target));
@@ -632,8 +861,9 @@ namespace Abc.Xacml.Runtime {
             ///// least one “Indeterminate”
             ///// All “No match”                  “No match”
             XacmlMatchResult subjectResult = XacmlMatchResult.NoMatch;
-            if (target.Subjects.Count == 0)
+            if (target.Subjects.Count == 0) {
                 subjectResult = XacmlMatchResult.Match;
+            }
 
             foreach (XacmlSubject subj in target.Subjects) {
                 ///// <SubjectMatch> values       <Subject> Value
@@ -815,238 +1045,6 @@ namespace Abc.Xacml.Runtime {
             return targetMatchResult;
         }
 
-        public bool? SubjectMatchEvaluation(XacmlSubjectMatch match) {
-            if (match == null) {
-                throw new ArgumentNullException(nameof(match));
-            }
-
-            // get function
-            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
-
-            // get attribute value
-            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
-
-            IEnumerable<string> attribute2Values;
-            string dataType;
-            object source;
-
-            // get second attribute
-            if (match.AttributeDesignator != null) {
-                dataType = match.AttributeDesignator.DataType.ToString();
-                attribute2Values = this.GetSubjectAttributeDesignator(match.AttributeDesignator as XacmlSubjectAttributeDesignator);
-                source = match.AttributeDesignator;
-            }
-            else {
-                dataType = match.AttributeSelector.DataType.ToString();
-                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
-                source = match.AttributeSelector;
-            }
-
-            if (attribute2Values == null) {
-                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
-                return null;
-            }
-            else {
-                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (!attribute2Values.Any()) {
-                    return false;
-                }
-            }
-
-            bool? subjectMatchResult = false;
-            foreach (string designatorValue in attribute2Values) {
-                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
-
-                // evaluate
-                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
-
-                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
-                if (!functionResult.HasValue) {
-                    subjectMatchResult = null;
-                }
-                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
-                else if (functionResult.Value) {
-                    return true;
-                }
-            }
-
-            return subjectMatchResult;
-        }
-
-        public bool? ResourceMatchEvaluation(XacmlResourceMatch match) {
-            if (match == null) {
-                throw new ArgumentNullException(nameof(match));
-            }
-
-            // get function
-            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
-
-            // get attribute value
-            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
-
-            IEnumerable<string> attribute2Values;
-            string dataType;
-            object source;
-
-            // get second attribute
-            if (match.AttributeDesignator != null) {
-                dataType = match.AttributeDesignator.DataType.ToString();
-                attribute2Values = this.GetResourceAttributeDesignator(match.AttributeDesignator as XacmlResourceAttributeDesignator);
-                source = match.AttributeDesignator;
-            }
-            else {
-                dataType = match.AttributeSelector.DataType.ToString();
-                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
-                source = match.AttributeSelector;
-            }
-
-            if (attribute2Values == null) {
-                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
-                return null;
-            }
-            else {
-                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (!attribute2Values.Any()) {
-                    return false;
-                }
-            }
-
-            bool? resourceMatchResult = false;
-            foreach (string designatorValue in attribute2Values) {
-                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
-
-                // evaluate
-                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
-
-                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
-                if (!functionResult.HasValue) {
-                    resourceMatchResult = null;
-                }
-                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
-                else if (functionResult.Value) {
-                    return true;
-                }
-            }
-
-            return resourceMatchResult;
-        }
-
-        public bool? ActionMatchEvaluation(XacmlActionMatch match) {
-            if (match == null) {
-                throw new ArgumentNullException(nameof(match));
-            }
-
-            // get function
-            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
-
-            // get attribute value
-            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
-
-            IEnumerable<string> attribute2Values;
-            string dataType;
-            object source;
-
-            // get second attribute
-            if (match.AttributeDesignator != null) {
-                dataType = match.AttributeDesignator.DataType.ToString();
-                attribute2Values = this.GetActionAttributeDesignator(match.AttributeDesignator as XacmlActionAttributeDesignator);
-                source = match.AttributeDesignator;
-            }
-            else {
-                dataType = match.AttributeSelector.DataType.ToString();
-                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
-                source = match.AttributeSelector;
-            }
-
-            if (attribute2Values == null) {
-                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
-                return null;
-            }
-            else {
-                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (!attribute2Values.Any()) {
-                    return false;
-                }
-            }
-
-            bool? actionMatchResult = false;
-            foreach (string designatorValue in attribute2Values) {
-                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
-
-                // evaluate
-                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
-
-                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
-                if (!functionResult.HasValue) {
-                    actionMatchResult = null;
-                }
-                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
-                else if (functionResult.Value) {
-                    return true;
-                }
-            }
-
-            return actionMatchResult;
-        }
-
-        public bool? EnvironmentMatchEvaluation(XacmlEnvironmentMatch match) {
-            if (match == null) {
-                throw new ArgumentNullException(nameof(match));
-            }
-
-            // get function
-            DelegateWrapper matchFunction = this.functions[match.MatchId.ToString()];
-
-            // get attribute value
-            object attribute1 = this.types[match.AttributeValue.DataType.ToString()].ConvertFromString(match.AttributeValue.Value, match.AttributeValue);
-
-            IEnumerable<string> attribute2Values;
-            string dataType;
-            object source;
-
-            // get second attribute
-            if (match.AttributeDesignator != null) {
-                dataType = match.AttributeDesignator.DataType.ToString();
-                attribute2Values = this.GetEnvironmentAttributeDesignator(match.AttributeDesignator as XacmlEnvironmentAttributeDesignator);
-                source = match.AttributeDesignator;
-            }
-            else {
-                dataType = match.AttributeSelector.DataType.ToString();
-                attribute2Values = this.GetAttributeSelector(match.AttributeSelector);
-                source = match.AttributeSelector;
-            }
-
-            if (attribute2Values == null) {
-                // If an operational error were to occur while evaluating the <AttributeDesignator> or <AttributeSelector> element, then the result of the entire expression SHALL be "Indeterminate".
-                return null;
-            }
-            else {
-                // If the <AttributeDesignator> or <AttributeSelector> element were to evaluate to an empty bag, then the result of the expression SHALL be "False".
-                if (!attribute2Values.Any()) {
-                    return false;
-                }
-            }
-
-            bool? environmentMatchResult = false;
-            foreach (string designatorValue in attribute2Values) {
-                object attribute2 = this.types[dataType].ConvertFromString(designatorValue, source);
-
-                // evaluate
-                bool? functionResult = (bool)matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), attribute1, attribute2);
-
-                // Otherwise, if at least one of the function applications results in "Indeterminate", then the result SHALL be "Indeterminate".
-                if (!functionResult.HasValue) {
-                    environmentMatchResult = null;
-                }
-                // If at least one of those function applications were to evaluate to "True", then the result of the entire expression SHALL be "True".
-                else if (functionResult.Value) {
-                    return true;
-                }
-            }
-
-            return environmentMatchResult;
-        }
-
         protected virtual IEnumerable<string> GetAttributeSelector(XacmlAttributeSelector selector) {
             if (selector == null) {
                 throw new ArgumentNullException(nameof(selector));
@@ -1064,6 +1062,18 @@ namespace Abc.Xacml.Runtime {
             return attributeBag.Select(o => o.Value);
         }
 
+        protected object ApplyEvaluate(XacmlApply apply) {
+            if (apply == null) {
+                throw new ArgumentNullException(nameof(apply));
+            }
+
+            // get function
+            DelegateWrapper matchFunction = this.functions[apply.FunctionId.ToString()];
+            object[] parameters = apply.Parameters.Select(o => this.ExpressionEvaluate(o)).ToArray();
+            object result = matchFunction.DynamicInvoke(new XPathContext(this.xpathVersion, this.requestDoc, this.namespaces), parameters);
+            return result;
+        }
+
         protected IEnumerable<string> GetSubjectAttributeDesignator(XacmlSubjectAttributeDesignator designator) {
             if (designator == null) {
                 throw new ArgumentNullException(nameof(designator));
@@ -1073,8 +1083,7 @@ namespace Abc.Xacml.Runtime {
                     designator.AttributeId,
                     designator.DataType,
                     designator.Issuer,
-                    designator.Category
-                    );
+                    designator.Category);
 
             if (!attributeBag.Any()) {
                 if (designator.MustBePresent.HasValue && designator.MustBePresent.Value) {
@@ -1094,8 +1103,7 @@ namespace Abc.Xacml.Runtime {
             IEnumerable<string> attributeBag = this.pip.GetResourceAttributeDesignatorValues(
                     designator.AttributeId,
                     designator.DataType,
-                    designator.Issuer
-                    );
+                    designator.Issuer);
 
             if (!attributeBag.Any()) {
                 if (designator.MustBePresent.HasValue && designator.MustBePresent.Value) {
@@ -1115,8 +1123,7 @@ namespace Abc.Xacml.Runtime {
             IEnumerable<string> attributeBag = this.pip.GetActionAttributeDesignatorValues(
                     designator.AttributeId,
                     designator.DataType,
-                    designator.Issuer
-                    );
+                    designator.Issuer);
 
             if (!attributeBag.Any()) {
                 if (designator.MustBePresent.HasValue && designator.MustBePresent.Value) {
@@ -1136,8 +1143,7 @@ namespace Abc.Xacml.Runtime {
             IEnumerable<string> attributeBag = this.pip.GetEnvironmentAttributeDesignatorValues(
                     designator.AttributeId,
                     designator.DataType,
-                    designator.Issuer
-                    );
+                    designator.Issuer);
 
             if (!attributeBag.Any()) {
                 if (designator.MustBePresent.HasValue && designator.MustBePresent.Value) {
