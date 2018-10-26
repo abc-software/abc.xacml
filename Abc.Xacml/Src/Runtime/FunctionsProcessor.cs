@@ -31,7 +31,6 @@ namespace Abc.Xacml.Runtime {
     using System.Xml.Linq;
 
 #pragma warning disable 1591 // Missing XML comment
-#pragma warning disable SA1509 // Opening braces should not be preceded by blank line
 
     /// <summary>
     /// XACML functions
@@ -48,6 +47,7 @@ namespace Abc.Xacml.Runtime {
 
         delegate TRet EnumerableToGenericParamWithTwoArg<in T1, in T2, in T3, out TRet>(T2 arg1, T3 arg2, params T1[] values);
 
+#pragma warning disable SA1509 // Opening braces should not be preceded by blank line
         private static SortedDictionary<string, DelegateWrapper> functions = new SortedDictionary<string, DelegateWrapper>()
         {
             { "urn:oasis:names:tc:xacml:1.0:function:string-equal", new DelegateWrapper(typeof(Func<string, string, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("EqualFunc", typeof(string), o => new Type[] { o, o })) },
@@ -376,12 +376,15 @@ namespace Abc.Xacml.Runtime {
             { "urn:oasis:names:tc:xacml:3.0:function:string-substring", new DelegateWrapper(typeof(Func<string, int, int, string>), typeof(FunctionsProcessor).GetMethod("StringSubstring", BindingFlags.Static | BindingFlags.Public)) },
             { "urn:oasis:names:tc:xacml:3.0:function:anyURI-substring", new DelegateWrapper(typeof(Func<Uri, int, int, string>), typeof(FunctionsProcessor).GetMethod("UriSubstring", BindingFlags.Static | BindingFlags.Public)) },
         };
+#pragma warning restore SA1509 // Opening braces should not be preceded by blank line
 
         /// <summary>
         /// Prevents a default instance of the <see cref="FunctionsProcessor"/> class from being created.
         /// </summary>
         private FunctionsProcessor() {
         }
+
+#pragma warning disable SA1600 // Element should be documented
 
 #region Atithmetic functions
 
@@ -838,7 +841,6 @@ namespace Abc.Xacml.Runtime {
 
         public static IEnumerable<T> TypeIntersection<T>(IEnumerable<T> collection1, IEnumerable<T> collection2) {
             return collection1.Intersect(collection2);
-            //return collection1.Where(o => collection2.Contains(o));
         }
 
         public static bool TypeAtLeastOneMemberOf<T>(IEnumerable<T> collection1, IEnumerable<T> collection2) {
@@ -882,7 +884,8 @@ namespace Abc.Xacml.Runtime {
 
 #region Equal function
 
-        public static bool EqualFunc<T>(T obj1, T obj2) where T : IEquatable<T> {
+        public static bool EqualFunc<T>(T obj1, T obj2) 
+            where T : IEquatable<T> {
             return obj1.Equals(obj2);
         }
 
@@ -896,7 +899,7 @@ namespace Abc.Xacml.Runtime {
 
         #endregion
 
-        #region Regex functions
+#region Regex functions
 
         /// <summary>
         /// Support is needed http://www.w3.org/TR/2002/WD-xquery-operators-20020816/#func-matches <code>xf:matches</code> function
@@ -910,8 +913,8 @@ namespace Abc.Xacml.Runtime {
         /// <returns></returns>
         public static bool RegexpMatch<T>(string regexp, T value) {
             // This variant is better, but use Saxon library
-            //XQueryEngine engine = new XQueryEngine();
-            //bool result = engine.EvaluateExpression<bool>(string.Format("matches('{0}', '{1}')", value, regexp));
+            //// XQueryEngine engine = new XQueryEngine();
+            //// bool result = engine.EvaluateExpression<bool>(string.Format("matches('{0}', '{1}')", value, regexp));
 
             string valueString = value.ToString();
             return Regex.IsMatch(valueString, regexp);
@@ -1068,6 +1071,8 @@ namespace Abc.Xacml.Runtime {
 
         #endregion
 
+#pragma warning restore SA1600 // Element should be documented
+
         public DelegateWrapper this[string value] {
             get {
                 DelegateWrapper action;
@@ -1100,6 +1105,5 @@ namespace Abc.Xacml.Runtime {
         }
     }
 
-#pragma warning restore SA1509 // Opening braces should not be preceded by blank line
 #pragma warning restore 1591 // Missing XML comment
 }

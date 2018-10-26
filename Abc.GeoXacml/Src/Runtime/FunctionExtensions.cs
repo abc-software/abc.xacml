@@ -39,6 +39,8 @@ namespace Abc.Xacml.Geo {
     /// <seealso cref="Abc.Xacml.Interfaces.IFunctionsExtender" />
     [Export(typeof(IFunctionsExtender))]
     public class FunctionExtensions : IFunctionsExtender {
+#pragma warning disable SA1509 // Opening braces should not be preceded by blank line
+
         private static SortedDictionary<string, DelegateWrapper> functions = new SortedDictionary<string, DelegateWrapper>()
         {
             { "urn:ogc:def:function:geoxacml:1.0:geometry-equals", new DelegateWrapper(typeof(Func<Geometry, Geometry, bool>), typeof(FunctionExtensions).GetMethod("Equals", BindingFlags.Static | BindingFlags.Public)) },
@@ -68,28 +70,25 @@ namespace Abc.Xacml.Geo {
             { "urn:ogc:def:function:geoxacml:1.0:geometry-is-closed", new DelegateWrapper(typeof(Func<Geometry, bool>), typeof(FunctionExtensions).GetMethod("IsClosed", BindingFlags.Static | BindingFlags.Public)) },
             { "urn:ogc:def:function:geoxacml:1.0:geometry-is-valid", new DelegateWrapper(typeof(Func<Geometry, bool>), typeof(FunctionExtensions).GetMethod("IsValid", BindingFlags.Static | BindingFlags.Public)) },
 
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, Geometry>), typeof(FunctionsProcessor).GetGenericMethodInfo("OneAndOnly", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-size", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, int>), typeof(FunctionsProcessor).GetGenericMethodInfo("BagSize", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-in", new DelegateWrapper(typeof(Func<Geometry, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIsIn", typeof(Geometry), o => new Type[]{ o, typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag", new DelegateWrapper(typeof(FunctionsProcessor.ParamsToEnumerable<Geometry>), typeof(FunctionsProcessor).GetGenericMethodInfo("CreateBag", typeof(Geometry), o => new Type[]{ o.MakeArrayType() })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-one-and-only", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, Geometry>), typeof(FunctionsProcessor).GetGenericMethodInfo("OneAndOnly", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-size", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, int>), typeof(FunctionsProcessor).GetGenericMethodInfo("BagSize", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-is-in", new DelegateWrapper(typeof(Func<Geometry, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIsIn", typeof(Geometry), o => new Type[] { o, typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag", new DelegateWrapper(typeof(FunctionsProcessor.ParamsToEnumerable<Geometry>), typeof(FunctionsProcessor).GetGenericMethodInfo("CreateBag", typeof(Geometry), o => new Type[] { o.MakeArrayType() })) },
 
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-intersection", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIntersection", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-at-least-one-member-of", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeAtLeastOneMemberOf", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-union", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeUnion", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-subset", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSubset", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
-            { "urn:ogc:def:function:geoxacml:1.0:geometry-set-equals", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSetEquals", typeof(Geometry), o => new Type[]{ typeof(IEnumerable<>).MakeGenericType(new Type[] {o}), typeof(IEnumerable<>).MakeGenericType(new Type[] {o}) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-intersection", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeIntersection", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-at-least-one-member-of", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeAtLeastOneMemberOf", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-union", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeUnion", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-subset", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSubset", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
+            { "urn:ogc:def:function:geoxacml:1.0:geometry-set-equals", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSetEquals", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
 #if NET40 || NET45
             { "urn:ogc:def:function:geoxacml:1.0:convert-to-metre", new DelegateWrapper(typeof(Func<double, string, double>), typeof(FunctionExtensions).GetMethod("ConvertToMetre", BindingFlags.Static | BindingFlags.Public)) },
             { "urn:ogc:def:function:geoxacml:1.0:convert-to-square-metre", new DelegateWrapper(typeof(Func<double, string, double>), typeof(FunctionExtensions).GetMethod("ConvertToSquareMetre", BindingFlags.Static | BindingFlags.Public)) },
 #endif
         };
-
-        /// <inheritdoc/>
-        public IDictionary<string, DelegateWrapper> GetExtensionFunctions() {
-            return functions;
-        }
+#pragma warning restore SA1509 // Opening braces should not be preceded by blank line
 
 #pragma warning disable 1591 // Missing XML comment
+#pragma warning disable SA1600 // Element is missing a documentation header
 
         #region Topological Functions
 
@@ -228,32 +227,31 @@ namespace Abc.Xacml.Geo {
 
             ConversionGraph system = new ConversionGraph();
             system.AddConversion(
-                Conversions.From(angstrom).To(meter).MultiplyBy((decimal)1.0E-10),
-                Conversions.From(angstrom).To(nanometer).MultiplyBy((decimal)1.0E-01),
-                Conversions.From(astronomical_unit).To(meter).MultiplyBy((decimal)1.495979E+11),
-                Conversions.From(chain).To(meter).MultiplyBy((decimal)2.011684E+1),
-                Conversions.From(fathom).To(meter).MultiplyBy((decimal)1.828804E+00),
-                Conversions.From(fermi).To(meter).MultiplyBy((decimal)1.0E-15),
-                Conversions.From(fermi).To(femtometer).MultiplyBy((decimal)1.0E+00),
-                Conversions.From(foot).To(meter).MultiplyBy((decimal)3.048E-01),
-                Conversions.From(inch).To(meter).MultiplyBy((decimal)2.54E-02),
-                Conversions.From(light_year).To(meter).MultiplyBy((decimal)9.46073E+15),
-                Conversions.From(microinch).To(meter).MultiplyBy((decimal)2.54E-08),
-                Conversions.From(microinch).To(micrometer).MultiplyBy((decimal)2.54E-02),
-
-                Conversions.From(micron).To(meter).MultiplyBy((decimal)1.0E-06),
-                Conversions.From(micron).To(micrometer).MultiplyBy((decimal)1.0E+00),
-                Conversions.From(mil).To(meter).MultiplyBy((decimal)2.54E-05),
-                Conversions.From(mil).To(millimeter).MultiplyBy((decimal)2.54E-02),
-                Conversions.From(mile).To(meter).MultiplyBy((decimal)1.609344E+03),
-                Conversions.From(mile).To(kilometer).MultiplyBy((decimal)1.609344E+00),
-                Conversions.From(parsec).To(meter).MultiplyBy((decimal)3.085678E+16),
-                Conversions.From(pica).To(meter).MultiplyBy((decimal)4.233333E-03),
-                Conversions.From(pica).To(millimeter).MultiplyBy((decimal)4.233333E+00),
-                Conversions.From(point).To(meter).MultiplyBy((decimal)3.527778E-04),
-                Conversions.From(point).To(millimeter).MultiplyBy((decimal)3.527778E-01),
-                Conversions.From(rod).To(meter).MultiplyBy((decimal)5.029210E+00),
-                Conversions.From(yard).To(meter).MultiplyBy((decimal)9.144E-01));
+                Conversions.From(angstrom).To(meter).MultiplyBy(1.0E-10m),
+                Conversions.From(angstrom).To(nanometer).MultiplyBy(1.0E-01m),
+                Conversions.From(astronomical_unit).To(meter).MultiplyBy(1.495979E+11m),
+                Conversions.From(chain).To(meter).MultiplyBy(2.011684E+1m),
+                Conversions.From(fathom).To(meter).MultiplyBy(1.828804E+00m),
+                Conversions.From(fermi).To(meter).MultiplyBy(1.0E-15m),
+                Conversions.From(fermi).To(femtometer).MultiplyBy(1.0E+00m),
+                Conversions.From(foot).To(meter).MultiplyBy(3.048E-01m),
+                Conversions.From(inch).To(meter).MultiplyBy(2.54E-02m),
+                Conversions.From(light_year).To(meter).MultiplyBy(9.46073E+15m),
+                Conversions.From(microinch).To(meter).MultiplyBy(2.54E-08m),
+                Conversions.From(microinch).To(micrometer).MultiplyBy(2.54E-02m),
+                Conversions.From(micron).To(meter).MultiplyBy(1.0E-06m),
+                Conversions.From(micron).To(micrometer).MultiplyBy(1.0E+00m),
+                Conversions.From(mil).To(meter).MultiplyBy(2.54E-05m),
+                Conversions.From(mil).To(millimeter).MultiplyBy(2.54E-02m),
+                Conversions.From(mile).To(meter).MultiplyBy(1.609344E+03m),
+                Conversions.From(mile).To(kilometer).MultiplyBy(1.609344E+00m),
+                Conversions.From(parsec).To(meter).MultiplyBy(3.085678E+16m),
+                Conversions.From(pica).To(meter).MultiplyBy(4.233333E-03m),
+                Conversions.From(pica).To(millimeter).MultiplyBy(4.233333E+00m),
+                Conversions.From(point).To(meter).MultiplyBy(3.527778E-04m),
+                Conversions.From(point).To(millimeter).MultiplyBy(3.527778E-01m),
+                Conversions.From(rod).To(meter).MultiplyBy(5.029210E+00m),
+                Conversions.From(yard).To(meter).MultiplyBy(9.144E-01m));
 
             Measurement measurement = new Measurement(unitMeasure, (decimal)d);
             return (double)system.Convert(measurement, meter);
@@ -279,20 +277,20 @@ namespace Abc.Xacml.Geo {
 
             ConversionGraph system = new ConversionGraph();
             system.AddConversion(
-                Conversions.From(acre).To(square_meter).MultiplyBy((decimal)4.046873E+03),
-                Conversions.From(are).To(square_meter).MultiplyBy((decimal)1.0E+02),
-                Conversions.From(barn).To(square_meter).MultiplyBy((decimal)1.0E-28),
-                Conversions.From(circular_mil).To(square_meter).MultiplyBy((decimal)5.067075E-10),
-                Conversions.From(circular_mil).To(square_millimeter).MultiplyBy((decimal)5.067075E-04),
-                Conversions.From(foot_to_the_fourth_power).To(meter_to_the_fourth_power).MultiplyBy((decimal)8.630975E-03),
-                Conversions.From(hectare).To(square_meter).MultiplyBy((decimal)1.0E+04),
-                Conversions.From(inch_to_the_fourth_power).To(meter_to_the_fourth_power).MultiplyBy((decimal)4.162314E-07),
-                Conversions.From(square_foot).To(square_meter).MultiplyBy((decimal)9.290304E-02),
-                Conversions.From(square_inch).To(square_meter).MultiplyBy((decimal)6.4516E-04),
-                Conversions.From(square_inch).To(square_centimeter).MultiplyBy((decimal)6.4516E+00),
-                Conversions.From(square_mile).To(square_meter).MultiplyBy((decimal)2.589988E+06),
-                Conversions.From(square_mile).To(square_kilometer).MultiplyBy((decimal)2.589988E+00),
-                Conversions.From(square_yard).To(square_meter).MultiplyBy((decimal)8.361274E-01));
+                Conversions.From(acre).To(square_meter).MultiplyBy(4.046873E+03m),
+                Conversions.From(are).To(square_meter).MultiplyBy(1.0E+02m),
+                Conversions.From(barn).To(square_meter).MultiplyBy(1.0E-28m),
+                Conversions.From(circular_mil).To(square_meter).MultiplyBy(5.067075E-10m),
+                Conversions.From(circular_mil).To(square_millimeter).MultiplyBy(5.067075E-04m),
+                Conversions.From(foot_to_the_fourth_power).To(meter_to_the_fourth_power).MultiplyBy(8.630975E-03m),
+                Conversions.From(hectare).To(square_meter).MultiplyBy(1.0E+04m),
+                Conversions.From(inch_to_the_fourth_power).To(meter_to_the_fourth_power).MultiplyBy(4.162314E-07m),
+                Conversions.From(square_foot).To(square_meter).MultiplyBy(9.290304E-02m),
+                Conversions.From(square_inch).To(square_meter).MultiplyBy(6.4516E-04m),
+                Conversions.From(square_inch).To(square_centimeter).MultiplyBy(6.4516E+00m),
+                Conversions.From(square_mile).To(square_meter).MultiplyBy(2.589988E+06m),
+                Conversions.From(square_mile).To(square_kilometer).MultiplyBy(2.589988E+00m),
+                Conversions.From(square_yard).To(square_meter).MultiplyBy(8.361274E-01m));
 
             Measurement measurement = new Measurement(unitMeasure, (decimal)d);
             return (double)system.Convert(measurement, square_meter);
@@ -308,11 +306,16 @@ namespace Abc.Xacml.Geo {
             else {
                 return new List<IGeometry>()
                 {
-                    g
+                    g,
                 };
             }
         }
-#pragma warning restore 1591
+#pragma warning restore 1591 // Missing XML comment
+#pragma warning restore SA1600 // Element is missing a documentation header
 
+        /// <inheritdoc/>
+        public IDictionary<string, DelegateWrapper> GetExtensionFunctions() {
+            return functions;
+        }
     }
 }

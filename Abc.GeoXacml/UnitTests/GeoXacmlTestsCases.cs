@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,10 +11,16 @@ namespace Abc.Xacml.Geo.UnitTests {
     public class GeoXacmlTestsCases {
         internal static string TestCasePath = GetTestCasePath();
         public static string[] TestCaseToIgnore = { };
-        public static string[] NotRealisedPrifilesTest = { };
+
+        public static string[] NotRealisedProfilesTest = {
+#if NETCOREAPP1_1 || NETCOREAPP2_1
+            "GX003", // convert-to-metre
+            "GX004" // convert-to-square-metre
+#endif
+        };
 
         private static string GetTestCasePath() {
-#if NETSTANDARD1_6
+#if NETCOREAPP1_1
             var dir = AppContext.BaseDirectory;
 #else
             var dir = Path.GetDirectoryName(new Uri(typeof(GeoXacmlTestsCases).Assembly.CodeBase).LocalPath);
@@ -52,12 +59,15 @@ namespace Abc.Xacml.Geo.UnitTests {
                         yield return new TestCaseData(null, null, null).SetCategory("Errors_Geo").SetName(error);
                     }
                     else {
-                        if (NotRealisedPrifilesTest.Contains(key)) {
-                            yield return new TestCaseData(policy, request, response).SetCategory("NotRealisedProfiles_Geo").SetName(key + "_Geo");
+                        var testCaseData = new TestCaseData(policy, request, response)
+                           .SetCategory("Official_Geo")
+                           .SetName(key + "_Geo");
+
+                        if (NotRealisedProfilesTest.Contains(key)) {
+                            testCaseData.Ignore("Not implemeneted");
                         }
-                        else {
-                            yield return new TestCaseData(policy, request, response).SetCategory("Official_Geo").SetName(key + "_Geo");
-                        }
+
+                        yield return testCaseData;
                     }
                 }
             }

@@ -713,7 +713,6 @@ namespace Abc.Xacml.Runtime {
         ///
         /// </summary>
         /// <param name="rule"></param>
-        /// <param name="policy"></param>
         /// <returns>Rezultats un Rule Effect type, lai varētu korrekti piemerot Rule Combined Algorithms</returns>
         protected virtual Tuple<XacmlDecisionResult, string> RuleEvaluate(XacmlRule rule) {
             if (rule == null) {

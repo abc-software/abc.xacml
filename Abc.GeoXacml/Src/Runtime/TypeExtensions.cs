@@ -33,12 +33,12 @@ namespace Abc.Xacml.Geo {
     /// </summary>
     /// <seealso cref="Abc.Xacml.Interfaces.ITypesExtender" />
     [Export(typeof(ITypesExtender))]
-    public class TypeExtension : ITypesExtender {
+    public class TypeExtensions : ITypesExtender {
         /// <inheritdoc/>
         public IDictionary<string, TypeConverterWrapper> GetExtensionTypes() {
             return new Dictionary<string, TypeConverterWrapper>()
             {
-                {"urn:ogc:def:dataType:geoxacml:1.0:geometry", new TypeConverterWrapper(new GeometryConverter(), typeof(Geometry))}
+                { "urn:ogc:def:dataType:geoxacml:1.0:geometry", new TypeConverterWrapper(new GeometryConverter(), typeof(Geometry)) },
             };
         }
     }

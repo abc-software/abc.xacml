@@ -24,7 +24,7 @@ namespace Abc.Xacml {
 #pragma warning disable 1591
 
     [SuppressMessage("Microsoft.StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Reviewed. Constants is not commented.")]
-#if !NETSTANDARD
+#if !NETSTANDARD1_6
     [ExcludeFromCodeCoverage]
 #endif
     public sealed class XacmlConstants {

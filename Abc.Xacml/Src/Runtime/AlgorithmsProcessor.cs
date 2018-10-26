@@ -405,10 +405,10 @@ namespace Abc.Xacml.Runtime {
         }
 
         public static XacmlDecisionResult PermitOvverides_30(IEnumerable<Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>>> results, IEnumerable<XacmlCombinerParameter> additionalParams) {
-            Boolean atLeastOneErrorD = false;
-            Boolean atLeastOneErrorP = false;
-            Boolean atLeastOneErrorDP = false;
-            Boolean atLeastOneDeny = false;
+            bool atLeastOneErrorD = false;
+            bool atLeastOneErrorP = false;
+            bool atLeastOneErrorDP = false;
+            bool atLeastOneDeny = false;
 
             foreach (Tuple<IEnumerable<XacmlCombinerParameter>, IDictionary<string, Func<object>>> elem in results) {
                 Tuple<XacmlDecisionResult, string> decisionRes = (Tuple<XacmlDecisionResult, string>)elem.Item2["evaluate"]();

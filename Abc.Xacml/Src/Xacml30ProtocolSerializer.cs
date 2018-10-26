@@ -24,6 +24,10 @@ namespace Abc.Xacml {
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
 
+    /// <summary>
+    /// The XACML3.0 protocol serializer.
+    /// </summary>
+    /// <seealso cref="Abc.Xacml.Xacml20ProtocolSerializer" />
     public class Xacml30ProtocolSerializer : Xacml20ProtocolSerializer {
         /// <summary>
         /// Initializes a new instance of the <see cref="Xacml30ProtocolSerializer"/> class.
@@ -125,8 +129,9 @@ namespace Abc.Xacml {
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.Category),
                 this.ReadAttribute<string>(reader, XacmlConstants.AttributeNames.Path),
                 this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.DataType),
-                this.ReadAttribute<bool>(reader, XacmlConstants.AttributeNames.MustBePresent)
-                ) { ContextSelectorId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ContextSelectorId, isRequered: false) };
+                this.ReadAttribute<bool>(reader, XacmlConstants.AttributeNames.MustBePresent)) {
+                ContextSelectorId = this.ReadAttribute<Uri>(reader, XacmlConstants.AttributeNames.ContextSelectorId, isRequered: false),
+            };
 
             reader.ReadInnerXml();
 
@@ -162,21 +167,21 @@ namespace Abc.Xacml {
                 throw ThrowHelperXml(reader, "Target should contain AnyOf or be empty");
             }
 
-            //this.ReadList<ICollection<ICollection<XacmlMatch>>>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy,
-            //    a => {
-            //        a.ReadStartElement(XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy);
-            //        ICollection<ICollection<XacmlMatch>> am = new List<ICollection<XacmlMatch>>();
-            //        this.ReadList<ICollection<XacmlMatch>>(am, XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy,
-            //            o => {
-            //                o.ReadStartElement(XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy);
-            //                ICollection<XacmlMatch> m = new List<XacmlMatch>();
-            //                this.ReadList<XacmlMatch>(m, XacmlConstants.ElementNames.Match, this.Version.NamespacePolicy, this.ReadMatch, o, true);
-            //                o.ReadEndElement();
-            //                return m;
-            //            }, a, true);
-            //        a.ReadEndElement();
-            //        return am;
-            //    }, reader, false);
+            ////this.ReadList<ICollection<ICollection<XacmlMatch>>>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy,
+            ////    a => {
+            ////        a.ReadStartElement(XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy);
+            ////        ICollection<ICollection<XacmlMatch>> am = new List<ICollection<XacmlMatch>>();
+            ////        this.ReadList<ICollection<XacmlMatch>>(am, XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy,
+            ////            o => {
+            ////                o.ReadStartElement(XacmlConstants.ElementNames.AllOf, this.Version.NamespacePolicy);
+            ////                ICollection<XacmlMatch> m = new List<XacmlMatch>();
+            ////                this.ReadList<XacmlMatch>(m, XacmlConstants.ElementNames.Match, this.Version.NamespacePolicy, this.ReadMatch, o, true);
+            ////                o.ReadEndElement();
+            ////                return m;
+            ////            }, a, true);
+            ////        a.ReadEndElement();
+            ////        return am;
+            ////    }, reader, false);
 
             this.ReadList<XacmlAnyOf>(target.AnyOf, XacmlConstants.ElementNames.AnyOf, this.Version.NamespacePolicy,
                 a => {
@@ -365,7 +370,7 @@ namespace Abc.Xacml {
                 throw ThrowHelperXml(reader, "XML message is not valid.");
             }
 
-            //PROFILE - XACMLAdmin - #POL02 - #SPEC1833
+            // PROFILE - XACMLAdmin - #POL02 - #SPEC1833
             throw new Abc.Xacml.Runtime.XacmlInvalidDataTypeException("XACMLAdmin Profile not implemented");
 
             if (reader.IsEmptyElement) {
@@ -2012,31 +2017,37 @@ namespace Abc.Xacml {
         }
 
         #region Not supported 
-
+        /// <inheritdoc/>
         protected override XacmlSubject ReadSubject(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
+        /// <inheritdoc/>
         protected override XacmlAction ReadAction(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
+        /// <inheritdoc/>
         protected override XacmlResource ReadResource(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
+        /// <inheritdoc/>
         protected override XacmlEnvironment ReadEnvironment(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0.");
         }
 
+        /// <inheritdoc/>
         protected override Uri ReadPolicyIdReference(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ReadPolicyIdReference_3_0 instead");
         }
 
+        /// <inheritdoc/>
         protected override Uri ReadPolicySetIdReference(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ReadPolicySetIdReference_3_0 instead");
         }
 
+        /// <inheritdoc/>
         protected override XacmlContextAttribute ReadContextAttribute(XmlReader reader) {
             throw ThrowHelperXml(reader, "Not supported function in 3.0. Use ŖeadAttribute instead");
         }

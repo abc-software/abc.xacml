@@ -595,19 +595,19 @@ namespace Abc.Xacml {
 
                 switch (matchType) {
                     case XacmlConstants.ElementNames.ActionMatch:
-                        ret = (des != null
+                        ret = des != null
                                ? new XacmlActionMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, (XacmlActionAttributeDesignator)des)
-                               : new XacmlActionMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, sel));
+                               : new XacmlActionMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, sel);
                         break;
                     case XacmlConstants.ElementNames.SubjectMatch:
-                        ret = (des != null
+                        ret = des != null
                                ? new XacmlSubjectMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, (XacmlSubjectAttributeDesignator)des)
-                               : new XacmlSubjectMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, sel));
+                               : new XacmlSubjectMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, sel);
                         break;
                     case XacmlConstants.ElementNames.ResourceMatch:
-                        ret = (des != null
+                        ret = des != null
                                ? new XacmlResourceMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, (XacmlResourceAttributeDesignator)des)
-                               : new XacmlResourceMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, sel));
+                               : new XacmlResourceMatch(new Uri(gaMatchId, UriKind.RelativeOrAbsolute), attributeValue, sel);
                         break;
                     default:
                         break;
@@ -666,7 +666,7 @@ namespace Abc.Xacml {
             string value = null; //Any
 
             if (dataType == "http://www.w3.org/2001/XMLSchema#string") {
-                // Nevajag lietot Trim, jo tas izgriež tukšumzimes, kuras ir svarīgas, ja dati ir domāti priekš Regular Expression
+                // Do not need to use Trim because it blank characters are important for Regular Expression
                 value = reader.ReadElementContentAsString();
             }
             else {

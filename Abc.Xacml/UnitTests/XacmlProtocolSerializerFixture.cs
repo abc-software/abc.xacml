@@ -290,7 +290,7 @@
         private XmlReaderSettings readersettings;
         private void ValidateMessage(string xml, string schema)
         {
-#if !NETSTANDARD1_6
+#if !(NETCOREAPP2_1 || NETCOREAPP1_1)
             if (readersettings == null) {
                 readersettings = new XmlReaderSettings();
                 readersettings.IgnoreWhitespace = true;

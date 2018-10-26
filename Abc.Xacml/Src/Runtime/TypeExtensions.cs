@@ -35,7 +35,7 @@ namespace Abc.Xacml.Runtime {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return c.GetType().GetTypeInfo().IsSubclassOf(type);
+            return type.GetTypeInfo().IsAssignableFrom(c);
         }
 
         /// <summary>

@@ -22,16 +22,13 @@ namespace Abc.Xacml.Runtime {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-#if NETSTANDARD1_6
-    using System.Reflection;
-#endif
 
     /// <summary>
     /// Class for all permutation generation
     /// Call function on every permutation
     /// If function return true -> break
     /// </summary>
-    public class PermutationProcessor {
+    internal class PermutationProcessor {
         private readonly IPermutationNode root;
 
         /// <summary>
@@ -49,13 +46,7 @@ namespace Abc.Xacml.Runtime {
             int resultIndex = reverseList.Count() - 1;
 
             foreach (object val in values.Cast<object>().Reverse()) {
-#if NETSTANDARD1_6
-                var type = val.GetType().GetTypeInfo();
-                if (type.IsArray || (type.IsGenericType && type.GetInterfaces().Contains(typeof(IEnumerable)))) {
-#else
-                var type = val.GetType();
-                if (type.IsArray || (type.IsGenericType && type.ReflectedType == typeof(Enumerable))) {
-#endif
+                if (typeof(IEnumerable).IsAssignableFrom(val.GetType())) { 
                     firstNode = new PermutationProcessorNode((IEnumerable)val, resultIndex, firstNode, generatedParams);
                 }
                 else {

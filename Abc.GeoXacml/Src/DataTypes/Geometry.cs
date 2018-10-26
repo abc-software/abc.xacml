@@ -24,20 +24,12 @@ namespace Abc.Xacml.Geo {
     using NetTopologySuite.IO.GML2;
 
     /// <summary>
-    /// 
+    /// The geometry type.
     /// </summary>
     /// <seealso cref="System.IEquatable{Geometry}" />
     [TypeConverter(typeof(GeometryConverter))]
     [ImmutableObject(true)]
-    public class Geometry : IEquatable<Geometry> {
-        /// <summary>
-        /// Gets the value.
-        /// </summary>
-        /// <value>
-        /// The value.
-        /// </value>
-        public IGeometry Value { get; private set; }
-
+    public sealed class Geometry : IEquatable<Geometry> {
         /// <summary>
         /// Initializes a new instance of the <see cref="Geometry"/> class.
         /// </summary>
@@ -54,6 +46,14 @@ namespace Abc.Xacml.Geo {
             GMLReader gmlReader = new GMLReader();
             this.Value = gmlReader.Read(gml);
         }
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <value>
+        /// The value.
+        /// </value>
+        public IGeometry Value { get; private set; }
 
         /// <inheritdoc/>
         public bool Equals(Geometry other) {
@@ -73,12 +73,12 @@ namespace Abc.Xacml.Geo {
 
         /// <inheritdoc/>
         public override int GetHashCode() {
-            return this.GetHashCode();
+            return this.Value.GetHashCode();
         }
 
         /// <inheritdoc/>
         public override string ToString() {
-            return base.ToString();
+            return this.Value.ToString();
         }
     }
 }

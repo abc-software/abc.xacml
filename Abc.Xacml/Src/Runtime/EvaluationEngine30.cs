@@ -26,9 +26,6 @@ namespace Abc.Xacml.Runtime {
     using System.Xml;
     using Abc.Xacml.Context;
     using Abc.Xacml.Policy;
-#if NETSTANDARD1_6
-    using System.Reflection;
-#endif
 
     public class EvaluationEngine30 : EvaluationEngine {
         protected IDictionary<XacmlEffectType, List<XacmlAdvice>> advices;
@@ -557,7 +554,7 @@ namespace Abc.Xacml.Runtime {
                     break;
             }
 
-            //PROFILE - Multiple Decision Profile - #POL01 (Fists())
+            // PROFILE - Multiple Decision Profile - #POL01 (Fists())
             var result = new XacmlContextResult(resultDecision) {
                 Status = status,
             };
@@ -741,7 +738,6 @@ namespace Abc.Xacml.Runtime {
             return new Tuple<XacmlDecisionResult, string>(ruleResult, Enum.GetName(typeof(XacmlEffectType), rule.Effect));
         }
 
-        /// <inheritdoc/>
         /// <remarks>
         /// XacmlAttributeAssignmentExpression ----> XacmlAttributeAssignment
         /// </remarks>
@@ -757,13 +753,7 @@ namespace Abc.Xacml.Runtime {
 
             List<XacmlAttributeAssignment> result = new List<XacmlAttributeAssignment>();
 
-#if NETSTANDARD1_6
-            var type = typeof(IEnumerable).GetTypeInfo();
-#else
-            var type = typeof(IEnumerable);
-#endif
-
-            if (type.IsAssignableFrom(expressionResult.GetType()) && !(expressionResult is string)) {
+            if (typeof(IEnumerable).IsAssignableFrom(expressionResult.GetType()) && !(expressionResult is string)) {
                 foreach (object elem in (IEnumerable)expressionResult) {
                     result.Add(this.AttributeAssignmentCreate(elem, expression));
                 }

@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------
-// <copyright file="XPathExpression.cs" company="ABC Software Ltd">
+// <copyright file="XPathExpressionType.cs" company="ABC Software Ltd">
 //    Copyright © 2018 ABC Software Ltd. All rights reserved.
 //
 //    This library is free software; you can redistribute it and/or.
@@ -16,7 +16,7 @@
 //    License along with the library. If not, see http://www.gnu.org/licenses/.
 // </copyright>
 // ----------------------------------------------------------------------------
- 
+
 namespace Abc.Xacml.DataTypes {
     using System;
     using System.ComponentModel;

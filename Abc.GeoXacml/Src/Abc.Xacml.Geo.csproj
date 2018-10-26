@@ -7,17 +7,18 @@
     <Authors>ABC software</Authors>
     <Company>ABC software</Company>
     <Product></Product>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
+    <FileVersion>1.2.0.1</FileVersion>
     <Copyright>Copyright © ABC software 2011-2018</Copyright>
     <CodeAnalysisRuleSet>Abc.Xacml.Geo.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
-    <DocumentationFile>obj\Abc.Xacml.Geo.xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Library implements GEO XACML
 
-Supported platforms:- .NET Framework 4.0+
+Supported platforms:
+- .NET Framework 4.0+
 - .NET Standard 1.6+
 - .NET Core</Description>
     <PackageProjectUrl>https://github.com/abc-software/abc.xacml</PackageProjectUrl>

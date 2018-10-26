@@ -45,7 +45,7 @@ namespace Abc.Xacml.Runtime {
             }
 
 #if NETSTANDARD1_6
-            this.del = method.CreateDelegate(type, method.DeclaringType);
+            this.del = method.CreateDelegate(type);
 #else
             this.del = Delegate.CreateDelegate(type, method);
 #endif

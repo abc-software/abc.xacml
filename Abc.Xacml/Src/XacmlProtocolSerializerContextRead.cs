@@ -149,8 +149,8 @@ namespace Abc.Xacml {
             reader.ReadStartElement(XacmlConstants.ElementNames.AttributeValue, this.Version.NamespaceContext);
 
             // Read elements
+            // result.Value = reader.ReadInnerXml() // TODO: 
             result.Value = reader.ReadContentAsString(); // JG:
-            //result.Value = reader.ReadInnerXml(); // TODO: 
 
             reader.ReadEndElement();
 

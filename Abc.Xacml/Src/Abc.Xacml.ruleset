@@ -9,12 +9,18 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA1028" Action="None" />
     <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA1127" Action="None" />
     <Rule Id="SA1124" Action="None" />
     <Rule Id="SA1200" Action="None" />
     <Rule Id="SA1208" Action="None" />
     <Rule Id="SA1309" Action="None" />
     <Rule Id="SA1500" Action="None" />
     <Rule Id="SA1515" Action="None" />
+    <!-- TODO -->
     <Rule Id="SA1610" Action="None" />
+    <Rule Id="SA1614" Action="None" />
+    <Rule Id="SA1616" Action="None" />
+    <Rule Id="SA1627" Action="None" />
+    <Rule Id="SA1629" Action="None" />
   </Rules>
 </RuleSet>

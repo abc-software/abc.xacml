@@ -28,6 +28,7 @@ namespace Abc.Xacml.Runtime {
     using System.IO;
     using System.Runtime.Loader;
     using System.Composition.Hosting;
+    using System.Reflection;
 #endif
 
     internal static class ExtensibilityManager {
@@ -56,8 +57,10 @@ namespace Abc.Xacml.Runtime {
                 container = new CompositionContainer(catalog);
 #endif
 #if NETSTANDARD1_6 || NETSTANDARD2_0
+                // HACK: do not load UnitTest assemblies
                 var assemblies = Directory.GetFiles(AppContext.BaseDirectory, FileMask)
-                                    .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath);
+                        .Where(p => !Path.GetFileNameWithoutExtension(p).Contains("Test"))
+                        .Select(p => AssemblyLoadContext.Default.LoadFromAssemblyName(AssemblyLoadContext.GetAssemblyName(p)));
                 var configuration = new ContainerConfiguration().WithAssemblies(assemblies);
                 container = configuration.CreateContainer();
 #endif

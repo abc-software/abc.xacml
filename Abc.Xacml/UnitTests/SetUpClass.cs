@@ -15,7 +15,7 @@ namespace Abc.Xacml.UnitTests {
 
         public static string BaseDirectory {
             get {
-#if NETSTANDARD1_6
+#if NETCOREAPP1_1 
                 var dir = AppContext.BaseDirectory;
 #else
                 var dir = Path.GetDirectoryName(new Uri(typeof(Xacml30TestsCases).Assembly.CodeBase).LocalPath);
