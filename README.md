@@ -1,20 +1,36 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+[![Build Status](https://dev.azure.com/Gekiss/Abc.Xacml/_apis/build/status/abc-software.abc.xacml)](https://dev.azure.com/Gekiss/Abc.Xacml/_build/latest?definitionId=1)
+# abc.xacml 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This is a .NET library was to implement the [XACML](http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xacml) specification released by [Oasis](http://www.oasis-open.org/home/index.php). 
+Library is under the GNU LGPLv3 licence. 
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+The XACML defines a declarative access control policy language implemented in XML and a processing model describing how to evaluate access requests according to the rules defined in policies. 
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+Features:
+* This code implements XACML 1.0/1.1/2.0/3.0-wd17
+* Extensible type systems
+* Extensible functions
+* Extensible algorithms
+* Extensible XPath versions
+* Policy repositories
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+### Install with NuGet package manager
+[![NuGet status](https://img.shields.io/nuget/v/Abc.Xacml.png)](https://www.nuget.org/packages/Abc.Xacml)
+```
+PM> Install-Package Abc.Xacml
+```
+
+# abc.geoxacml
+This is a .NET library was to implement the [GeoXACML](http://www.opengeospatial.org/standards/geoxacml) specification released by [OGC](http://www.opengeospatial.org/).
+
+Features:
+* This code implements GeoXACML 1.0.0
+
+### Install with NuGet package manager
+[![NuGet status](https://img.shields.io/nuget/v/Abc.Xacml.Geo.png)](https://www.nuget.org/packages/Abc.Xacml.Geo)
+```
+PM> Install-Package Abc.Xacml.Geo
+```
+
+## Requirements
+You'll need .NET Framework 4.0 or later to use the precompiled binaries. To build library, you'll need Visual Studio 2017. To run tests, you'll need NUnit Test Adapter.
