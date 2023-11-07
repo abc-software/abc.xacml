@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Abc.Xacml" ToolsVersion="14.0">
+  <!--<Include Path="AllRules" Action="Default" />-->
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+    <Rule Id="S103" Action="None" />
+    <Rule Id="S108" Action="None" />
+    <Rule Id="S3257" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1028" Action="None" />
+    <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA1127" Action="None" />
+    <Rule Id="SA1124" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1208" Action="None" />
+    <Rule Id="SA1309" Action="None" />
+    <Rule Id="SA1500" Action="None" />
+    <Rule Id="SA1515" Action="None" />
+    <!-- TODO -->
+    <Rule Id="SA1610" Action="None" />
+    <Rule Id="SA1614" Action="None" />
+    <Rule Id="SA1616" Action="None" />
+    <Rule Id="SA1627" Action="None" />
+    <Rule Id="SA1629" Action="None" />
+  </Rules>
+</RuleSet>

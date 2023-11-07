@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:1.0:policy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PolicyId="urn:oasis:names:tc:example:SimplePolicy1" RuleCombiningAlgId="urn:oasis:names:tc:rule-combining-algorithm:deny-overrides">
+	<Description>
+    Medi Corp access control policy
+  </Description>
+  <Target>
+    <Subjects>
+      <AnySubject/>
+    </Subjects>
+    <Resources>
+      <AnyResource/>
+    </Resources>
+    <Actions>
+      <AnyAction/>
+    </Actions>
+  </Target>
+	<Rule RuleId="urn:oasis:names:tc:xacml:1.0:example:SimpleRule1" Effect="Permit">
+		<Description>
+   Any subject with an e-mail name in the med.example.com domain
+   can perform any action on any resource.
+  		</Description>
+		<Target>
+			<Subjects>
+				<Subject>
+					<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:rfc822Name-match">
+						<AttributeValue DataType="urn:oasis:names:tc:xacml:1.0:data-type:rfc822Name">medico.com</AttributeValue>
+						<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="urn:oasis:names:tc:xacml:1.0:data-type:rfc822Name"/>
+					</SubjectMatch>
+				</Subject>
+			</Subjects>
+      <Resources>
+        <AnyResource/>
+      </Resources>
+      <Actions>
+        <AnyAction/>
+      </Actions>
+		</Target>
+	</Rule>
+</Policy>

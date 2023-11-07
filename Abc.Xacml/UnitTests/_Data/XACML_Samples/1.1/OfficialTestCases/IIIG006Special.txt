@@ -1,0 +1,6 @@
+Test IIIG006 assumes that the context node is 
+the <xacml-context:Request> element 
+although the XACML 1.0 specification does not 
+define what's the context node.
+
+In XACML 1.1, this assumption will be true.

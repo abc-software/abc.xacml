@@ -1,0 +1,27 @@
+The XACML 1.0 specification does not explicitly 
+define the way to specify the attribute assignments.
+Indeed, both
+
+  <AttributeAssignment DataType="...:integer"
+                       AttributeId="foo">42</AttributeAssignment>
+
+and
+
+  <AttributeAssignment DataType="...:string" AttributeId="foo">
+    <AttributeValue DataType="...:string">hi</AttributeValue>
+  </AttributeAssignment>
+
+are valid as per the XACML policy schema. 
+However, it is unclear which syntax is correct? 
+In these test cases, we assume that the former syntax is correct.
+See the following mails for the discussion on this issue.
+http://lists.oasis-open.org/archives/xacml/200403/msg00116.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00117.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00118.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00119.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00120.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00121.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00122.html
+http://lists.oasis-open.org/archives/xacml/200403/msg00123.html
+http://lists.oasis-open.org/archives/xacml-comment/200403/msg00003.html
+http://lists.oasis-open.org/archives/xacml-comment/200403/msg00004.html

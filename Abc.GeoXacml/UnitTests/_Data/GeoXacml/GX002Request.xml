@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Request xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17 http://docs.oasis-open.org/xacml/3.0/xacml-core-v3-schema-wd-17.xsd" ReturnPolicyIdList="false" CombinedDecision="false" xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Attributes Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject">
+    <Attribute IncludeInResult="false" AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id">
+      <AttributeValue DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
+        <gml:Polygon gml:id="P1" srsName="urn:epsg:v6.1:coordinateReferenceSystem:4267">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:coordinates>
+                0,0 1,0 1,1 0,1 0,0
+              </gml:coordinates>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </AttributeValue>
+    </Attribute>
+    <Attribute IncludeInResult="false" AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-double">
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#double">
+          10
+      </AttributeValue>
+    </Attribute>
+  </Attributes>
+  <Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource">
+    <Attribute IncludeInResult="false" AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id">
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">http://medico.com/record/patient/BartSimpson</AttributeValue>
+    </Attribute>
+  </Attributes>
+  <Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action">
+    <Attribute IncludeInResult="false" AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id">
+      <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+    </Attribute>
+  </Attributes>
+  <Attributes Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment" />
+</Request>
