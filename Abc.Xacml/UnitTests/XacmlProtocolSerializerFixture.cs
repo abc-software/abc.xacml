@@ -192,7 +192,7 @@
             }
         }
 
-        #endregion
+#endregion
 
         #region XACML 2.0
 
@@ -290,8 +290,9 @@
         private XmlReaderSettings readersettings;
         private void ValidateMessage(string xml, string schema)
         {
-#if !(NETCOREAPP2_1 || NETCOREAPP1_1)
             if (readersettings == null) {
+                AppContext.SetSwitch("Switch.System.Xml.AllowDefaultResolver", true);
+
                 readersettings = new XmlReaderSettings();
                 readersettings.IgnoreWhitespace = true;
                 readersettings.IgnoreComments = true;
@@ -321,7 +322,6 @@
             using (XmlReader vr = XmlReader.Create(new System.IO.StringReader(xml), readersettings)) {
                 while (vr.Read()) ;
             }
-#endif
         }
     }
 }

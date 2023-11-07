@@ -21,10 +21,10 @@ namespace Abc.Xacml.Runtime {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-#if NET40 || NET45
+#if NET40_OR_GREATER
     using System.ComponentModel.Composition.Hosting;
 #endif
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD || NET5_0_OR_GREATER
     using System.IO;
     using System.Runtime.Loader;
     using System.Composition.Hosting;
@@ -33,30 +33,30 @@ namespace Abc.Xacml.Runtime {
 
     internal static class ExtensibilityManager {
         private const string FileMask = "Abc.Xacml.*.dll";
-#if NET40 || NET45
+#if NET40_OR_GREATER
         private static CompositionContainer container;
 #endif
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD || NET5_0_OR_GREATER
         private static CompositionHost container;
 #endif
 
         public static IEnumerable<T> GetExportedTypes<T>() {
             EnsureInitializedContainer();
-#if NET40 || NET45
+#if NET40_OR_GREATER
             return container.GetExportedValues<T>();
 #endif
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD || NET5_0_OR_GREATER
             return container.GetExports<T>();
 #endif
         }
 
         private static void EnsureInitializedContainer() {
             if (container == null) {
-#if NET40 || NET45
+#if NET40_OR_GREATER
                 var catalog = new DirectoryCatalog(AppDomain.CurrentDomain.BaseDirectory, FileMask);
                 container = new CompositionContainer(catalog);
 #endif
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD || NET5_0_OR_GREATER
                 // HACK: do not load UnitTest assemblies
                 var assemblies = Directory.GetFiles(AppContext.BaseDirectory, FileMask)
                         .Where(p => !Path.GetFileNameWithoutExtension(p).Contains("Test"))

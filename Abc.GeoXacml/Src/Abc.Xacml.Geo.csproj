@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net45;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Properties\abc.snk</AssemblyOriginatorKeyFile>
     <Authors>ABC software</Authors>
@@ -18,9 +18,9 @@
     <Description>Library implements GEO XACML
 
 Supported platforms:
-- .NET Framework 4.0+
-- .NET Standard 1.6+
-- .NET Core</Description>
+- .NET Framework 4.6.2+
+- .NET Standard 2.0
+- .NET 6.0</Description>
     <PackageProjectUrl>https://github.com/abc-software/abc.xacml</PackageProjectUrl>
     <PackageTags>XACML GEOXACML OGC</PackageTags>
     <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</PackageLicenseUrl>
@@ -40,10 +40,11 @@ Supported platforms:
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.7.0.7192">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="GeoAPI" Version="1.7.5" />
@@ -58,15 +59,15 @@ Supported platforms:
     <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' ">
     <PackageReference Include="Convertinator" Version="0.4.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' ">
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />

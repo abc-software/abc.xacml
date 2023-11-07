@@ -19,10 +19,10 @@
 
 namespace Abc.Xacml.Geo {
     using System.Collections.Generic;
-#if NET40 || NET45
+#if NET40_OR_GREATER
     using System.ComponentModel.Composition;
 #endif
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD || NET6_0_OR_GREATER
     using System.Composition;
 #endif
     using Abc.Xacml.Interfaces;

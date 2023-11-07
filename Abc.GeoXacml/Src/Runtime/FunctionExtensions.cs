@@ -20,11 +20,11 @@
 namespace Abc.Xacml.Geo {
     using System;
     using System.Collections.Generic;
-#if NET40 || NET45
+#if NET40_OR_GREATER
     using Convertinator;
     using System.ComponentModel.Composition;
 #endif
-#if NETSTANDARD1_6 || NETSTANDARD2_0
+#if NETSTANDARD || NET5_0_OR_GREATER
     using System.Composition;
 #endif
     using System.Linq;
@@ -80,7 +80,7 @@ namespace Abc.Xacml.Geo {
             { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-union", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, IEnumerable<Geometry>>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeUnion", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
             { "urn:ogc:def:function:geoxacml:1.0:geometry-bag-subset", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSubset", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
             { "urn:ogc:def:function:geoxacml:1.0:geometry-set-equals", new DelegateWrapper(typeof(Func<IEnumerable<Geometry>, IEnumerable<Geometry>, bool>), typeof(FunctionsProcessor).GetGenericMethodInfo("TypeSetEquals", typeof(Geometry), o => new Type[] { typeof(IEnumerable<>).MakeGenericType(o), typeof(IEnumerable<>).MakeGenericType(o) })) },
-#if NET40 || NET45
+#if NET40_OR_GREATER
             { "urn:ogc:def:function:geoxacml:1.0:convert-to-metre", new DelegateWrapper(typeof(Func<double, string, double>), typeof(FunctionExtensions).GetMethod("ConvertToMetre", BindingFlags.Static | BindingFlags.Public)) },
             { "urn:ogc:def:function:geoxacml:1.0:convert-to-square-metre", new DelegateWrapper(typeof(Func<double, string, double>), typeof(FunctionExtensions).GetMethod("ConvertToSquareMetre", BindingFlags.Static | BindingFlags.Public)) },
 #endif
@@ -198,7 +198,7 @@ namespace Abc.Xacml.Geo {
 
         #endregion
 
-#if NET40 || NET45
+#if NET40_OR_GREATER
         #region Conversion Functions
         public static double ConvertToMetre(double d, string unitMeasure) {
             Unit meter = new Unit("meter").IsAlsoCalled("metre").CanBeAbbreviated("m");

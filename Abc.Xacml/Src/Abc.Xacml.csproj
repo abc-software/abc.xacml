@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net45;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Properties\abc.snk</AssemblyOriginatorKeyFile>
     <Authors>ABC software</Authors>
     <Company>ABC software</Company>
     <Product></Product>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.1</FileVersion>
-    <Copyright>Copyright © ABC software 2011-2018</Copyright>
+    <FileVersion>1.2.0.2</FileVersion>
+    <Copyright>Copyright © ABC software 2011-2023</Copyright>
     <CodeAnalysisRuleSet>Abc.Xacml.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>Library implements XACML 1.0/1.1/2.0/3.0-wd17
 
 Supported platforms:
-- .NET Framework 4.0+
-- .NET Standard 1.6+
-- .NET Core</Description>
+- .NET Framework 4.6.2+
+- .NET Standard 2.0
+- .NET 6.0</Description>
     <PackageProjectUrl>https://github.com/abc-software/abc.xacml</PackageProjectUrl>
     <PackageTags>XACML OASIS</PackageTags>
     <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</PackageLicenseUrl>
@@ -43,9 +43,10 @@ Supported platforms:
     <!--<PackageReference Include="SonarAnalyzer.CSharp" Version="7.7.0.7192">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>-->
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta009">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Composition" Version="1.4.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
@@ -58,13 +59,13 @@ Supported platforms:
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net6.0'  ">
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="System.Composition" Version="1.2.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' or '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' ">
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />

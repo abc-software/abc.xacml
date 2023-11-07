@@ -13,7 +13,7 @@ namespace Abc.Xacml.Geo.UnitTests {
         public static string[] TestCaseToIgnore = { };
 
         public static string[] NotRealisedProfilesTest = {
-#if NETCOREAPP1_1 || NETCOREAPP2_1
+#if NETCOREAPP1_0_OR_GREATER || NET6_0_OR_GREATER
             "GX003", // convert-to-metre
             "GX004" // convert-to-square-metre
 #endif
