@@ -10,7 +10,7 @@
     <Version>1.2.2</Version>
     <AssemblyVersion>1.2.0.0</AssemblyVersion>
     <FileVersion>1.2.0.2</FileVersion>
-    <Copyright>Copyright © ABC software 2011-2023</Copyright>
+    <Copyright>Copyright © ABC software 2011-2024</Copyright>
     <CodeAnalysisRuleSet>Abc.Xacml.ruleset</CodeAnalysisRuleSet>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
@@ -46,7 +46,6 @@ Supported platforms:
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Composition" Version="1.4.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">

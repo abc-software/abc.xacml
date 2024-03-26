@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net462;net6.0</TargetFrameworks>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Properties\abc.snk</AssemblyOriginatorKeyFile>
     <Authors>ABC software</Authors>
     <Company>ABC software</Company>
     <Product></Product>
     <Version>1.2.2</Version>
-    <AssemblyVersion>1.2</AssemblyVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
     <FileVersion>1.2.0.2</FileVersion>
     <Copyright>Copyright © ABC software 2011-2023</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -21,21 +21,8 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' or '$(TargetFramework)' == 'netcoreapp2.1' or '$(TargetFramework)' == 'net45' or '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="NSubstitute" Version="5.1.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <PackageReference Include="NSubstitute" Version="2.0.3" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
-  </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Src\Abc.Xacml.csproj" />
+    <ProjectReference Include="..\..\src\Abc.Xacml.Geo\Abc.Xacml.Geo.csproj" />
   </ItemGroup>
 
   <ItemGroup>
