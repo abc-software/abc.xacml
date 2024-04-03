@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/Gekiss/Abc.Xacml/_apis/build/status/abc-software.abc.xacml)](https://dev.azure.com/Gekiss/Abc.Xacml/_build/latest?definitionId=1)
+![](https://github.com/abc-software/abc.xacml/.github/workflows/dotnet.yml/badge.svg)
 # abc.xacml 
 
 This is a .NET library was to implement the [XACML](http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xacml) specification released by [Oasis](http://www.oasis-open.org/home/index.php). 
@@ -20,7 +20,7 @@ Features:
 PM> Install-Package Abc.Xacml
 ```
 
-# abc.geoxacml
+# abc.xacml.geo
 This is a .NET library was to implement the [GeoXACML](http://www.opengeospatial.org/standards/geoxacml) specification released by [OGC](http://www.opengeospatial.org/).
 
 Features:
@@ -30,6 +30,26 @@ Features:
 [![NuGet status](https://img.shields.io/nuget/v/Abc.Xacml.Geo.png)](https://www.nuget.org/packages/Abc.Xacml.Geo)
 ```
 PM> Install-Package Abc.Xacml.Geo
+```
+
+### Usage example
+```C#
+XmlDocument request = new XmlDocument();
+request.Load("request.xml")
+
+XmlDocument policy = new XmlDocument();
+policy.Load("policy.xml")
+
+var serialize = new Xacml30ProtocolSerializer();
+
+XacmlContextRequest requestData;
+using (XmlReader reader = XmlReader.Create(new StringReader(request.OuterXml))) {
+    requestData = serialize.ReadContextRequest(reader);
+}
+
+EvaluationEngine engine = EvaluationEngineFactory.Create(policy, null);
+
+XacmlContextResponse evaluatedResponse = engine.Evaluate(requestData, request);
 ```
 
 ## Requirements

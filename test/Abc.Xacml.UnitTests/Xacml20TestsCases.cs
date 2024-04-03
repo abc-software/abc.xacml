@@ -26,10 +26,11 @@ namespace Abc.Xacml.UnitTests {
 
         private static string GetTestCasePath() {
             var dir = SetUpClass.BaseDirectory;
-            return Path.Combine(dir, @"..\..\..\_Data\XACML_Samples\2.0\OfficialTestCases");
-        }
+			return Path.Combine(dir, "..", "..", "..", "_Data", "XACML_Samples", "2.0", "OfficialTestCases");
 
-        public static IEnumerable TestCases {
+		}
+
+		public static IEnumerable TestCases {
             get {
                 Regex regex = new Regex(@"I{2,3}[A-Z]\d{3}");
                 var secRes = Directory.GetFiles(TestCasePath, "*.xml")

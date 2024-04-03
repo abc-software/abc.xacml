@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <Authors>ABC software</Authors>
+    <Company>ABC software</Company>
+    <Product></Product>
+    <Version>1.2.2</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <Copyright>Copyright © ABC software 2011-2024</Copyright>
+    <PackageProjectUrl>https://github.com/abc-software/abc.xacml</PackageProjectUrl>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/abc-software/abc.xacml</RepositoryUrl>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.23.1.88495">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <!--<PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.0" PrivateAssets="All" /> -->
+  </ItemGroup>
+
+
+</Project>
