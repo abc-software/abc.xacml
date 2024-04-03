@@ -13,13 +13,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Xacml", "src\Abc.Xacml\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6D98CD26-47FB-47ED-A1B2-BD550F4566E3}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B0D9E1D4-E9B6-45D9-88C5-5DF01A564AD8}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D36EEA8F-B188-4564-92C7-7643B8B2DE28}"
+	ProjectSection(SolutionItems) = preProject
+		test\Directory.Build.props = test\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{CCE5F0D6-1E7F-4347-AE15-4A8993D56E1C}"
 	ProjectSection(SolutionItems) = preProject
