@@ -260,7 +260,7 @@
         [Test]
         public void EvaluateRun() {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(@"..\..\..\_Data\XACML_Samples\2.0\EvaluationSampleRequest.xml"); //c:\aa.xml
+            xmlDoc.Load(Path.Combine("..", "..", "..", "_Data", "XACML_Samples", "2.0", "EvaluationSampleRequest.xml"));
 
             var serialize = new Xacml20ProtocolSerializer();
 
@@ -269,7 +269,7 @@
 
 
                 XmlDocument xmlDoc2 = new XmlDocument();
-                xmlDoc2.Load(@"..\..\..\_Data\XACML_Samples\2.0\EvaluationSamplePolicy.xml"); //c:\aa.xml
+                xmlDoc2.Load(Path.Combine("..", "..", "..", "_Data", "XACML_Samples", "2.0", "EvaluationSamplePolicy.xml")); 
 
                 var serialize2 = new Xacml20ProtocolSerializer();
 

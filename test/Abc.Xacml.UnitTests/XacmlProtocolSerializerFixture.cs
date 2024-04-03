@@ -23,7 +23,7 @@
         private static string TestCasePath {
             get {
                 var dir = SetUpClass.BaseDirectory;
-                return Path.Combine(dir, @"..\..\..\_Data");
+                return Path.Combine(dir, "..", "..", "..", "_Data");
             }
         }
 
@@ -109,7 +109,7 @@
         [Test]
         public void ReadRequest_11() {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(Path.Combine(TestCasePath, @"XACML_Samples\1.1\Example_1\Request.xml"));
+            xmlDoc.Load(Path.Combine(TestCasePath, "XACML_Samples", "1.1", "Example_1", "Request.xml"));
 
             var serialize = new Xacml10ProtocolSerializer();
 
@@ -163,7 +163,7 @@
         [Test]
         public void ReadPolicy_11() {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(Path.Combine(TestCasePath, @"XACML_Samples\1.1\Example_1\Rule_1.xml"));
+            xmlDoc.Load(Path.Combine(TestCasePath, "XACML_Samples", "1.1", "Example_1", "Rule_1.xml"));
 
             var serialize = new Xacml10ProtocolSerializer();
 
