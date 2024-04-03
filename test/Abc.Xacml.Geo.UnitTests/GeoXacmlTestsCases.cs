@@ -25,7 +25,7 @@ namespace Abc.Xacml.Geo.UnitTests {
 #else
             var dir = Path.GetDirectoryName(new Uri(typeof(GeoXacmlTestsCases).Assembly.CodeBase).LocalPath);
 #endif
-            return Path.Combine(dir, @"..\..\..\_Data\GeoXacml");
+            return Path.Combine(dir, "..", "..", "..", "_Data", "GeoXacml");
         }
 
         public static IEnumerable TestCases {
