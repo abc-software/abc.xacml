@@ -178,7 +178,7 @@
         public void ReadResponse_11()
         {
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(Path.Combine(TestCasePath, @"XACML_Samples\1.1\Example_1\Response.xml"));
+            xmlDoc.Load(Path.Combine(TestCasePath, "XACML_Samples", "1.1", "Example_1", "Response.xml"));
 
             var serialize = new Xacml10ProtocolSerializer();
 
