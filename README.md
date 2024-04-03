@@ -1,4 +1,4 @@
-![](https://github.com/abc-software/abc.xacml/.github/workflows/dotnet.yml/badge.svg)
+![](https://github.com/abc-software/abc.xacml/actions/workflows/dotnet.yml/badge.svg)
 # abc.xacml 
 
 This is a .NET library was to implement the [XACML](http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xacml) specification released by [Oasis](http://www.oasis-open.org/home/index.php). 
